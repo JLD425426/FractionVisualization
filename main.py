@@ -7,7 +7,7 @@ BLACK = ( 0, 0, 0)
 WHITE = ( 255, 255, 255)
 GREEN = ( 0, 255, 0)
 RED = ( 255, 0, 0)
-
+PURPLE = ( 227, 39, 211)
 
 # define window
 screenDimensions = (800, 500)
