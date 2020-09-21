@@ -10,7 +10,7 @@ RED = ( 255, 0, 0)
 
 
 # define window
-screenDimensions = (750, 500)
+screenDimensions = (800, 500)
 screen = pygame.display.set_mode(screenDimensions)
 pygame.display.set_caption("425 Project")
 
