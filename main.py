@@ -1,15 +1,8 @@
 import pygame
+import colors
 from rectangle import Rectangle
 
 pygame.init()
-
-# define colors !temporary here, at some point we will want to move these constants to another file
-BLACK = ( 0, 0, 0)
-WHITE = ( 255, 255, 255)
-GREEN = ( 0, 255, 0)
-RED = ( 255, 0, 0)
-PURPLE = ( 227, 39, 211)
-GREY = (136, 140, 139)
 
 # define window
 screenDimensions = (700, 700)
@@ -36,7 +29,7 @@ while isProgramRunning:
     # main logic here
 
     # drawing here
-    screen.fill(GREY) #clear screen to white
+    screen.fill(colors.GREY) #fill screen bg
 
     testRectangle.draw()
 

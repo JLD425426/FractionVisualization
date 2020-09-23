@@ -1,6 +1,5 @@
 import pygame as pg
-
-WHITE = ( 255, 255, 255)
+import colors
 
 class Rectangle:
     def __init__(self, xx, yy, w, h, screen):
@@ -10,7 +9,7 @@ class Rectangle:
         self.width = w
         self.height = h
         self.screen = screen
-        self.color = WHITE
+        self.color = colors.WHITE
 
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.xPosition,self.yPosition,self.width,self.height],0)
