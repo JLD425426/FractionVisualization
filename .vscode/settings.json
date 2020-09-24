@@ -2,5 +2,6 @@
     "python.linting.pylintArgs":[
         "--extension-pkg-whitelist=pygame",
         "--erros-only"
-  ]
+  ],
+  "python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.8/bin/python3"
 }
