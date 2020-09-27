@@ -2,6 +2,7 @@ import pygame
 import colors
 from rectangle import Rectangle
 from pygame.locals import *
+from cutmarker import CutMarker
 
 pygame.init()
 
@@ -19,6 +20,7 @@ fps = 60
 
 # create rectangle class
 testRectangle = Rectangle(175,175,350,350,screen)
+cutMarkers = testRectangle.createCutMarkers(6)
 
 # create clicking tracker
 click = False
@@ -39,8 +41,13 @@ while isProgramRunning:
 
 
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1: # left mouse button click
+                print("left mouse")
     
     # main logic here
+    for cm in cutMarkers:
+        cm.update()
 
     # drawing here
     screen.fill(colors.GREY) #fill screen bg    
@@ -57,6 +64,8 @@ while isProgramRunning:
             if mx <= 525 and my <= 525:
                 screen.fill(colors.GREEN)     
 
+    for cm in cutMarkers:
+        cm.draw()
 
     # pygame.draw.line(screen,GREEN, [0, 0], [100, 100], 5) !This function may be useful for dividing up rectangle with line
 

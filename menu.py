@@ -21,32 +21,59 @@ screen = pygame.display.set_mode(screenDimensions)
 pygame.display.set_caption("Main Menu - Fraction Visualization")
 
 def set_difficulty_level(value, difficulty):
-    # Do the job here !
+    # Do something here
     pass
 
 def start_the_game():
-    # Do the job here !
+    # Do something here
+    pass
+
+def tutorial():
+    # Do something here
     pass
 
 
+
 # Creating a custom theme based off SOLARIZED
-fraction_theme = pygame_menu.themes.THEME_SOLARIZED.copy
+# copy = pygame_menu.themes.THEME_SOLARIZED.copy
+
+# Creating a custom theme from scratch
+fraction_theme = pygame_menu.themes.Theme(background_color=(0, 0, 0, 0), # transparent background
+                title_shadow=True,
+                title_background_color=GREEN
+                )
+
+# Adding image to be used as background
+myimage = pygame_menu.baseimage.BaseImage(
+    image_path="geom_background1.jpg",
+    drawing_mode=pygame_menu.baseimage.IMAGE_MODE_FILL
+)
+
+# Making the image the background of the theme
+fraction_theme.background_color = myimage
+
+# Making underlined title bar
+fraction_theme.title_bar_style = pygame_menu.widgets.MENUBAR_STYLE_UNDERLINE_TITLE
+
+# Editing font and shadow on title bar
+fraction_theme.title_font_color = BLACK
+fraction_theme.title_shadow = False
 
 # Creating menu screen with theme and message
 menu = pygame_menu.Menu(HEIGHT, WIDTH, 'Welcome to Fraction Visualization!',
-                       theme=pygame_menu.themes.THEME_SOLARIZED)
+                       theme=fraction_theme)
 
-# menu = pygame_menu.Menu(300, 400, 'Welcome',
-                       # theme=pygame_menu.themes.THEME_BLUE)
+# Setting color for selection box
+fraction_theme.selection_color = BLACK
 
-
-
-menu.add_text_input('Name : ', default='Olive Math')     # Allows for user text input
+ # Allows for user text input
+menu.add_text_input('Name : ', default='Olive Math')
 
 # Selector allows user to select difficulty
 menu.add_selector('Difficulty Level :  ', [('Easy', 1), ('Medium', 2), ('Hard', 3)], onchange=set_difficulty_level)
 
 # Start and quit events
+menu.add_button('Tutorial', tutorial)
 menu.add_button('Start', start_the_game)
 menu.add_button('Quit', pygame_menu.events.EXIT)
 
