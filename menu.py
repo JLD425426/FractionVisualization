@@ -1,19 +1,11 @@
 import pygame
 import pygame_menu
+from colors import *
 
 pygame.init()
 
 # Display dimensions
 HEIGHT, WIDTH = 700, 700
-
-# define some colors
-BLACK = ( 0, 0, 0)
-WHITE = ( 255, 255, 255)
-GREEN = ( 0, 255, 0)
-RED = ( 255, 0, 0)
-BLUE = (0, 0, 255)
-PURPLE = ( 227, 39, 211)
-
 
 # define displau window
 screenDimensions = (HEIGHT, WIDTH)
@@ -40,7 +32,7 @@ def tutorial():
 # Creating a custom theme from scratch
 fraction_theme = pygame_menu.themes.Theme(background_color=(0, 0, 0, 0), # transparent background
                 title_shadow=True,
-                title_background_color=GREEN
+                title_background_color=BLACK
                 )
 
 # Adding image to be used as background
@@ -72,7 +64,7 @@ menu.add_text_input('Name : ', default='Olive Math')
 # Selector allows user to select difficulty
 menu.add_selector('Difficulty Level :  ', [('Easy', 1), ('Medium', 2), ('Hard', 3)], onchange=set_difficulty_level)
 
-# Start and quit events
+# Start, quit, and tutorial buttons
 menu.add_button('Tutorial', tutorial)
 menu.add_button('Start', start_the_game)
 menu.add_button('Quit', pygame_menu.events.EXIT)
