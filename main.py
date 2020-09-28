@@ -20,7 +20,7 @@ fps = 60
 
 # create rectangle class
 testRectangle = Rectangle(175,175,350,350,screen)
-cutMarkers = testRectangle.createCutMarkers(6)
+cutMarkers = testRectangle.createCutMarkers(4,5)
 
 # create clicking tracker
 click = False
