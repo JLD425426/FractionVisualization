@@ -38,12 +38,6 @@ while isProgramRunning:
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 click = False
-
-
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1: # left mouse button click
-                print("left mouse")
     
     # main logic here
     for cm in cutMarkers:
@@ -52,22 +46,18 @@ while isProgramRunning:
     # drawing here
     screen.fill(colors.GREY) #fill screen bg    
     testRectangle.draw()
-    # if user clicks outside of rectangle, display red
-    # if user hovers inside of rectangle, display green
+    # if user clicks outside of rectangle fill screen red, inside fill screen green
     if click: 
-        if mx <= 175 or my <=175:
+        if mx <= 175 or my <=175: #outside rectangle
             screen.fill(colors.RED) 
-        if mx >= 525 or my >= 525:
+        if mx >= 525 or my >= 525: #outside rectangle
             screen.fill(colors.RED) 
-    else:
-        if mx >= 175 and my >= 175:
+        elif mx >= 175 and my >= 175: #click inside rectangle
             if mx <= 525 and my <= 525:
                 screen.fill(colors.GREEN)     
 
     for cm in cutMarkers:
         cm.draw()
-
-    # pygame.draw.line(screen,GREEN, [0, 0], [100, 100], 5) !This function may be useful for dividing up rectangle with line
 
     #update screen and set framerate
     pygame.display.flip()
