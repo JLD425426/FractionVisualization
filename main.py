@@ -3,6 +3,7 @@ import colors
 from rectangle import Rectangle
 from pygame.locals import *
 from cutmarker import CutMarker
+from drawablesController import DrawablesController
 
 pygame.init()
 
@@ -18,9 +19,14 @@ isProgramRunning = True
 clock = pygame.time.Clock()
 fps = 60
 
-# create rectangle class
-testRectangle = Rectangle(175,175,350,350,screen)
-cutMarkers = testRectangle.createCutMarkers(6)
+# create drawable object lists
+rectangles = list()
+cutMarkers = list()
+guideLines = list()
+drawablesController = DrawablesController(rectangles, cutMarkers, guideLines)
+testRectangle = Rectangle(350,350,350,350,screen,drawablesController,True)
+testRectangle.createCutMarkers(3,4)
+
 
 # create clicking tracker
 click = False
@@ -38,36 +44,25 @@ while isProgramRunning:
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 click = False
-
-
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1: # left mouse button click
-                print("left mouse")
     
     # main logic here
-    for cm in cutMarkers:
-        cm.update()
+    for rect in drawablesController.rectangles:
+        rect.update(click,mx,my)
+    for cm in drawablesController.cutmarkers:
+        cm.update(click)
 
     # drawing here
-    screen.fill(colors.GREY) #fill screen bg    
-    testRectangle.draw()
-    # if user clicks outside of rectangle, display red
-    # if user hovers inside of rectangle, display green
-    if click: 
-        if mx <= 175 or my <=175:
-            screen.fill(colors.RED) 
-        if mx >= 525 or my >= 525:
-            screen.fill(colors.RED) 
-    else:
-        if mx >= 175 and my >= 175:
-            if mx <= 525 and my <= 525:
-                screen.fill(colors.GREEN)     
+    screen.fill(colors.GREY) #fill screen bg     
 
-    for cm in cutMarkers:
+    for rect in drawablesController.rectangles:
+        rect.draw() 
+    for cm in drawablesController.cutmarkers:
         cm.draw()
+    for gl in drawablesController.guidelines:
+        gl.draw()
 
-    # pygame.draw.line(screen,GREEN, [0, 0], [100, 100], 5) !This function may be useful for dividing up rectangle with line
+    # pygame.draw.rect(screen, colors.GREEN, [0,0,100,100],5)
+
 
     #update screen and set framerate
     pygame.display.flip()
