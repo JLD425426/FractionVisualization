@@ -19,8 +19,8 @@ clock = pygame.time.Clock()
 fps = 60
 
 # create rectangle class
-testRectangle = Rectangle(175,175,350,350,screen)
-cutMarkers = testRectangle.createCutMarkers(4,5)
+testRectangle = Rectangle(350,350,350,350,screen)
+cutMarkers = testRectangle.createCutMarkers(3,4)
 
 # create clicking tracker
 click = False
