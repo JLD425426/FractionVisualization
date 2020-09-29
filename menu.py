@@ -17,7 +17,9 @@ def set_difficulty_level(value, difficulty):
     pass
 
 def start_the_game():
-    # Do something here
+    print("HI")
+    with open('main.py') as infile:
+        exec(infile.read())
     pass
 
 def tutorial():
