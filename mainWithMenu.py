@@ -9,7 +9,10 @@ from drawablesController import DrawablesController
 pygame.init()
 
 mx, my = 0, 0
+
+# Define dimensions for window
 WIDTH, HEIGHT = 700, 700
+
 # define window
 screenDimensions = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(screenDimensions)
