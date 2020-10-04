@@ -17,6 +17,13 @@ class CutMarker:
         self.type = _type
         self.drawablesController = drawablesController
         self.drawablesController.cutmarkers.append(self)
+        self.offset = 10
+        # offset so not overlapping with rectangles
+        if self.type == "horizontal":
+            self.xPosition -= self.offset
+        elif self.type == "vertical":
+            self.yPosition -= self.offset
+
 
     def update(self, isClick):
         # decide if close enough to mouse to draw guiding line or not
@@ -28,7 +35,10 @@ class CutMarker:
             self.isTouchingMouse = False
 
         if distToMouse < self.radius and isClick == True:
-            gl = GuideLine(self.xPosition,self.yPosition,self.type,self.myRect,self.screen,self.drawablesController)
+            if self.type == "vertical":
+                gl = GuideLine(self.xPosition,self.yPosition + self.offset,self.type,self.myRect,self.screen,self.drawablesController)
+            elif self.type == "horizontal":
+                gl = GuideLine(self.xPosition + self.offset,self.yPosition,self.type,self.myRect,self.screen,self.drawablesController)
             self.drawablesController.cutmarkers.remove(self)
 
 
@@ -36,6 +46,6 @@ class CutMarker:
         pg.draw.circle(self.screen, self.color, (self.xPosition,self.yPosition), self.radius)
         if (self.isTouchingMouse == True):
             if self.type == "vertical":
-                pg.draw.line(self.screen,colors.DARKBLUE, [self.xPosition, self.yPosition], [self.xPosition, self.yPosition + self.myRect.height], 5)
+                pg.draw.line(self.screen,colors.DARKBLUE, [self.xPosition, self.yPosition + self.offset], [self.xPosition, self.yPosition + self.myRect.height + self.offset], 5)
             elif self.type == "horizontal":
-                pg.draw.line(self.screen,colors.DARKBLUE, [self.xPosition, self.yPosition], [self.xPosition + self.myRect.width, self.yPosition], 5)
+                pg.draw.line(self.screen,colors.DARKBLUE, [self.xPosition + self.offset, self.yPosition], [self.xPosition + self.myRect.width + self.offset, self.yPosition], 5)

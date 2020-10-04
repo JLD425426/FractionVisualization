@@ -2,6 +2,8 @@ import pygame as pg
 import colors
 from cutmarker import CutMarker
 from mouseHolder import MouseHandler
+from guideline import GuideLine
+from bgSquare import BgSquare
 import random
 
 class Rectangle:
@@ -42,6 +44,15 @@ class Rectangle:
         else:
             possColors = (colors.GREEN,colors.RED,colors.WHITE,colors.DARKBLUE)
             self.color = random.choice(possColors)
+
+        # draw outer guidelines and bg square only if rectangle is original square
+        if self.isOriginalSquare == True:
+            GuideLine(self.topLeftX,self.topLeftY,"vertical",self,self.screen,self.drawablesController)
+            GuideLine(self.topLeftX,self.topLeftY,"horizontal",self,self.screen,self.drawablesController)
+            GuideLine(self.topLeftX + self.width,self.topLeftY,"vertical",self,self.screen,self.drawablesController)
+            GuideLine(self.topLeftX,self.topLeftY + self.height,"horizontal",self,self.screen,self.drawablesController)
+            BgSquare(self.topLeftX,self.topLeftY,self.width,self.height,self.screen,self.drawablesController)
+
 
     def update(self, click, mx, my):
 

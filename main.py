@@ -25,7 +25,8 @@ fps = 60
 rectangles = list()
 cutMarkers = list()
 guideLines = list()
-drawablesController = DrawablesController(rectangles, cutMarkers, guideLines)
+bgSquares = list()
+drawablesController = DrawablesController(rectangles, cutMarkers, guideLines,bgSquares)
 testRectangle = Rectangle(350,350,350,350,screen,drawablesController,True)
 testRectangle.createCutMarkers(3,4)
 mouse = MouseHandler()
@@ -66,12 +67,14 @@ while isProgramRunning:
     # drawing here
     screen.fill(colors.GREY) #fill screen bg     
 
+    for bgSquare in drawablesController.bgSquares:
+        bgSquare.draw()
     for rect in drawablesController.rectangles:
         rect.draw() 
-    for cm in drawablesController.cutmarkers:
-        cm.draw()
     for gl in drawablesController.guidelines:
         gl.draw()
+    for cm in drawablesController.cutmarkers:
+        cm.draw()
 
     # pygame.draw.rect(screen, colors.GREEN, [0,0,100,100],5)
 
