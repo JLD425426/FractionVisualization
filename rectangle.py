@@ -1,11 +1,15 @@
 import pygame as pg
 import colors
 from cutmarker import CutMarker
+from mouseHolder import MouseHandler
+from guideline import GuideLine
+from bgSquare import BgSquare
 import random
 
 class Rectangle:
     def __init__(self, xx, yy, w, h, screen,drawablesController,isOriginalSquare):
         # the xPosition and yPosition refer to the middle point of the rectangle
+        # include a origin point
         self.xPosition = xx
         self.yPosition = yy
         self.width = w
@@ -13,6 +17,12 @@ class Rectangle:
         self.screen = screen
         self.drawablesController = drawablesController
         self.drawablesController.rectangles.append(self)
+        self.xOrigin = xx
+        self.yOrigin = yy
+        self.xCurrent = xx
+        self.yCurrent = yy
+        self.rectHeld = False
+        self.rectHeld2 = False
 
         # these 4 member variables may be useful for rectangle collisions
         self.topLeftX = int(self.xPosition - self.width / 2)
@@ -35,6 +45,15 @@ class Rectangle:
             possColors = (colors.GREEN,colors.RED,colors.WHITE,colors.DARKBLUE)
             self.color = random.choice(possColors)
 
+        # draw outer guidelines and bg square only if rectangle is original square
+        if self.isOriginalSquare == True:
+            GuideLine(self.topLeftX,self.topLeftY,"vertical",self,self.screen,self.drawablesController)
+            GuideLine(self.topLeftX,self.topLeftY,"horizontal",self,self.screen,self.drawablesController)
+            GuideLine(self.topLeftX + self.width,self.topLeftY,"vertical",self,self.screen,self.drawablesController)
+            GuideLine(self.topLeftX,self.topLeftY + self.height,"horizontal",self,self.screen,self.drawablesController)
+            BgSquare(self.topLeftX,self.topLeftY,self.width,self.height,self.screen,self.drawablesController)
+
+
     def update(self, click, mx, my):
 
         # if conditions pass, main square is ready to be cut up so cut it
@@ -43,12 +62,39 @@ class Rectangle:
                 self.cutSquare()
 
         #collision checking with mouse
+        
+        if self.isOriginalSquare == False:
+            self.rectisHeld(mx, my, click) 
+            if self.rectHeld:
+                if click != True and self.rectHeld2 == True:
+                    self.xPosition = mx
+                    self.yPosition = my
+                    self.xCurrent = self.xPosition
+                    self.yCurrent = self.yPosition
+                    self.topLeftX = (self.xPosition - self.width / 2)
+                    self.topLeftY = (self.yPosition - self.height / 2)                    
+                    self.bottomRightX = (self.xPosition + self.width / 2)
+                    self.bottomRightY = (self.yPosition + self.height / 2)
+
+    def rectisHeld(self, mx, my, click):
         if click:
-            if (mx > self.topLeftX and mx < self.bottomRightX and my > self.topLeftY and my < self.bottomRightY):
-                print("mouse collision with Rectangle: " + str(self))
+            if self.rectHeld:
+                self.rectHeld2 = True
+            else:
+                if(mx > self.topLeftX and mx < self.bottomRightX and my > self.topLeftY and my < self.bottomRightY):
+                    self.rectHeld = True
+        #else:
+         #   self.rectHeld = False
 
+    def putDown(self):
+        self.xPosition = self.xCurrent
+        self.yPosition = self.yCurrent
+        self.topLeftX = (self.xPosition - self.width / 2)
+        self.topLeftY = (self.yPosition - self.height / 2)                    
+        self.bottomRightX = (self.xPosition + self.width / 2)
+        self.bottomRightY = (self.yPosition + self.height / 2)
 
-
+    
 
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
