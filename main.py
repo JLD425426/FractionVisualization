@@ -26,7 +26,7 @@ rectangles = list()
 cutMarkers = list()
 guideLines = list()
 bgSquares = list()
-drawablesController = DrawablesController(rectangles, cutMarkers, guideLines,bgSquares)
+drawablesController = DrawablesController(rectangles, cutMarkers, guideLines, bgSquares)
 testRectangle = Rectangle(350,350,350,350,screen,drawablesController,True)
 testRectangle.createCutMarkers(3,4)
 mouse = MouseHandler()
@@ -49,6 +49,8 @@ while isProgramRunning:
                 check = True
                 if mouse.isHeld == False:
                     mouse.setHeld(True)
+                else:
+                    mouse.setHeld(False)
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 check = False
@@ -60,21 +62,19 @@ while isProgramRunning:
     
     # main logic here
     for rect in drawablesController.rectangles:
-        rect.update(mouse.isClick,mouse.mx,mouse.my)
+        rect.update(mouse.isClick,mouse.mx,mouse.my,mouse.isHeld)
     for cm in drawablesController.cutmarkers:
         cm.update(mouse.isClick)
 
     # drawing here
     screen.fill(colors.GREY) #fill screen bg     
 
-    for bgSquare in drawablesController.bgSquares:
-        bgSquare.draw()
     for rect in drawablesController.rectangles:
         rect.draw() 
-    for gl in drawablesController.guidelines:
-        gl.draw()
     for cm in drawablesController.cutmarkers:
         cm.draw()
+    for gl in drawablesController.guidelines:
+        gl.draw()
 
     # pygame.draw.rect(screen, colors.GREEN, [0,0,100,100],5)
 
