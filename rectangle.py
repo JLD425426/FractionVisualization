@@ -23,6 +23,7 @@ class Rectangle:
         self.yCurrent = yy
         self.rectHeld = False
         self.rectHeld2 = False
+        self.timesClicked = 0
 
         # these 4 member variables may be useful for rectangle collisions
         self.topLeftX = int(self.xPosition - self.width / 2)
@@ -54,7 +55,7 @@ class Rectangle:
             BgSquare(self.topLeftX,self.topLeftY,self.width,self.height,self.screen,self.drawablesController)
 
 
-    def update(self, click, mx, my):
+    def update(self, click, mx, my, held):
 
         # if conditions pass, main square is ready to be cut up so cut it
         if self.isOriginalSquare == True:
@@ -64,9 +65,9 @@ class Rectangle:
         #collision checking with mouse
         
         if self.isOriginalSquare == False:
-            self.rectisHeld(mx, my, click) 
-            if self.rectHeld:
-                if click != True and self.rectHeld2 == True:
+            self.rectisHeld(mx, my, held, click) 
+            if self.rectHeld and self.timesClicked % 2 == 1:
+                #if click != True:
                     self.xPosition = mx
                     self.yPosition = my
                     self.xCurrent = self.xPosition
@@ -75,14 +76,18 @@ class Rectangle:
                     self.topLeftY = (self.yPosition - self.height / 2)                    
                     self.bottomRightX = (self.xPosition + self.width / 2)
                     self.bottomRightY = (self.yPosition + self.height / 2)
-
-    def rectisHeld(self, mx, my, click):
-        if click:
-            if self.rectHeld:
-                self.rectHeld2 = True
             else:
-                if(mx > self.topLeftX and mx < self.bottomRightX and my > self.topLeftY and my < self.bottomRightY):
-                    self.rectHeld = True
+                self.putDown()
+
+    def rectisHeld(self, mx, my, held, click):
+        if click:
+            if(mx > self.topLeftX and mx < self.bottomRightX and my > self.topLeftY and my < self.bottomRightY):
+                self.timesClicked += 1
+        
+        if held:
+            if(mx > self.topLeftX and mx < self.bottomRightX and my > self.topLeftY and my < self.bottomRightY):
+                self.rectHeld = True
+                
         #else:
          #   self.rectHeld = False
 
