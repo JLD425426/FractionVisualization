@@ -171,7 +171,7 @@ def main_prog():
     
         # main logic here
         for rect in drawablesController.rectangles:
-            rect.update(mouse.isClick,mouse.mx,mouse.my,mouse.isHeld)
+            rect.update(mouse)
         for cm in drawablesController.cutmarkers:
             cm.update(mouse.isClick)
 

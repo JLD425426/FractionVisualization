@@ -21,9 +21,7 @@ class Rectangle:
         self.yOrigin = yy
         self.xCurrent = xx
         self.yCurrent = yy
-        self.rectHeld = False
-        self.rectHeld2 = False
-        self.timesClicked = 0
+        self.address = id(self)
 
         # these 4 member variables may be useful for rectangle collisions
         self.topLeftX = int(self.xPosition - self.width / 2)
@@ -55,7 +53,7 @@ class Rectangle:
             BgSquare(self.topLeftX,self.topLeftY,self.width,self.height,self.screen,self.drawablesController)
 
 
-    def update(self, click, mx, my, held):
+    def update(self, mouse):
 
         # if conditions pass, main square is ready to be cut up so cut it
         if self.isOriginalSquare == True:
@@ -65,31 +63,33 @@ class Rectangle:
         #collision checking with mouse
         
         if self.isOriginalSquare == False:
-            self.rectisHeld(mx, my, held, click) 
-            if self.rectHeld and self.timesClicked % 2 == 1:
-                #if click != True:
-                    self.xPosition = mx
-                    self.yPosition = my
-                    self.xCurrent = self.xPosition
-                    self.yCurrent = self.yPosition
-                    self.topLeftX = (self.xPosition - self.width / 2)
-                    self.topLeftY = (self.yPosition - self.height / 2)                    
-                    self.bottomRightX = (self.xPosition + self.width / 2)
-                    self.bottomRightY = (self.yPosition + self.height / 2)
+
+            if mouse.isClick and mouse.manyDrag == 0:
+                if(mouse.mx > self.topLeftX and mouse.mx < self.bottomRightX and mouse.my > self.topLeftY and mouse.my < self.bottomRightY):
+                    mouse.whoHold(self.address)
+                    mouse.muchDrag(True)
+            elif mouse.isClick and mouse.manyDrag == 1:
+                self.putDown()
+            else:
+                mouse.whoHold(None)
+                mouse.muchDrag(False)
+
+
+
+            #self.rectisHeld(mouse) 
+            # replace self.rectHeld with 
+            # if mouse.whoHold == self.address and self.timesClicked == 1:
+            if mouse.whoisHeld == self.address:
+                self.xPosition = mouse.mx
+                self.yPosition = mouse.my
+                self.xCurrent = self.xPosition
+                self.yCurrent = self.yPosition
+                self.topLeftX = (self.xPosition - self.width / 2)
+                self.topLeftY = (self.yPosition - self.height / 2)                    
+                self.bottomRightX = (self.xPosition + self.width / 2)
+                self.bottomRightY = (self.yPosition + self.height / 2)
             else:
                 self.putDown()
-
-    def rectisHeld(self, mx, my, held, click):
-        if click:
-            if(mx > self.topLeftX and mx < self.bottomRightX and my > self.topLeftY and my < self.bottomRightY):
-                self.timesClicked += 1
-        
-        if held:
-            if(mx > self.topLeftX and mx < self.bottomRightX and my > self.topLeftY and my < self.bottomRightY):
-                self.rectHeld = True
-                
-        #else:
-         #   self.rectHeld = False
 
     def putDown(self):
         self.xPosition = self.xCurrent
@@ -99,7 +99,6 @@ class Rectangle:
         self.bottomRightX = (self.xPosition + self.width / 2)
         self.bottomRightY = (self.yPosition + self.height / 2)
 
-    
 
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
