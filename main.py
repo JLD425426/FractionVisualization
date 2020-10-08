@@ -38,8 +38,10 @@ cutMarkers = list()
 guideLines = list()
 bgSquares = list()
 drawablesController = DrawablesController(rectangles, cutMarkers, guideLines, bgSquares)
-testRectangle = Rectangle(350,350,350,350,screen,drawablesController,True)
+testRectangle = Rectangle(200,350,250,250,screen,drawablesController,True)
+testRectangle2 = Rectangle(500,350,250,250,screen,drawablesController,True)
 testRectangle.createCutMarkers(3,4)
+testRectangle2.createCutMarkers(2,2)
 mouse = MouseHandler()
 
 # create bool to decide when mouse is clicked
