@@ -21,7 +21,7 @@ class Rectangle:
         self.yOrigin = yy
         self.xCurrent = xx
         self.yCurrent = yy
-        self.address = id(self)
+        self.address = self
 
         # these 4 member variables may be useful for rectangle collisions
         self.topLeftX = int(self.xPosition - self.width / 2)
@@ -74,8 +74,6 @@ class Rectangle:
                 mouse.whoHold(None)
                 mouse.muchDrag(False)
 
-
-
             #self.rectisHeld(mouse) 
             # replace self.rectHeld with 
             # if mouse.whoHold == self.address and self.timesClicked == 1:
@@ -88,6 +86,15 @@ class Rectangle:
                 self.topLeftY = (self.yPosition - self.height / 2)                    
                 self.bottomRightX = (self.xPosition + self.width / 2)
                 self.bottomRightY = (self.yPosition + self.height / 2)
+
+                #draw held rectangle on top by making sure its last in rectangle list
+                if self.drawablesController.rectangles[-1] != self:
+                    myIndex = 0
+                    for rect in self.drawablesController.rectangles:
+                        if rect == self:
+                            self.drawablesController.rectangles[myIndex] = self.drawablesController.rectangles[-1]
+                            self.drawablesController.rectangles[-1] = self
+                        myIndex += 1
             else:
                 self.putDown()
 

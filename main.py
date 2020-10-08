@@ -188,12 +188,16 @@ def main_prog():
         pygame.draw.rect(screen, (8, 41, 255), menu_button)
         draw_text('Main Menu', button_font, (0,0,0), screen, WIDTH-50, 25)
 
+        for bgS in drawablesController.bgSquares:
+            bgS.draw()
         for rect in drawablesController.rectangles:
             rect.draw() 
         for cm in drawablesController.cutmarkers:
             cm.draw()
         for gl in drawablesController.guidelines:
             gl.draw()
+        if mouse.whoisHeld != None:
+            mouse.whoisHeld.draw()
 
         # pygame.draw.rect(screen, colors.GREEN, [0,0,100,100],5)
 
