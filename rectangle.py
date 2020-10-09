@@ -4,6 +4,7 @@ from cutmarker import CutMarker
 from mouseHolder import MouseHandler
 from guideline import GuideLine
 from bgSquare import BgSquare
+from pointCollider import PointCollider
 import random
 
 class Rectangle:
@@ -19,9 +20,9 @@ class Rectangle:
         self.drawablesController.rectangles.append(self)
         self.xOrigin = xx
         self.yOrigin = yy
-        self.xCurrent = xx
-        self.yCurrent = yy
         self.address = self
+        self.willBeDivided = True
+        self.myPointCollider = None
 
         # these 4 member variables may be useful for rectangle collisions
         self.topLeftX = int(self.xPosition - self.width / 2)
@@ -41,7 +42,7 @@ class Rectangle:
         if self.isOriginalSquare == True:
             self.color = colors.WHITE
         else:
-            possColors = (colors.GREEN,colors.RED,colors.WHITE,colors.DARKBLUE)
+            possColors = (colors.GREEN,colors.RED,colors.DARKBLUE)
             self.color = random.choice(possColors)
 
         # draw outer guidelines and bg square only if rectangle is original square
@@ -61,50 +62,46 @@ class Rectangle:
                 self.cutSquare()
 
         #collision checking with mouse
-        
         if self.isOriginalSquare == False:
+            # mouse is holding noone and clicking, set self as being held
+            if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None:
+                mouse.whoisHeld = self
+                if self.myPointCollider != None:
+                    self.myPointCollider.isOccupied = False
+            # mouse release so remove self as being held
+            if mouse.isClick == False and mouse.whoisHeld == self:
+                self.putDown(mouse)
+            # self is being dragged so move it around
+            if mouse.whoisHeld == self:
+                self.updatePosition(mouse.mx,mouse.my)
 
-            if mouse.isClick and mouse.manyDrag == 0:
-                if(mouse.mx > self.topLeftX and mouse.mx < self.bottomRightX and mouse.my > self.topLeftY and mouse.my < self.bottomRightY):
-                    mouse.whoHold(self.address)
-                    mouse.muchDrag(True)
-            elif mouse.isClick and mouse.manyDrag == 1:
-                self.putDown()
-            else:
-                mouse.whoHold(None)
-                mouse.muchDrag(False)
-
-            #self.rectisHeld(mouse) 
-            # replace self.rectHeld with 
-            # if mouse.whoHold == self.address and self.timesClicked == 1:
-            if mouse.whoisHeld == self.address:
-                self.xPosition = mouse.mx
-                self.yPosition = mouse.my
-                self.xCurrent = self.xPosition
-                self.yCurrent = self.yPosition
-                self.topLeftX = (self.xPosition - self.width / 2)
-                self.topLeftY = (self.yPosition - self.height / 2)                    
-                self.bottomRightX = (self.xPosition + self.width / 2)
-                self.bottomRightY = (self.yPosition + self.height / 2)
-
-                #draw held rectangle on top by making sure its last in rectangle list
-                if self.drawablesController.rectangles[-1] != self:
-                    myIndex = 0
-                    for rect in self.drawablesController.rectangles:
-                        if rect == self:
-                            self.drawablesController.rectangles[myIndex] = self.drawablesController.rectangles[-1]
-                            self.drawablesController.rectangles[-1] = self
-                        myIndex += 1
-            else:
-                self.putDown()
-
-    def putDown(self):
-        self.xPosition = self.xCurrent
-        self.yPosition = self.yCurrent
+    def updatePosition(self,xx,yy):
+        self.xPosition = xx
+        self.yPosition = yy
         self.topLeftX = (self.xPosition - self.width / 2)
         self.topLeftY = (self.yPosition - self.height / 2)                    
         self.bottomRightX = (self.xPosition + self.width / 2)
         self.bottomRightY = (self.yPosition + self.height / 2)
+
+            
+    def isCollidingWithPoint(self,xx, yy):
+        if (xx > self.topLeftX and xx < self.bottomRightX and yy > self.topLeftY and yy < self.bottomRightY):
+            return True
+        else:
+            return False
+
+    def putDown(self,mouse):
+        mouse.whoisHeld = None
+
+        for pc in self.drawablesController.pointColliders:
+            if self.isCollidingWithPoint(pc.x,pc.y) and pc.isOccupied == False:
+                self.updatePosition(pc.x,pc.y)
+                self.xOrigin = pc.x
+                self.yOrigin = pc.y
+                pc.isOccupied = True
+                self.myPointCollider = pc
+                return
+        self.updatePosition(self.xOrigin,self.yOrigin)
 
 
     def draw(self):
@@ -132,10 +129,19 @@ class Rectangle:
         yOffset = yLength / 2
         for i in range(0,self.numberHorizontalRects):
             for j in range(0,self.numberVerticalRects):
-                r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False)
-                self.drawablesController.rectangles.append(r)
+                r = None
+                if self.willBeDivided == True:
+                    r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False)
+                    self.drawablesController.rectangles.append(r)
+                pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided)
+                self.drawablesController.pointColliders.append(pc)
+                if r != None:
+                    r.myPointCollider = pc
+                    pc.isOccupied = True
         self.drawablesController.rectangles.remove(self)
 
+    def setWillBeDivided(self,willDivide):
+        self.willBeDivided = willDivide
             
         
 

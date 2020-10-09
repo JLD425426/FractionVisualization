@@ -33,14 +33,11 @@ fps = 60
 background_img = pygame.image.load("yellow_background.jpg")
 
 # create drawable object lists
-rectangles = list()
-cutMarkers = list()
-guideLines = list()
-bgSquares = list()
-drawablesController = DrawablesController(rectangles, cutMarkers, guideLines, bgSquares)
+drawablesController = DrawablesController()
 testRectangle = Rectangle(200,350,250,250,screen,drawablesController,True)
 testRectangle2 = Rectangle(500,350,250,250,screen,drawablesController,True)
-testRectangle.createCutMarkers(3,4)
+testRectangle2.setWillBeDivided(False)
+testRectangle.createCutMarkers(2,2)
 testRectangle2.createCutMarkers(2,2)
 mouse = MouseHandler()
 
@@ -151,9 +148,6 @@ def main_prog():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 isProgramRunning = False
-            ### replace with mouse class object setter
-            mouse.update(check)
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     check = True
@@ -172,6 +166,7 @@ def main_prog():
             ###        
     
         # main logic here
+        mouse.update(check)
         for rect in drawablesController.rectangles:
             rect.update(mouse)
         for cm in drawablesController.cutmarkers:

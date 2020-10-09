@@ -1,7 +1,8 @@
 
 class DrawablesController:
-    def __init__(self,rects, cutmarkers, guidelines,bgSquares):
-        self.rectangles = rects
-        self.cutmarkers = cutmarkers
-        self.guidelines = guidelines
-        self.bgSquares = bgSquares
+    def __init__(self):
+        self.rectangles = list()
+        self.cutmarkers = list()
+        self.guidelines = list()
+        self.bgSquares = list()
+        self.pointColliders = list()
