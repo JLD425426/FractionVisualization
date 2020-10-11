@@ -5,6 +5,7 @@ from mouseHolder import MouseHandler
 from guideline import GuideLine
 from bgSquare import BgSquare
 from pointCollider import PointCollider
+from stateManager import manager
 import random
 
 class Rectangle:
@@ -54,17 +55,18 @@ class Rectangle:
             BgSquare(self.topLeftX,self.topLeftY,self.width,self.height,self.screen,self.drawablesController)
 
 
-    def update(self, mouse):
+    def update(self, mouse, manager):
 
         # if conditions pass, main square is ready to be cut up so cut it
         if self.isOriginalSquare == True:
             if len(self.drawablesController.cutmarkers) == 0:
                 self.cutSquare()
+                manager.change_state("Moving")
 
         #collision checking with mouse
         if self.isOriginalSquare == False:
-            # mouse is holding noone and clicking, set self as being held
-            if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None:
+            # mouse is holding no one and clicking, set self as being held
+            if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and manager.currentState == "Moving":
                 mouse.whoisHeld = self
                 if self.myPointCollider != None:
                     self.myPointCollider.isOccupied = False

@@ -42,6 +42,7 @@ class CutMarker:
             self.drawablesController.cutmarkers.remove(self)
 
 
+
     def draw(self):
         pg.draw.circle(self.screen, self.color, (self.xPosition,self.yPosition), self.radius)
         if (self.isTouchingMouse == True):

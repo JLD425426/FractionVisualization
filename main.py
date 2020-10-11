@@ -6,6 +6,7 @@ from pygame.locals import *
 from cutmarker import CutMarker
 from drawablesController import DrawablesController
 from mouseHolder import MouseHandler
+from stateManager import manager
 
 pygame.init()
 
@@ -40,6 +41,9 @@ testRectangle2.setWillBeDivided(False)
 testRectangle.createCutMarkers(2,2)
 testRectangle2.createCutMarkers(2,2)
 mouse = MouseHandler()
+
+# Create state manager
+stateManager = manager("Cutting")
 
 # create bool to decide when mouse is clicked
 check = False
@@ -168,7 +172,7 @@ def main_prog():
         # main logic here
         mouse.update(check)
         for rect in drawablesController.rectangles:
-            rect.update(mouse)
+            rect.update(mouse, stateManager)
         for cm in drawablesController.cutmarkers:
             cm.update(mouse.isClick)
 
@@ -184,6 +188,8 @@ def main_prog():
         # Drawing menu button
         pygame.draw.rect(screen, (8, 41, 255), menu_button)
         draw_text('Main Menu', button_font, (0,0,0), screen, WIDTH-50, 25)
+        state_message = "Current state: " + stateManager.currentState
+        draw_text(state_message, button_font, (0,0,0), screen, 100, 25)
 
         for bgS in drawablesController.bgSquares:
             bgS.draw()
