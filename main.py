@@ -19,9 +19,9 @@ screen = pygame.display.set_mode(screenDimensions)
 pygame.display.set_caption("425 Project")
 
 # Create fonts for interface
-title_font = pygame.font.SysFont(None, 60)
-button_font = pygame.font.SysFont(None, 25)
-message_font = pygame.font.SysFont(None, 32)
+title_font = pygame.font.SysFont('Arial', 60)
+button_font = pygame.font.SysFont('Arial', 25)
+message_font = pygame.font.SysFont('Arial', 32)
 
 # define bool to decide when program ends
 isProgramRunning = True
@@ -232,3 +232,5 @@ def main_prog():
 
 # Call main menu
 main_menu()
+
+pygame.quit()

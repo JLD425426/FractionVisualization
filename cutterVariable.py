@@ -1,6 +1,7 @@
 import pygame as pg
 import colors
 from guideline import GuideLine
+from drawText import draw_text
 
 # define cuttervariable states
 CUTTINGVERTICAL = 0
@@ -22,6 +23,8 @@ class CutterVariable:
         self.buttonPressed = False
 
         self.guidelines = list()
+
+        self.button_font = pg.font.SysFont('Arial', 25)
 
 
     def setupCutting(self, numberDivisionsX, numberDivisionsY):
@@ -59,12 +62,16 @@ class CutterVariable:
 
     def draw(self):
         if self.state == CUTTINGVERTICAL or self.state == CUTTINGHORIZONTAL:
-            cutButton = pg.Rect(self.myRect.topLeftX, self.myRect.topLeftY-100, 80, 80)
+            cutButton = pg.Rect(self.myRect.topLeftX, self.myRect.topLeftY-100, 140, 80)
             if cutButton.collidepoint((self.myRect.mouse.mx, self.myRect.mouse.my)):
                 if self.myRect.mouse.leftMouseReleasedThisFrame:
                     self.buttonPressed = True
             # Drawing menu button
             pg.draw.rect(self.screen, (8, 41, 255), cutButton)
+            if self.state == CUTTINGVERTICAL:
+                draw_text("Cut Horizontal", self.button_font, (0,0,0),self.screen, self.myRect.topLeftX+70, self.myRect.topLeftY-60)
+            elif self.state == CUTTINGHORIZONTAL:
+                draw_text("Finalize Cuts", self.button_font, (0,0,0),self.screen, self.myRect.topLeftX+70, self.myRect.topLeftY-60)
 
         if self.state == CUTTINGVERTICAL and self.myRect.isCollidingWithPoint(self.myRect.mouse.mx,self.myRect.mouse.my):
             pg.draw.line(self.screen,colors.DARKBLUE, [self.myRect.mouse.mx, self.myRect.topLeftY], [self.myRect.mouse.mx, self.myRect.bottomRightY], 5)
