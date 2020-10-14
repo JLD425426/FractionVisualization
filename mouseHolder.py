@@ -7,8 +7,8 @@ class MouseHandler:
         self.mx , self.my = pygame.mouse.get_pos()
         self.isClick = False
         self.isHeld = False
-        self.manyDrag = 0
         self.whoisHeld = None
+        self.leftMouseReleasedThisFrame = False
     
     def setClick(self, check):
         self.isClick = check
@@ -38,11 +38,6 @@ class MouseHandler:
     def whoHold(self, address):
         self.whoisHeld = address
 
-    def muchDrag(self, check):
-        if check:
-            self.manyDrag = 1
-        else:
-            self.manyDrag = 0
 
 
 

@@ -6,10 +6,12 @@ from guideline import GuideLine
 from bgSquare import BgSquare
 from pointCollider import PointCollider
 from stateManager import manager
+from cutterCutmarkers import CutterCutmarkers
+from cutterVariable import CutterVariable
 import random
 
 class Rectangle:
-    def __init__(self, xx, yy, w, h, screen,drawablesController,isOriginalSquare):
+    def __init__(self, xx, yy, w, h, screen,drawablesController,isOriginalSquare, mouse,stateManager):
         # the xPosition and yPosition refer to the middle point of the rectangle
         # include a origin point
         self.xPosition = xx
@@ -25,6 +27,11 @@ class Rectangle:
         self.willBeDivided = True
         self.myPointCollider = None
 
+        self.stateManager = stateManager
+
+        #mouse var needed to pass to cutting
+        self.mouse = mouse
+
         # these 4 member variables may be useful for rectangle collisions
         self.topLeftX = int(self.xPosition - self.width / 2)
         self.topLeftY = int(self.yPosition - self.height / 2)
@@ -38,7 +45,6 @@ class Rectangle:
         self.numberHorizontalRects = -1
         self.numberVerticalRects = -1
 
-        
         # show random color to display cutting working
         if self.isOriginalSquare == True:
             self.color = colors.WHITE
@@ -54,13 +60,25 @@ class Rectangle:
             GuideLine(self.topLeftX,self.topLeftY + self.height,"horizontal",self,self.screen,self.drawablesController)
             BgSquare(self.topLeftX,self.topLeftY,self.width,self.height,self.screen,self.drawablesController)
 
+        # cutting behavior
+        self.myCutter = None
+        if self.isOriginalSquare == True:
+            if self.stateManager.cuttingType == self.stateManager.VARCUTTING:
+                self.myCutter = CutterVariable(self)
+            elif self.stateManager.cuttingType == self.stateManager.CMCUTTING:
+                self.myCutter = CutterCutmarkers(self)
+
 
     def update(self, mouse, manager):
 
-        # if conditions pass, main square is ready to be cut up so cut it
+        # if is orig square update cutter and check if time to cut/movestate
         if self.isOriginalSquare == True:
-            if len(self.drawablesController.cutmarkers) == 0:
+            self.myCutter.update()
+
+            #if len(self.drawablesController.cutmarkers) == 0:
+            if self.myCutter.isReadyForSubdivide == True:
                 self.cutSquare()
+                self.myCutter = None
                 manager.change_state("Moving")
 
         #collision checking with mouse
@@ -108,21 +126,11 @@ class Rectangle:
 
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
+        if self.myCutter != None:
+            self.myCutter.draw()
 
-    def createCutMarkers(self, numberDivisionsX, numberDivisionsY):
-        self.numberHorizontalRects = numberDivisionsX
-        self.numberVerticalRects = numberDivisionsY
-
-        xLength = self.width
-        xSpacing = xLength / numberDivisionsX
-        CutMarkers = list()
-        for i in range(1,numberDivisionsX):
-            cm = CutMarker(int(i * xSpacing + self.topLeftX),self.topLeftY, self.screen, self,"vertical",self.drawablesController)
-
-        yLength = self.height
-        ySpacing = yLength / numberDivisionsY
-        for i in range(1,numberDivisionsY):
-            cm = CutMarker(self.topLeftX,int(i * ySpacing + self.topLeftY),self.screen,self,"horizontal",self.drawablesController)
+    def setupCutting(self, numberDivisionsX, numberDivisionsY):
+       self.myCutter.setupCutting(numberDivisionsX,numberDivisionsY)
 
     def cutSquare(self):
         xLength = self.width / self.numberHorizontalRects
@@ -133,7 +141,7 @@ class Rectangle:
             for j in range(0,self.numberVerticalRects):
                 r = None
                 if self.willBeDivided == True:
-                    r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False)
+                    r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
                     self.drawablesController.rectangles.append(r)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided)
                 self.drawablesController.pointColliders.append(pc)
