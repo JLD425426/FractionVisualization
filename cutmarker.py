@@ -40,6 +40,7 @@ class CutMarker:
             elif self.type == "horizontal":
                 gl = GuideLine(self.xPosition + self.offset,self.yPosition,self.type,self.myRect,self.screen,self.drawablesController)
             self.drawablesController.cutmarkers.remove(self)
+            
 
 
 

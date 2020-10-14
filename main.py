@@ -199,12 +199,26 @@ def main_prog():
             if click:
                 main_menu()
 
+        restart_button = pygame.Rect(WIDTH/2-50, 0, 100, 50)
+        if restart_button.collidepoint((mouse.mx, mouse.my)):
+            if click:
+                main_prog()
+        
+        undo_button = pygame.Rect(WIDTH/2+100, 0, 100, 50)
+        if restart_button.collidepoint((mouse.mx, mouse.my)):
+            if click:
+                pass
+
         # drawing here
         screen.fill(colors.GREY) #fill screen bg   
 
         # Drawing menu button
         pygame.draw.rect(screen, (8, 41, 255), menu_button)
         draw_text('Main Menu', button_font, (0,0,0), screen, WIDTH-50, 25)
+        pygame.draw.rect(screen, (8, 41, 255), restart_button)
+        draw_text('Restart', button_font, (0,0,0), screen, WIDTH/2, 25)
+        pygame.draw.rect(screen, (8, 41, 255), undo_button)
+        draw_text('Undo', button_font, (0,0,0), screen, WIDTH/1.4, 25)
         state_message = "Current state: " + stateManager.currentState
         draw_text(state_message, button_font, (0,0,0), screen, 100, 25)
 

@@ -123,7 +123,6 @@ class Rectangle:
                 return
         self.updatePosition(self.xOrigin,self.yOrigin)
 
-
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
         if self.myCutter != None:
