@@ -103,6 +103,18 @@ class Rectangle:
         self.bottomRightX = (self.xPosition + self.width / 2)
         self.bottomRightY = (self.yPosition + self.height / 2)
 
+    def rotatePosition(self,xx,yy):
+        newW = self.height
+        newH = self.width
+        self.width = newW
+        self.height = newH
+        self.xPosition = xx
+        self.yPosition = yy
+        self.topLeftX = (self.xPosition - self.width / 2)
+        self.topLeftY = (self.yPosition - self.height / 2)                    
+        self.bottomRightX = (self.xPosition + self.width / 2)
+        self.bottomRightY = (self.yPosition + self.height / 2)
+
             
     def isCollidingWithPoint(self,xx, yy):
         if (xx > self.topLeftX and xx < self.bottomRightX and yy > self.topLeftY and yy < self.bottomRightY):
@@ -115,12 +127,29 @@ class Rectangle:
 
         for pc in self.drawablesController.pointColliders:
             if self.isCollidingWithPoint(pc.x,pc.y) and pc.isOccupied == False:
-                self.updatePosition(pc.x,pc.y)
-                self.xOrigin = pc.x
-                self.yOrigin = pc.y
-                pc.isOccupied = True
-                self.myPointCollider = pc
-                return
+                # check to see if the spot occupied has matching height and width 
+                # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
+                # if neither statement is true, call snapback to the origin
+                if (self.width - pc.width <= 1 and self.width - pc.width >= -1 and self.height - pc.height <= 1 and self.height - pc.height >= -1):
+                    #deal with rounding errors
+                    self.updatePosition(pc.x,pc.y)
+                    self.xOrigin = pc.x
+                    self.yOrigin = pc.y
+                    pc.isOccupied = True
+                    self.myPointCollider = pc
+                    return
+                elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
+                    #need to work on rotate
+                    self.xOrigin = pc.x
+                    self.yOrigin = pc.y
+                    self.rotatePosition(pc.x,pc.y)
+                    pc.isOccupied = True
+                    self.myPointCollider = pc
+                    return
+                else:
+                    pass
+        
+                
         self.updatePosition(self.xOrigin,self.yOrigin)
 
     def draw(self):
@@ -142,7 +171,7 @@ class Rectangle:
                 if self.willBeDivided == True:
                     r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
                     self.drawablesController.rectangles.append(r)
-                pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided)
+                pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:
                     r.myPointCollider = pc
@@ -151,6 +180,7 @@ class Rectangle:
 
     def setWillBeDivided(self,willDivide):
         self.willBeDivided = willDivide
+
             
         
 
