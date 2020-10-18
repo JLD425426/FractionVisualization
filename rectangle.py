@@ -54,10 +54,10 @@ class Rectangle:
 
         # draw outer guidelines and bg square only if rectangle is original square
         if self.isOriginalSquare == True:
-            GuideLine(self.topLeftX,self.topLeftY,"vertical",self,self.screen,self.drawablesController)
-            GuideLine(self.topLeftX,self.topLeftY,"horizontal",self,self.screen,self.drawablesController)
-            GuideLine(self.topLeftX + self.width,self.topLeftY,"vertical",self,self.screen,self.drawablesController)
-            GuideLine(self.topLeftX,self.topLeftY + self.height,"horizontal",self,self.screen,self.drawablesController)
+            GuideLine(self.topLeftX,self.topLeftY,"vertical",self,self.screen,self.drawablesController, True)
+            GuideLine(self.topLeftX,self.topLeftY,"horizontal",self,self.screen,self.drawablesController, True)
+            GuideLine(self.topLeftX + self.width,self.topLeftY,"vertical",self,self.screen,self.drawablesController, True)
+            GuideLine(self.topLeftX,self.topLeftY + self.height,"horizontal",self,self.screen,self.drawablesController, True)
             BgSquare(self.topLeftX,self.topLeftY,self.width,self.height,self.screen,self.drawablesController)
 
         # cutting behavior
@@ -180,6 +180,9 @@ class Rectangle:
 
     def setWillBeDivided(self,willDivide):
         self.willBeDivided = willDivide
+
+    def del_last_line(self):
+        self.myCutter.deleteLastLine()
 
             
         

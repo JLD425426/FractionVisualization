@@ -2,7 +2,7 @@ import colors
 import pygame as pg
 
 class GuideLine():
-    def __init__(self, xStart, yStart, _type, myRect, screen, drawablesController):
+    def __init__(self, xStart, yStart, _type, myRect, screen, drawablesController, isOriginal):
         self.xStart = xStart
         self.yStart = yStart
         self.type = _type
@@ -10,6 +10,9 @@ class GuideLine():
         self.screen = screen
         self.drawablesController = drawablesController
         self.drawablesController.guidelines.append(self)
+        self.isOriginal = isOriginal
+
+        self.address = id(self)
 
     def draw(self):
         if self.type == "vertical":

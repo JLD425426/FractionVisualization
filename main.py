@@ -126,11 +126,11 @@ def quit_message():
         
         # Drawing the buttons and text for pop-up
         pygame.draw.rect(screen, (255, 255, 255), pop_up)
-        draw_text('Are you sure you would like to quit?', message_font, (0,0,0), screen, WIDTH/2, HEIGHT/5)
+        draw_text('Are you sure you would like to quit?', message_font, (0,0,0), screen, 350, 140)
         pygame.draw.rect(screen, (8, 41, 255), yes_button)
-        draw_text('Yes', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
+        draw_text('Yes', button_font, (0,0,0), screen, 350, 258)
         pygame.draw.rect(screen, (8, 41, 255), no_button)
-        draw_text('No', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/2)+25))
+        draw_text('No', button_font, (0,0,0), screen, 350, 375)
 
         # Main event loop
         for event in pygame.event.get():
@@ -199,15 +199,16 @@ def main_prog():
             if click:
                 main_menu()
 
-        restart_button = pygame.Rect(WIDTH/2-50, 0, 100, 50)
+        restart_button = pygame.Rect(300, 0, 100, 50)
         if restart_button.collidepoint((mouse.mx, mouse.my)):
             if click:
                 main_prog()
         
-        undo_button = pygame.Rect(WIDTH/2+100, 0, 100, 50)
-        if restart_button.collidepoint((mouse.mx, mouse.my)):
+        undo_button = pygame.Rect(450, 0, 100, 50)
+        if undo_button.collidepoint((mouse.mx, mouse.my)):
             if click:
-                pass
+                if stateManager.currentState == "Cutting":
+                    testRectangle.del_last_line()
 
         # drawing here
         screen.fill(colors.GREY) #fill screen bg   

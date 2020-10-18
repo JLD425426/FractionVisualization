@@ -1,6 +1,6 @@
 import pygame
 
-pygame.font.init()
+pygame.init()
 
 # Function to create and draw text object
 def draw_text(text, font, color, surface, x, y):

@@ -36,9 +36,9 @@ class CutMarker:
 
         if distToMouse < self.radius and isClick == True:
             if self.type == "vertical":
-                gl = GuideLine(self.xPosition,self.yPosition + self.offset,self.type,self.myRect,self.screen,self.drawablesController)
+                gl = GuideLine(self.xPosition,self.yPosition + self.offset,self.type,self.myRect,self.screen,self.drawablesController, True)
             elif self.type == "horizontal":
-                gl = GuideLine(self.xPosition + self.offset,self.yPosition,self.type,self.myRect,self.screen,self.drawablesController)
+                gl = GuideLine(self.xPosition + self.offset,self.yPosition,self.type,self.myRect,self.screen,self.drawablesController, True)
             self.drawablesController.cutmarkers.remove(self)
             
 

@@ -26,19 +26,27 @@ class CutterVariable:
 
         self.button_font = pg.font.SysFont('Arial', 25)
 
+        self.lastLine = None
+        self.lineList = list()
+
 
     def setupCutting(self, numberDivisionsX, numberDivisionsY):
         pass
 
     def update(self):
         if self.state == CUTTINGVERTICAL and self.myRect.isCollidingWithPoint(self.myRect.mouse.mx,self.myRect.mouse.my) and self.myRect.mouse.leftMouseReleasedThisFrame == True:
-            gl = GuideLine(self.myRect.mouse.mx,self.myRect.topLeftY,"vertical",self.myRect,self.screen,self.myRect.drawablesController)
+            gl = GuideLine(self.myRect.mouse.mx,self.myRect.topLeftY,"vertical",self.myRect,self.screen,self.myRect.drawablesController, False)
             self.guidelines.append(gl)
             self.numberHorizontalRects += 1
+            self.lastLine = (gl, "vertical")
+            self.lineList.append(self.lastLine)
+
         elif self.state == CUTTINGHORIZONTAL and self.myRect.isCollidingWithPoint(self.myRect.mouse.mx,self.myRect.mouse.my) and self.myRect.mouse.leftMouseReleasedThisFrame == True:
-            gl = GuideLine(self.myRect.topLeftX,self.myRect.mouse.my,"horizontal",self.myRect,self.screen,self.myRect.drawablesController)
+            gl = GuideLine(self.myRect.topLeftX,self.myRect.mouse.my,"horizontal",self.myRect,self.screen,self.myRect.drawablesController, False)
             self.guidelines.append(gl)
             self.numberVerticalRects += 1
+            self.lastLine = (gl, "horizontal")
+            self.lineList.append(self.lastLine)
 
         if self.state == CUTTINGVERTICAL and self.buttonPressed == True:
             self.state = CUTTINGHORIZONTAL
@@ -85,9 +93,19 @@ class CutterVariable:
         xLength = self.myRect.width
         xSpacing = xLength / numberDivisionsX
         for i in range(1,numberDivisionsX):
-            gl = GuideLine(int(i * xSpacing + self.myRect.topLeftX),self.myRect.topLeftY,"vertical",self.myRect,self.screen,self.myRect.drawablesController)
+            gl = GuideLine(int(i * xSpacing + self.myRect.topLeftX),self.myRect.topLeftY,"vertical",self.myRect,self.screen,self.myRect.drawablesController, True)
 
         yLength = self.myRect.height
         ySpacing = yLength / numberDivisionsY
         for i in range(1,numberDivisionsY):
-            gl = GuideLine(self.myRect.topLeftX,int(i * ySpacing + self.myRect.topLeftY),"horizontal",self.myRect,self.screen,self.myRect.drawablesController)
+            gl = GuideLine(self.myRect.topLeftX,int(i * ySpacing + self.myRect.topLeftY),"horizontal",self.myRect,self.screen,self.myRect.drawablesController, True)
+
+    def deleteLastLine(self):
+        for line in self.myRect.drawablesController.guidelines:
+            if line == self.lastLine[0]:
+                if self.lastLine[0].isOriginal == False:
+                    self.myRect.drawablesController.guidelines.remove(line)
+                    if self.lastLine[1] == "horizontal":
+                        self.numberHorizontalRects -= 1
+                    else:
+                        self.numberVerticalRects -= 1
