@@ -106,6 +106,6 @@ class CutterVariable:
                 if self.lastLine[0].isOriginal == False:
                     self.myRect.drawablesController.guidelines.remove(line)
                     if self.lastLine[1] == "horizontal":
-                        self.numberHorizontalRects -= 1
-                    else:
                         self.numberVerticalRects -= 1
+                    else:
+                        self.numberHorizontalRects -= 1
