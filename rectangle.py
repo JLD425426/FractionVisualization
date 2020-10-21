@@ -8,6 +8,7 @@ from pointCollider import PointCollider
 from stateManager import manager
 from cutterCutmarkers import CutterCutmarkers
 from cutterVariable import CutterVariable
+from cutterFraction import CutterFraction
 import random
 
 class Rectangle:
@@ -67,6 +68,8 @@ class Rectangle:
                 self.myCutter = CutterVariable(self)
             elif self.stateManager.cuttingType == self.stateManager.CMCUTTING:
                 self.myCutter = CutterCutmarkers(self)
+            elif self.stateManager.cuttingType == self.stateManager.FRACTIONCUTTING:
+                self.myCutter = CutterFraction(self)
 
 
     def update(self, mouse, manager):

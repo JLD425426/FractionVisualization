@@ -77,10 +77,12 @@ def main_menu():
                 quit_message()
         if cuttingType_button.collidepoint((m1x,m1y)):
             if click:
-                if stateManager.cuttingType == stateManager.VARCUTTING:
+                if stateManager.cuttingType == stateManager.FRACTIONCUTTING:
+                    stateManager.cuttingType = stateManager.VARCUTTING
+                elif stateManager.cuttingType == stateManager.VARCUTTING:
                     stateManager.cuttingType = stateManager.CMCUTTING
                 elif stateManager.cuttingType == stateManager.CMCUTTING:
-                    stateManager.cuttingType = stateManager.VARCUTTING
+                    stateManager.cuttingType = stateManager.FRACTIONCUTTING
 
         # Drawing the buttons and text for menu
         pygame.draw.rect(screen, (245, 222, 47), title_bar)
@@ -95,6 +97,8 @@ def main_menu():
             draw_text('Cut with cutmarkers', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
         elif stateManager.cuttingType == stateManager.VARCUTTING:
             draw_text('Variable cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
+        elif stateManager.cuttingType == stateManager.FRACTIONCUTTING:
+            draw_text('Fraction cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
 
         click = False
         pygame.display.update()
@@ -227,10 +231,10 @@ def main_prog():
             bgS.draw()
         for rect in drawablesController.rectangles:
             rect.draw() 
-        for cm in drawablesController.cutmarkers:
-            cm.draw()
         for gl in drawablesController.guidelines:
             gl.draw()
+        for cm in drawablesController.cutmarkers:
+            cm.draw()
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()
 

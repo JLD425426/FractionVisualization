@@ -2,9 +2,10 @@ class manager:
     def __init__(self, currentState):
         self.currentState = currentState
 
-        self.VARCUTTING = 0
-        self.CMCUTTING = 1
-        self.cuttingType = self.VARCUTTING
+        self.FRACTIONCUTTING = 0
+        self.VARCUTTING = 1
+        self.CMCUTTING = 2
+        self.cuttingType = self.FRACTIONCUTTING
 
     def change_state(self, state):
         self.currentState = state
