@@ -27,7 +27,7 @@ class CutterFraction:
 
         #SET UP FRACTION CUTS
         self.maxDivisions = 6 # This is how many possible divisions rect can be cut by
-        self.dstForCutInit = 6 # how far away mouse can be to pick up cut, requires fine tuning
+        self.dstForCutInit = 5 # how far away mouse can be to pick up cut, requires fine tuning
 
         #init vertical cuts
         self.verticalCuts = list()
