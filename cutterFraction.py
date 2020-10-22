@@ -40,6 +40,9 @@ class CutterFraction:
         # CUTTINGVERTICAL state b/c we dont want to show till then
         self.horizontalCuts = list()
 
+        # For undo button to get rid of last cuts made
+        self.lastCuts = list()
+
         #For drawing font
         self.message_font = pg.font.SysFont('Arial', 32)
         
@@ -117,13 +120,14 @@ class CutterFraction:
                 xOffset = -25
                 draw_text("1/" + str(self.horizontalGuidelinesCount),self.message_font,colors.BLACK,self.myRect.screen,self.myRect.topLeftX + xOffset,yPosition + yOffset)
                 
-    # divides OG rectangle with permenant black vertical guidelines
+    # divides OG rectangle with permanant black vertical guidelines
     def divideVertical(self):
         xLength = self.myRect.width
         xSpacing = xLength / self.verticalGuidelinesCount
         for i in range(1,self.verticalGuidelinesCount):
             xPosition = int(xSpacing * i + self.myRect.topLeftX)
             gl = GuideLine(xPosition,self.myRect.topLeftY,"vertical",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+            self.lastCuts.append(gl)
 
     # divide OG rectangle with permenant black horizontal guidelines
     def divideHorizontal(self):
@@ -132,6 +136,7 @@ class CutterFraction:
         for i in range(1,self.horizontalGuidelinesCount):
             yPosition = int(ySpacing * i + self.myRect.topLeftY)
             gl = GuideLine(self.myRect.topLeftX,yPosition,"horizontal",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+            self.lastCuts.append(gl)
 
     #loop through either self.horizontalCuts or self.verticalCuts and remove them from drawablesController list
     def cleanupCuts(self, li):
@@ -146,9 +151,18 @@ class CutterFraction:
             yPos = int((self.myRect.height * (1/x)) + self.myRect.topLeftY)
             numberCuts = x
             self.horizontalCuts.append(FractionCut(self.myRect.topLeftX,yPos,numberCuts,str(numberCuts),self.myRect))
-        
+
     def deleteLastLine(self):
-        pass
+        for line in self.myRect.drawablesController.guidelines:
+            for lastcut in self.lastCuts:
+                if lastcut == line:
+                    self.myRect.drawablesController.guidelines.remove(line)
+                    if line.type == "horizontal":
+                        self.horizontalGuidelinesCount -= 1
+                    else:
+                        self.verticalGuidelinesCount -= 1
+        self.lastCuts.clear()
+
 
 class BoundingBox:
     def __init__(self, xMin, xMax, yMin, yMax):

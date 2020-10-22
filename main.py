@@ -152,7 +152,11 @@ def quit_message():
 
 
 def main_prog():
-    
+
+    # Since restarting program, state must go back to cutting
+    if stateManager.currentState != "Cutting":
+        stateManager.change_state("Cutting")
+
     # create drawable object lists
     mouse = MouseHandler()
     drawablesController = DrawablesController()
@@ -197,6 +201,13 @@ def main_prog():
         # UPDATE END
         # DRAW BEGIN
 
+        if not testRectangle.myCutter and not testRectangle2.myCutter:
+                if stateManager.currentState != "Moving":
+                    stateManager.change_state("Moving")
+                    testRectangle.stateManager.change_state("Moving")
+                    testRectangle2.stateManager.change_state("Moving")
+                
+
         # Menu button and logic to go back to main screen
         menu_button = pygame.Rect(WIDTH-100, 0, 100, 50)
         if menu_button.collidepoint((mouse.mx, mouse.my)):
@@ -210,9 +221,15 @@ def main_prog():
         
         undo_button = pygame.Rect(450, 0, 100, 50)
         if undo_button.collidepoint((mouse.mx, mouse.my)):
-            if click:
-                if stateManager.currentState == "Cutting":
-                    testRectangle.del_last_line()
+            if click and stateManager.currentState == "Cutting":
+                if stateManager.cuttingType == stateManager.FRACTIONCUTTING:
+                    if testRectangle.myCutter:
+                        testRectangle.myCutter.deleteLastLine()
+                    if testRectangle2.myCutter:
+                        testRectangle2.myCutter.deleteLastLine()
+        else:
+            if testRectangle.myCutter:
+                testRectangle.myCutter.lastCuts.clear()
 
         # drawing here
         screen.fill(colors.GREY) #fill screen bg   

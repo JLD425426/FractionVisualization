@@ -5,6 +5,7 @@ class manager:
         self.FRACTIONCUTTING = 0
         self.VARCUTTING = 1
         self.CMCUTTING = 2
+        self.SHADING = 3
         self.cuttingType = self.FRACTIONCUTTING
 
     def change_state(self, state):

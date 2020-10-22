@@ -82,21 +82,22 @@ class Rectangle:
             if self.myCutter.isReadyForSubdivide == True:
                 self.cutSquare()
                 self.myCutter = None
-                manager.change_state("Moving")
+                # self.stateManager.change_state("Moving")
 
-        #collision checking with mouse
-        if self.isOriginalSquare == False:
-            # mouse is holding no one and clicking, set self as being held
-            if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and manager.currentState == "Moving":
-                mouse.whoisHeld = self
-                if self.myPointCollider != None:
-                    self.myPointCollider.isOccupied = False
-            # mouse release so remove self as being held
-            if mouse.isClick == False and mouse.whoisHeld == self:
-                self.putDown(mouse)
-            # self is being dragged so move it around
-            if mouse.whoisHeld == self:
-                self.updatePosition(mouse.mx,mouse.my)
+        if manager.currentState != "Cutting":
+            #collision checking with mouse
+            if self.isOriginalSquare == False:
+                # mouse is holding no one and clicking, set self as being held
+                if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and manager.currentState == "Moving":
+                    mouse.whoisHeld = self
+                    if self.myPointCollider != None:
+                        self.myPointCollider.isOccupied = False
+                # mouse release so remove self as being held
+                if mouse.isClick == False and mouse.whoisHeld == self:
+                    self.putDown(mouse)
+                # self is being dragged so move it around
+                if mouse.whoisHeld == self:
+                    self.updatePosition(mouse.mx,mouse.my)
 
     def updatePosition(self,xx,yy):
         self.xPosition = xx
@@ -185,7 +186,8 @@ class Rectangle:
         self.willBeDivided = willDivide
 
     def del_last_line(self):
-        self.myCutter.deleteLastLine()
+        print("hiii")
+        self.myCutter.deleteLastLine
 
             
         
