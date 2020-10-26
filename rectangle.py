@@ -185,10 +185,6 @@ class Rectangle:
     def setWillBeDivided(self,willDivide):
         self.willBeDivided = willDivide
 
-    def del_last_line(self):
-        print("hiii")
-        self.myCutter.deleteLastLine
-
             
         
 

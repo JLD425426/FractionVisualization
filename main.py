@@ -219,18 +219,6 @@ def main_prog():
             if click:
                 main_prog()
         
-        undo_button = pygame.Rect(450, 0, 100, 50)
-        if undo_button.collidepoint((mouse.mx, mouse.my)):
-            if click and stateManager.currentState == "Cutting":
-                if stateManager.cuttingType == stateManager.FRACTIONCUTTING:
-                    if testRectangle.myCutter:
-                        testRectangle.myCutter.deleteLastLine()
-                    if testRectangle2.myCutter:
-                        testRectangle2.myCutter.deleteLastLine()
-        else:
-            if testRectangle.myCutter:
-                testRectangle.myCutter.lastCuts.clear()
-
         # drawing here
         screen.fill(colors.GREY) #fill screen bg   
 
@@ -239,8 +227,6 @@ def main_prog():
         draw_text('Main Menu', button_font, (0,0,0), screen, WIDTH-50, 25)
         pygame.draw.rect(screen, (8, 41, 255), restart_button)
         draw_text('Restart', button_font, (0,0,0), screen, WIDTH/2, 25)
-        pygame.draw.rect(screen, (8, 41, 255), undo_button)
-        draw_text('Undo', button_font, (0,0,0), screen, WIDTH/1.4, 25)
         state_message = "Current state: " + stateManager.currentState
         draw_text(state_message, button_font, (0,0,0), screen, 100, 25)
 
