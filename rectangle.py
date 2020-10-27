@@ -50,8 +50,8 @@ class Rectangle:
         if self.isOriginalSquare == True:
             self.color = colors.WHITE
         else:
-            possColors = (colors.GREEN,colors.RED,colors.DARKBLUE)
-            self.color = random.choice(possColors)
+            # possColors = (colors.GREEN,colors.RED,colors.DARKBLUE)
+            self.color = colors.WHITE
 
         # draw outer guidelines and bg square only if rectangle is original square
         if self.isOriginalSquare == True:
@@ -74,9 +74,12 @@ class Rectangle:
 
     def update(self, mouse, manager):
 
+        if manager.currentState == "Shading":
+            self.shade(mouse)
+
         # if is orig square update cutter and check if time to cut/movestate
         if self.isOriginalSquare == True:
-            self.myCutter.update()
+            self.myCutter.update(mouse)
 
             #if len(self.drawablesController.cutmarkers) == 0:
             if self.myCutter.isReadyForSubdivide == True:
@@ -84,7 +87,7 @@ class Rectangle:
                 self.myCutter = None
                 # self.stateManager.change_state("Moving")
 
-        if manager.currentState != "Cutting":
+        if manager.currentState != "Cutting" or manager.currentState != "Shading":
             #collision checking with mouse
             if self.isOriginalSquare == False:
                 # mouse is holding no one and clicking, set self as being held
@@ -164,6 +167,26 @@ class Rectangle:
     def setupCutting(self, numberDivisionsX, numberDivisionsY):
        self.myCutter.setupCutting(numberDivisionsX,numberDivisionsY)
 
+    def cutSquareVertical(self):
+        xLength = self.width / self.numberHorizontalRects
+        yLength = self.height
+        xOffset = xLength / 2
+        yOffset = yLength / 2
+        for i in range(0,self.numberHorizontalRects):
+            r = None
+            if self.willBeDivided == True:
+                r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
+                self.drawablesController.rectangles.append(r)
+            pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
+            self.drawablesController.pointColliders.append(pc)
+            if r != None:
+                r.myPointCollider = pc
+                pc.isOccupied = True
+        self.drawablesController.rectangles.remove(self)
+
+    def cutSquareHorizontal(self):
+        pass
+        
     def cutSquare(self):
         xLength = self.width / self.numberHorizontalRects
         yLength = self.height / self.numberVerticalRects
@@ -185,8 +208,15 @@ class Rectangle:
     def setWillBeDivided(self,willDivide):
         self.willBeDivided = willDivide
 
-            
-        
+    def changeColor(self, color):
+        self.color = color
+
+    def shade(self, mouse):
+        print("shading happening")
+        if mouse.isClick == True:
+            for rect in self.drawablesController.rectangles:
+                if rect.isCollidingWithPoint(mouse.mx, mouse.my) == True:
+                    rect.changeColor(colors.RED)
 
         
 

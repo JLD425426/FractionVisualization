@@ -200,6 +200,14 @@ def main_prog():
     
         # UPDATE END
         # DRAW BEGIN
+        if testRectangle.myCutter:
+            if testRectangle.myCutter.state == testRectangle.myCutter.SHADINGHORIZONTAL:
+                if stateManager.currentState != "Shading":
+                    stateManager.change_state("Shading")
+            if testRectangle.myCutter.state == testRectangle.myCutter.SHADINGVERTICAL:
+                if stateManager.currentState != "Shading":
+                    stateManager.change_state("Shading")
+
 
         if not testRectangle.myCutter and not testRectangle2.myCutter:
                 if stateManager.currentState != "Moving":

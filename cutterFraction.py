@@ -15,6 +15,8 @@ class CutterFraction:
         #Cutter state mgmt
         self.CUTTINGVERTICAL = 0
         self.CUTTINGHORIZONTAL = 1
+        self.SHADINGVERTICAL = 3
+        self.SHADINGHORIZONTAL = 4
         self.DONE = 2
         self.state = self.CUTTINGVERTICAL
 
@@ -49,7 +51,7 @@ class CutterFraction:
         # dont need anything here for this cutting behavior
         pass
 
-    def update(self):
+    def update(self, mouse):
         # ENTRY STATE: VERTICAL CUTTING
         if self.state == self.CUTTINGVERTICAL:
             if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
@@ -62,8 +64,11 @@ class CutterFraction:
                             self.divideVertical()
                             self.isShowingVerticalGuidelines = False
                             self.cleanupCuts(self.verticalCuts)
-                            self.initHorizontalCuts()
-                            self.state = self.CUTTINGHORIZONTAL
+                            # self.initHorizontalCuts()
+                            # self.state = self.CUTTINGHORIZONTAL
+                            self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+                            self.myRect.cutSquareVertical()
+                            self.state = self.SHADINGVERTICAL          
             else:
                 self.isShowingVerticalGuidelines = False
         # 2ND STATE: HORIZONTAL CUTTING
