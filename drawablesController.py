@@ -6,3 +6,4 @@ class DrawablesController:
         self.guidelines = list()
         self.bgSquares = list()
         self.pointColliders = list()
+        self.cutVerticalCalls = 0

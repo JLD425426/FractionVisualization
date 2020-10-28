@@ -7,6 +7,8 @@ from cutmarker import CutMarker
 from drawablesController import DrawablesController
 from mouseHolder import MouseHandler
 from stateManager import manager
+from stateManagerMult import StateManagerMult
+
 
 pygame.init()
 
@@ -34,13 +36,28 @@ fps = 60
 background_img = pygame.image.load("yellow_background.jpg")
 
 # Create state manager
-stateManager = manager("Cutting")
+stateManager = manager("cutting")
 
 # create bool to decide when mouse is clicked
 check = False
 
+# constants for deciding cutting type and state manager type
+FRACTIONCUTTING = 0
+VARCUTTING = 1
+CMCUTTING = 2
+program_CuttingType = FRACTIONCUTTING
+
+MULTIPLICATION = 0
+ADDITION = 1
+SUBTRACTION = 2
+DIVISION = 3
+program_OperationType = MULTIPLICATION
+
 # Function runs the main menu 
 def main_menu():
+
+    global program_CuttingType
+    global program_OperationType
 
     click = False
     m1x = 0      # Get error if you don't set value for mx and my here
@@ -67,6 +84,7 @@ def main_menu():
         start_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/4), 200, 50)
         quit_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3), 200, 50)
         cuttingType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
+        operationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 120, 200, 50)
 
         # Check if mouse is on a button when clicked
         if start_button.collidepoint((m1x, m1y)):   # Calls main program if start is selected
@@ -77,12 +95,22 @@ def main_menu():
                 quit_message()
         if cuttingType_button.collidepoint((m1x,m1y)):
             if click:
-                if stateManager.cuttingType == stateManager.FRACTIONCUTTING:
-                    stateManager.cuttingType = stateManager.VARCUTTING
-                elif stateManager.cuttingType == stateManager.VARCUTTING:
-                    stateManager.cuttingType = stateManager.CMCUTTING
-                elif stateManager.cuttingType == stateManager.CMCUTTING:
-                    stateManager.cuttingType = stateManager.FRACTIONCUTTING
+                if program_CuttingType == FRACTIONCUTTING:
+                    program_CuttingType = VARCUTTING
+                elif program_CuttingType == VARCUTTING:
+                    program_CuttingType = CMCUTTING
+                elif program_CuttingType == CMCUTTING:
+                    program_CuttingType = FRACTIONCUTTING
+        if operationType_button.collidepoint((m1x,m1y)):
+            if click:
+                if program_OperationType == MULTIPLICATION:
+                    program_OperationType = ADDITION
+                elif program_OperationType == ADDITION:
+                    program_OperationType = SUBTRACTION
+                elif program_OperationType == SUBTRACTION:
+                    program_OperationType = DIVISION
+                elif program_OperationType == DIVISION:
+                    program_OperationType = MULTIPLICATION
 
         # Drawing the buttons and text for menu
         pygame.draw.rect(screen, (245, 222, 47), title_bar)
@@ -93,12 +121,23 @@ def main_menu():
         pygame.draw.rect(screen, (8, 41, 255), quit_button)
         draw_text('Quit', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
         pygame.draw.rect(screen, (8, 41, 255), cuttingType_button)
-        if stateManager.cuttingType == stateManager.CMCUTTING:
+
+        if program_CuttingType == CMCUTTING:
             draw_text('Cut with cutmarkers', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        elif stateManager.cuttingType == stateManager.VARCUTTING:
+        elif program_CuttingType == VARCUTTING:
             draw_text('Variable cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        elif stateManager.cuttingType == stateManager.FRACTIONCUTTING:
+        elif program_CuttingType == FRACTIONCUTTING:
             draw_text('Fraction cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
+        pygame.draw.rect(screen, (8, 41, 255), operationType_button)
+
+        if program_OperationType == MULTIPLICATION:
+            draw_text('Multiplication', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145))
+        elif program_OperationType == ADDITION:
+            draw_text('Addition', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145)) 
+        elif program_OperationType == SUBTRACTION:
+            draw_text('Subtraction', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145)) 
+        elif program_OperationType == DIVISION:
+            draw_text('Division', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145)) 
 
         click = False
         pygame.display.update()
@@ -153,18 +192,26 @@ def quit_message():
 
 def main_prog():
 
-    # Since restarting program, state must go back to cutting
-    if stateManager.currentState != "Cutting":
-        stateManager.change_state("Cutting")
+    # create state manager depending on operation type selected in menu:
+    if program_OperationType == MULTIPLICATION:
+        stateManager = StateManagerMult(program_CuttingType,screen)
+    elif program_OperationType == ADDITION:
+        #stateManager = StateManagerAdd(program_CuttingType,screen)
+        pass
+    elif program_OperationType == SUBTRACTION:
+        #stateManager = StateManagerSub(program_CuttingType,screen)
+        pass
+    elif program_OperationType == DIVISION:
+        #stateManager = StateManagerDiv(program_CuttingType,screen)
+        pass
 
     # create drawable object lists
     mouse = MouseHandler()
+    stateManager.setMouse(mouse) # link state manager and mouse
     drawablesController = DrawablesController()
-    testRectangle = Rectangle(200,350,250,250,screen,drawablesController,True,mouse,stateManager)
-    testRectangle2 = Rectangle(500,350,250,250,screen,drawablesController,True,mouse,stateManager)
-    testRectangle2.setWillBeDivided(False)
-    testRectangle.setupCutting(2,2)
-    testRectangle2.setupCutting(2,2)
+    stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
+    testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager)
+    cutter = testRectangle.getCutter() # need to get cutter here for draw call
 
     isProgramRunning = True
     check = False
@@ -191,31 +238,18 @@ def main_prog():
                     click = False
                     #hold = False
 
-        # update all objects
+        #---------UPDATE BEGIN-------UPDATE ALL OBJECTS
         mouse.update(check)
+        stateManager.update(testRectangle.myCutter)
+        
         for rect in drawablesController.rectangles:
-            rect.update(mouse, stateManager)
+            rect.update(mouse)
         for cm in drawablesController.cutmarkers:
             cm.update(mouse.isClick)
-    
-        # UPDATE END
-        # DRAW BEGIN
-        if testRectangle.myCutter:
-            if testRectangle.myCutter.state == testRectangle.myCutter.SHADINGHORIZONTAL:
-                if stateManager.currentState != "Shading":
-                    stateManager.change_state("Shading")
-            if testRectangle.myCutter.state == testRectangle.myCutter.SHADINGVERTICAL:
-                if stateManager.currentState != "Shading":
-                    stateManager.change_state("Shading")
-
-
-        if not testRectangle.myCutter and not testRectangle2.myCutter:
-                if stateManager.currentState != "Moving":
-                    stateManager.change_state("Moving")
-                    testRectangle.stateManager.change_state("Moving")
-                    testRectangle2.stateManager.change_state("Moving")
-                
-
+        
+        
+        # ---------UPDATE END----------------------------------
+        # ---------DRAW BEGIN--------------------------------
         # Menu button and logic to go back to main screen
         menu_button = pygame.Rect(WIDTH-100, 0, 100, 50)
         if menu_button.collidepoint((mouse.mx, mouse.my)):
@@ -235,7 +269,7 @@ def main_prog():
         draw_text('Main Menu', button_font, (0,0,0), screen, WIDTH-50, 25)
         pygame.draw.rect(screen, (8, 41, 255), restart_button)
         draw_text('Restart', button_font, (0,0,0), screen, WIDTH/2, 25)
-        state_message = "Current state: " + stateManager.currentState
+        state_message = "Current state: " + stateManager.getCurrentState()
         draw_text(state_message, button_font, (0,0,0), screen, 100, 25)
 
         for bgS in drawablesController.bgSquares:
@@ -248,11 +282,10 @@ def main_prog():
             cm.draw()
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()
-
-        #this update must be after drawing b/c logic in cutterVariable draw()--will try to fix later so it can go with rest of updates
+        cutter.draw()
+        stateManager.draw()
+        #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
-        # DRAW END
-
         #update screen and set framerate
         pygame.display.flip()
         clock.tick(fps)

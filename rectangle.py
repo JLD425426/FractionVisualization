@@ -52,6 +52,7 @@ class Rectangle:
         else:
             # possColors = (colors.GREEN,colors.RED,colors.DARKBLUE)
             self.color = colors.WHITE
+        self.isShaded = False # boolean used for toggling off/on shading
 
         # draw outer guidelines and bg square only if rectangle is original square
         if self.isOriginalSquare == True:
@@ -72,10 +73,7 @@ class Rectangle:
                 self.myCutter = CutterFraction(self)
 
 
-    def update(self, mouse, manager):
-
-        if manager.currentState == "Shading":
-            self.shade(mouse)
+    def update(self, mouse):
 
         # if is orig square update cutter and check if time to cut/movestate
         if self.isOriginalSquare == True:
@@ -83,15 +81,13 @@ class Rectangle:
 
             #if len(self.drawablesController.cutmarkers) == 0:
             if self.myCutter.isReadyForSubdivide == True:
-                self.cutSquare()
-                self.myCutter = None
-                # self.stateManager.change_state("Moving")
+                self.finalCut()
 
-        if manager.currentState != "Cutting" or manager.currentState != "Shading":
+        if self.stateManager.getCurrentState() == "Moving":
             #collision checking with mouse
             if self.isOriginalSquare == False:
                 # mouse is holding no one and clicking, set self as being held
-                if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and manager.currentState == "Moving":
+                if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
                     mouse.whoisHeld = self
                     if self.myPointCollider != None:
                         self.myPointCollider.isOccupied = False
@@ -161,8 +157,9 @@ class Rectangle:
 
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
-        if self.myCutter != None:
-            self.myCutter.draw()
+
+    def getCutter(self):
+        return self.myCutter
 
     def setupCutting(self, numberDivisionsX, numberDivisionsY):
        self.myCutter.setupCutting(numberDivisionsX,numberDivisionsY)
@@ -176,34 +173,60 @@ class Rectangle:
             r = None
             if self.willBeDivided == True:
                 r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
-                self.drawablesController.rectangles.append(r)
             pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
             self.drawablesController.pointColliders.append(pc)
             if r != None:
                 r.myPointCollider = pc
                 pc.isOccupied = True
-        self.drawablesController.rectangles.remove(self)
+        #self.drawablesController.rectangles.remove(self)
 
     def cutSquareHorizontal(self):
         pass
         
-    def cutSquare(self):
+    def finalCut(self):
+        #first create a copy of drawables controller list-these rects must be deleted at end of funct
+        copyList = list()
+        for r in self.drawablesController.rectangles:
+            copyList.append(r)
+        #remove self from copy list b/c we dont want to use it for collision checking for shaded value
+        copyList.remove(self)
+
         xLength = self.width / self.numberHorizontalRects
         yLength = self.height / self.numberVerticalRects
         xOffset = xLength / 2
         yOffset = yLength / 2
+
+        rectsData = list()
         for i in range(0,self.numberHorizontalRects):
+            rectsRow = list()
             for j in range(0,self.numberVerticalRects):
                 r = None
                 if self.willBeDivided == True:
                     r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
-                    self.drawablesController.rectangles.append(r)
+                    rectsRow.append(r)
+                    if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
+                        rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
+                        if rC.isShaded == True:
+                            r.isShaded = True
+                            r.changeColor(rC.color)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:
                     r.myPointCollider = pc
                     pc.isOccupied = True
+            rectsData.append(rectsRow)
+        self.stateManager.rectsData = rectsData
+        for r1 in copyList:
+            for r2 in self.drawablesController.rectangles:
+                if r1 == r2:
+                    self.drawablesController.rectangles.remove(r1)
         self.drawablesController.rectangles.remove(self)
+
+    def getRectCollider(self, li, xx, yy):
+        for rect in li:
+            if (xx > rect.topLeftX and xx < rect.bottomRightX and yy > rect.topLeftY and yy < rect.bottomRightY):
+                return rect
+        return None
 
     def setWillBeDivided(self,willDivide):
         self.willBeDivided = willDivide
@@ -211,13 +234,5 @@ class Rectangle:
     def changeColor(self, color):
         self.color = color
 
-    def shade(self, mouse):
-        print("shading happening")
-        if mouse.isClick == True:
-            for rect in self.drawablesController.rectangles:
-                if rect.isCollidingWithPoint(mouse.mx, mouse.my) == True:
-                    rect.changeColor(colors.RED)
-
-        
 
 

@@ -15,9 +15,8 @@ class CutterFraction:
         #Cutter state mgmt
         self.CUTTINGVERTICAL = 0
         self.CUTTINGHORIZONTAL = 1
-        self.SHADINGVERTICAL = 3
-        self.SHADINGHORIZONTAL = 4
-        self.DONE = 2
+        self.WAITING = 2
+        self.FINALCUT = 3
         self.state = self.CUTTINGVERTICAL
 
         # CutterFraction will set myRect's numberHorizontalRects and numberVerticalRects based on 
@@ -45,13 +44,26 @@ class CutterFraction:
         #For drawing font
         self.message_font = pg.font.SysFont('Arial', 32)
         
+    def getState(self):
+        if self.state == self.CUTTINGVERTICAL:
+            return "Cutting Vertical"
+        elif self.state == self.CUTTINGHORIZONTAL:
+            return "Cutting Horizontal"
+        elif self.state == self.WAITING:
+            return "Waiting"
+        elif self.state == self.FINALCUT:
+            return "Final Cut"
 
+    def setStateCutHorizontal(self):
+        self.initHorizontalCuts()
+        self.state = self.CUTTINGHORIZONTAL
 
     def setupCutting(self, numberDivisionsX, numberDivisionsY):
         # dont need anything here for this cutting behavior
         pass
 
     def update(self, mouse):
+
         # ENTRY STATE: VERTICAL CUTTING
         if self.state == self.CUTTINGVERTICAL:
             if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
@@ -68,7 +80,7 @@ class CutterFraction:
                             # self.state = self.CUTTINGHORIZONTAL
                             self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
                             self.myRect.cutSquareVertical()
-                            self.state = self.SHADINGVERTICAL          
+                            self.state = self.WAITING         
             else:
                 self.isShowingVerticalGuidelines = False
         # 2ND STATE: HORIZONTAL CUTTING
@@ -83,15 +95,19 @@ class CutterFraction:
                             self.divideHorizontal()
                             self.isShowingHorizontalGuidelines = False
                             self.cleanupCuts(self.horizontalCuts)
-                            self.state = self.DONE
+                            self.state = self.FINALCUT
             else:
                 self.isShowingHorizontalGuidelines = False
         # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
-        elif self.state == self.DONE:
+        elif self.state == self.FINALCUT:
             #not sure why these next 2 lines have to be flipped but they do need to be to work properly
             self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
             self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
             self.isReadyForSubdivide = True
+            self.state = self.WAITING
+        elif self.state == self.WAITING:
+            #do nothing waiting for next instruction
+            pass
 
     def draw(self):
         # DISPLAY TEMPORARY VERTICAL BLUE GUIDELINES IF MOUSE X CLOSE TO FRACTION CUT X AND Draw text
