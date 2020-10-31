@@ -111,6 +111,17 @@ class StateManagerMult:
                                 elif r1.color == colors.WHITE:
                                     r1.changeColor(colors.YELLOW)
 
+    def get_answer(self):
+        numerator = 0
+        denominator = 0
+        for rect in self.drawablesController.rectangles:
+            denominator += 1
+            if rect.color == colors.ORANGE:
+                numerator += 1
+        return (numerator, denominator)
+
+
+
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):

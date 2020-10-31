@@ -256,7 +256,7 @@ def main_prog():
             if click:
                 main_menu()
 
-        restart_button = pygame.Rect(300, 0, 100, 50)
+        restart_button = pygame.Rect(WIDTH-250, 0, 100, 50)
         if restart_button.collidepoint((mouse.mx, mouse.my)):
             if click:
                 main_prog()
@@ -268,9 +268,24 @@ def main_prog():
         pygame.draw.rect(screen, (8, 41, 255), menu_button)
         draw_text('Main Menu', button_font, (0,0,0), screen, WIDTH-50, 25)
         pygame.draw.rect(screen, (8, 41, 255), restart_button)
-        draw_text('Restart', button_font, (0,0,0), screen, WIDTH/2, 25)
+        draw_text('Restart', button_font, (0,0,0), screen, WIDTH-200, 25)
         state_message = "Current state: " + stateManager.getCurrentState()
-        draw_text(state_message, button_font, (0,0,0), screen, 100, 25)
+        draw_text(state_message, button_font, (0,0,0), screen, 200, 25)
+        
+        if(stateManager.getCurrentState() == "Finished"):
+            numerator, denominator = stateManager.get_answer()
+            nSimp, dSimp = 0, 0
+            if numerator % 2 == 0 and denominator % 2 == 0:
+                nSimp = int(numerator/2)
+                dSimp = int(denominator/2)
+                while nSimp % 2 == 0 and dSimp % 2 == 0:
+                    nSimp = int(nSimp/2)
+                    dSimp = int(dSimp/2)
+            if nSimp != 0:
+                answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator) + " = " + str(nSimp) + " / " + str(dSimp)
+            else:
+                answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator)
+            draw_text(answer, button_font, (0,0,0), screen, WIDTH-350, HEIGHT-550)
 
         for bgS in drawablesController.bgSquares:
             bgS.draw()
