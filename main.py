@@ -8,6 +8,7 @@ from drawablesController import DrawablesController
 from mouseHolder import MouseHandler
 from stateManager import manager
 from stateManagerMult import StateManagerMult
+from fractionHandler import Fraction
 
 
 pygame.init()
@@ -274,24 +275,45 @@ def main_prog():
         
         if(stateManager.getCurrentState() == "Finished"):
             numerator, denominator = stateManager.get_answer()
-            nSimp, dSimp = 0, 0
-            if numerator % 3 == 0 and denominator % 3 == 0:
-                nSimp = int(numerator/3)
-                dSimp = int(denominator/3)
-                while nSimp % 3 == 0 and dSimp % 3 == 0:
-                    nSimp = int(nSimp/3)
-                    dSimp = int(dSimp/3)
-            if numerator % 2 == 0 and denominator % 2 == 0:
-                nSimp = int(numerator/2)
-                dSimp = int(denominator/2)
-                while nSimp % 2 == 0 and dSimp % 2 == 0:
-                    nSimp = int(nSimp/2)
-                    dSimp = int(dSimp/2)
-            if nSimp != 0:
-                answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator) + " = " + str(nSimp) + " / " + str(dSimp)
+            userAnswer = Fraction(numerator, denominator)
+            canreduce = userAnswer.canReduce()
+            #answer1 = userAnswer.ftoString()
+            if canreduce == True:
+                userAnswerReduced = Fraction(userAnswer.getNum(), userAnswer.getDenom())
+                userAnswerReduced.finalReduce()
+                #answer2 = userAnswerReduced.ftoString()
+                draw_text(str(userAnswer.getNum()), button_font, (0,0,0), screen, WIDTH-437, HEIGHT-620)
+                draw_text('---', button_font, (0,0,0), screen, WIDTH-437, HEIGHT-600)
+                draw_text(str(userAnswer.getDenom()), button_font, (0,0,0), screen, WIDTH-437, HEIGHT-580)
+                draw_text('=', button_font, (0,0,0), screen, WIDTH-350, HEIGHT-600)
+                draw_text(str(userAnswerReduced.getNum()), button_font, (0,0,0), screen, WIDTH-263, HEIGHT-620)
+                draw_text('---', button_font, (0,0,0), screen, WIDTH-262, HEIGHT-600)
+                draw_text(str(userAnswerReduced.getDenom()), button_font, (0,0,0), screen, WIDTH-263, HEIGHT-580)
             else:
-                answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator)
-            draw_text(answer, button_font, (0,0,0), screen, WIDTH-350, HEIGHT-550)
+                draw_text(str(userAnswer.getNum()), button_font, (0,0,0), screen, WIDTH-350, HEIGHT-620)
+                draw_text('---', button_font, (0,0,0), screen, WIDTH-350, HEIGHT-600)
+                draw_text(str(userAnswer.getDenom()), button_font, (0,0,0), screen, WIDTH-350, HEIGHT-580)
+
+
+
+            #nSimp, dSimp = 0, 0
+            #if numerator % 3 == 0 and denominator % 3 == 0:
+            #    nSimp = int(numerator/3)
+            #    dSimp = int(denominator/3)
+            #    while nSimp % 3 == 0 and dSimp % 3 == 0:
+            #        nSimp = int(nSimp/3)
+            #        dSimp = int(dSimp/3)
+            #if numerator % 2 == 0 and denominator % 2 == 0:
+            #    nSimp = int(numerator/2)
+            #    dSimp = int(denominator/2)
+            #    while nSimp % 2 == 0 and dSimp % 2 == 0:
+            #        nSimp = int(nSimp/2)
+            #        dSimp = int(dSimp/2)
+            #if nSimp != 0:
+            #    answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator) + " = " + str(nSimp) + " / " + str(dSimp)
+            #else:
+            #    answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator)
+            #draw_text(answer, button_font, (0,0,0), screen, WIDTH-350, HEIGHT-550)
 
         for bgS in drawablesController.bgSquares:
             bgS.draw()
