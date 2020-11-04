@@ -8,6 +8,7 @@ from drawablesController import DrawablesController
 from mouseHolder import MouseHandler
 from stateManager import manager
 from stateManagerMult import StateManagerMult
+from stateManagerDiv import StateManagerDiv
 from fractionHandler import Fraction
 
 
@@ -196,6 +197,14 @@ def main_prog():
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
         stateManager = StateManagerMult(program_CuttingType,screen)
+        # create drawable object lists
+        mouse = MouseHandler()
+        stateManager.setMouse(mouse) # link state manager and mouse
+        drawablesController = DrawablesController()
+        stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
+        testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager)
+        cutter = testRectangle.getCutter() # need to get cutter here for draw call
+
     elif program_OperationType == ADDITION:
         #stateManager = StateManagerAdd(program_CuttingType,screen)
         pass
@@ -203,16 +212,18 @@ def main_prog():
         #stateManager = StateManagerSub(program_CuttingType,screen)
         pass
     elif program_OperationType == DIVISION:
-        #stateManager = StateManagerDiv(program_CuttingType,screen)
+        stateManager = StateManagerDiv(program_CuttingType,screen)
+        # create drawable object lists
+        mouse = MouseHandler()
+        stateManager.setMouse(mouse) # link state manager and mouse
+        drawablesController = DrawablesController()
+        stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
+        testRectangle = Rectangle(WIDTH-525,HEIGHT/2,300,300,screen,drawablesController,True,mouse,stateManager)
+        cutter = testRectangle.getCutter() # need to get cutter here for draw call
+        testRectangle2 = Rectangle(WIDTH-175,HEIGHT/2,300,300,screen,drawablesController,True,mouse,stateManager)
+        cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
         pass
 
-    # create drawable object lists
-    mouse = MouseHandler()
-    stateManager.setMouse(mouse) # link state manager and mouse
-    drawablesController = DrawablesController()
-    stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
-    testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager)
-    cutter = testRectangle.getCutter() # need to get cutter here for draw call
 
     isProgramRunning = True
     check = False

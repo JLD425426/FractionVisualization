@@ -4,7 +4,7 @@ import pygame
 from drawText import draw_text
 import numpy as np
 
-class StateManagerMult:
+class StateManagerDiv:
     def __init__(self,cuttingType,screen):
 
         #define cutting types
@@ -19,6 +19,13 @@ class StateManagerMult:
         self.CUTTINGHORIZONTALLY = 2
         self.SHADINGHORIZONTALLY = 3
 
+        # States for a second rectangle?
+        self.CUTTINGVERTICALLY2 = 6
+        self.SHADINGVERTICALLY2 = 7
+        self.CUTTINGHORIZONTALLY2 = 8
+        self.SHADINGHORIZONTALLY2 = 9
+
+        # Other states
         self.DONE = 4
         self.MOVING = 5 # for debuging
 
@@ -35,6 +42,7 @@ class StateManagerMult:
 
         self.rectsData = None
         self.hasInvertedRectData = False
+
 
     def update(self, cutter):
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
@@ -62,8 +70,6 @@ class StateManagerMult:
             self.shadeHorizontal()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
-
-
 
     def draw(self):
         if self.currentState == self.SHADINGVERTICALLY:
@@ -120,7 +126,6 @@ class StateManagerMult:
             if rect.color == colors.ORANGE:
                 numerator += 1
         return (numerator, denominator)
-
 
 
 
