@@ -177,14 +177,14 @@ class Rectangle:
             self.drawablesController.pointColliders.append(pc)
             if r != None:
                 r.myPointCollider = pc
-                pc.isOccupied = True
-        #self.drawablesController.rectangles.remove(self)
 
     def cutSquareHorizontal(self):
         pass
         
+    #----------WARNING----------------
+    #----anticipated pointcollider bugs here----
     def finalCut(self):
-        #first create a copy of drawables controller list-these rects must be deleted at end of funct
+        #first create a copy of drawables controller list-these rects must be deleted at end of funct (vertical rects)
         copyList = list()
         for r in self.drawablesController.rectangles:
             copyList.append(r)
@@ -196,15 +196,17 @@ class Rectangle:
         xOffset = xLength / 2
         yOffset = yLength / 2
 
-        rectsData = list()
+        rectsData = list() # used by state manager for horizontal shading, list of lists->each row of rects is list
         for i in range(0,self.numberHorizontalRects):
-            rectsRow = list()
+            rectsRow = list() # each row will be 1 element in rectsData
             for j in range(0,self.numberVerticalRects):
                 r = None
                 if self.willBeDivided == True:
                     r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
                     rectsRow.append(r)
+                    # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
                     if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
+                        # rC is prexisting vertical rectangle
                         rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
                         if rC.isShaded == True:
                             r.isShaded = True
@@ -214,12 +216,14 @@ class Rectangle:
                 if r != None:
                     r.myPointCollider = pc
                     pc.isOccupied = True
-            rectsData.append(rectsRow)
+            rectsData.append(rectsRow) # append row of rectangles to rectsData since out of j loop
         self.stateManager.rectsData = rectsData
+        # remove all of the vertical rectangles from drawables controller rects list
         for r1 in copyList:
             for r2 in self.drawablesController.rectangles:
                 if r1 == r2:
                     self.drawablesController.rectangles.remove(r1)
+        # finally remove original rect from list
         self.drawablesController.rectangles.remove(self)
 
     def getRectCollider(self, li, xx, yy):

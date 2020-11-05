@@ -98,9 +98,13 @@ class StateManagerMult:
                     elif rect.isShaded == True:
                         rect.changeColor(colors.WHITE)
                         rect.isShaded = False
+    # needed for horiozntal shading. gets transpose of rectsData
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
 
+    # loop through all drawablesController rectangles. If its colliding with mouse and mouse released then
+    # loop through each rectangle in eac row of rects data. If any rectangle in that row is selected, changle all colors
+    # of rects in that row
     def shadeHorizontal(self):
         for rect in self.drawablesController.rectangles:
             if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True and self.mouse.leftMouseReleasedThisFrame:
