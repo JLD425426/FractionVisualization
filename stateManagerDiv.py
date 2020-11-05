@@ -42,6 +42,7 @@ class StateManagerDiv:
 
         self.rectsData = None
         self.hasInvertedRectData = False
+        self.colorPicker = None
 
 
     def update(self, cutter):
@@ -134,3 +135,5 @@ class StateManagerDiv:
         self.drawablesController = dC
     def setMouse(self, m):
         self.mouse = m
+    def setColorPicker(self, c):
+        self.colorPicker = c

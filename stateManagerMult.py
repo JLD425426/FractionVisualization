@@ -26,6 +26,7 @@ class StateManagerMult:
 
         self.drawablesController = None
         self.mouse = None
+        self.colorPicker = None
 
         self.screen = screen
         self.WIDTH = 700
@@ -92,7 +93,7 @@ class StateManagerMult:
             for rect in self.drawablesController.rectangles:
                 if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
                     if rect.isShaded == False:
-                        rect.changeColor(colors.RED)
+                        rect.changeColor(self.colorPicker.myColor)
                         rect.isShaded = True
                     elif rect.isShaded == True:
                         rect.changeColor(colors.WHITE)
@@ -107,17 +108,17 @@ class StateManagerMult:
                     for r in row:
                         if r == rect:
                             for r1 in row:
-                                if r1.color == colors.RED:
-                                    r1.changeColor(colors.ORANGE)
+                                if r1.color == self.colorPicker.verticalColor:
+                                    r1.changeColor(self.colorPicker.getBlendedColor())
                                 elif r1.color == colors.WHITE:
-                                    r1.changeColor(colors.YELLOW)
+                                    r1.changeColor(self.colorPicker.myColor)
 
     def get_answer(self):
         numerator = 0
         denominator = 0
         for rect in self.drawablesController.rectangles:
             denominator += 1
-            if rect.color == colors.ORANGE:
+            if rect.color == self.colorPicker.getBlendedColor():
                 numerator += 1
         return (numerator, denominator)
 
@@ -129,3 +130,5 @@ class StateManagerMult:
         self.drawablesController = dC
     def setMouse(self, m):
         self.mouse = m
+    def setColorPicker(self, c):
+        self.colorPicker = c

@@ -10,7 +10,7 @@ from stateManager import manager
 from stateManagerMult import StateManagerMult
 from stateManagerDiv import StateManagerDiv
 from fractionHandler import Fraction
-
+from colorpicker import ColorPicker
 
 pygame.init()
 
@@ -35,7 +35,7 @@ clock = pygame.time.Clock()
 fps = 60
 
 # Load image in for background
-background_img = pygame.image.load("yellow_background.jpg")
+background_img = pygame.image.load("assets/yellow_background.jpg")
 
 # Create state manager
 stateManager = manager("cutting")
@@ -194,16 +194,21 @@ def quit_message():
 
 def main_prog():
 
+    # init objects every state will have
+    mouse = MouseHandler()
+    drawablesController = DrawablesController()
+    colorPicker = None
+
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
         stateManager = StateManagerMult(program_CuttingType,screen)
-        # create drawable object lists
-        mouse = MouseHandler()
         stateManager.setMouse(mouse) # link state manager and mouse
-        drawablesController = DrawablesController()
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
         testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
+
+        colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
+        stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == ADDITION:
         #stateManager = StateManagerAdd(program_CuttingType,screen)
@@ -213,17 +218,13 @@ def main_prog():
         pass
     elif program_OperationType == DIVISION:
         stateManager = StateManagerDiv(program_CuttingType,screen)
-        # create drawable object lists
-        mouse = MouseHandler()
         stateManager.setMouse(mouse) # link state manager and mouse
-        drawablesController = DrawablesController()
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
-        testRectangle = Rectangle(WIDTH-525,HEIGHT/2,300,300,screen,drawablesController,True,mouse,stateManager)
+        testRectangle = Rectangle(WIDTH-525,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        testRectangle2 = Rectangle(WIDTH-175,HEIGHT/2,300,300,screen,drawablesController,True,mouse,stateManager)
+        testRectangle2 = Rectangle(WIDTH-175,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager)
         cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
-        pass
-
+    
 
     isProgramRunning = True
     check = False
@@ -258,6 +259,8 @@ def main_prog():
             rect.update(mouse)
         for cm in drawablesController.cutmarkers:
             cm.update(mouse.isClick)
+        if colorPicker != None:
+            colorPicker.update()
         
         
         # ---------UPDATE END----------------------------------
@@ -338,6 +341,8 @@ def main_prog():
             mouse.whoisHeld.draw()
         cutter.draw()
         stateManager.draw()
+        if colorPicker != None:
+            colorPicker.draw()
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
         #update screen and set framerate
