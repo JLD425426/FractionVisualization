@@ -93,8 +93,8 @@ class Rectangle:
                 self.finalCut()
 
         if self.stateManager.getCurrentState() == "Moving":
-            #collision checking with mouse
-            if self.isOriginalSquare == False:
+            #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
+            if self.isOriginalSquare == False and self.ownerID != 2 and self.colorHatch != colors.WHITE:
                 # mouse is holding no one and clicking, set self as being held
                 if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
                     mouse.whoisHeld = self
@@ -138,7 +138,7 @@ class Rectangle:
         mouse.whoisHeld = None
 
         for pc in self.drawablesController.pointColliders:
-            if self.isCollidingWithPoint(pc.x,pc.y) and pc.isOccupied == False:
+            if self.isCollidingWithPoint(pc.x,pc.y):
                 # check to see if the spot occupied has matching height and width 
                 # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
                 # if neither statement is true, call snapback to the origin
@@ -218,27 +218,18 @@ class Rectangle:
                     if self.ownerID == 1:
                         r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 1)
                         rectsRow.append(r)
-                        # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
-                        if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
-                            # rC is prexisting vertical rectangle
-                            rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
-                            if rC.isShaded == True:
-                                r.isShaded = True
-                                r.isShadedV = True
-                                r.changeColorHatch(rC.colorHatch)
-                                #   #r.changeColor(rC.color)
                     elif self.ownerID == 2:
                         r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 2)
                         rectsRow.append(r)
-                        # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
-                        if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
-                            # rC is prexisting vertical rectangle
-                            rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
-                            if rC.isShaded == True:
-                                r.isShaded = True
-                                r.isShadedV = True
-                                r.changeColorHatch(rC.colorHatch)
-                                #   #r.changeColor(rC.color)
+                    # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
+                    if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
+                        # rC is prexisting vertical rectangle
+                        rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
+                        if rC.isShaded == True:
+                            r.isShaded = True
+                            r.isShadedV = True
+                            r.changeColorHatch(rC.colorHatch)
+                            #   #r.changeColor(rC.color)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:
