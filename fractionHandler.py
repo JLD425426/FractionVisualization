@@ -45,7 +45,9 @@ class Fraction:
      #Determines whether a given fraction can be reduced or not
      #Returns true if it can reduce
      #Returns false if if cannot
-        if self.denominator % self.numerator == 0:
+        if self.numerator == 1:
+            return False
+        elif self.denominator % self.numerator == 0:
             return True
         elif self.numerator % 3 == 0 and self.denominator % 3 == 0:
             return True

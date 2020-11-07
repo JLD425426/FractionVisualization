@@ -309,30 +309,16 @@ def main_prog():
                 draw_text(str(userAnswer.getDenom()), button_font, (0,0,0), screen, WIDTH-350, HEIGHT-580)
 
 
-
-            #nSimp, dSimp = 0, 0
-            #if numerator % 3 == 0 and denominator % 3 == 0:
-            #    nSimp = int(numerator/3)
-            #    dSimp = int(denominator/3)
-            #    while nSimp % 3 == 0 and dSimp % 3 == 0:
-            #        nSimp = int(nSimp/3)
-            #        dSimp = int(dSimp/3)
-            #if numerator % 2 == 0 and denominator % 2 == 0:
-            #    nSimp = int(numerator/2)
-            #    dSimp = int(denominator/2)
-            #    while nSimp % 2 == 0 and dSimp % 2 == 0:
-            #        nSimp = int(nSimp/2)
-            #        dSimp = int(dSimp/2)
-            #if nSimp != 0:
-            #    answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator) + " = " + str(nSimp) + " / " + str(dSimp)
-            #else:
-            #    answer = "Final answer (double-shaded region): " + str(numerator) + " / " + str(denominator)
-            #draw_text(answer, button_font, (0,0,0), screen, WIDTH-350, HEIGHT-550)
-
         for bgS in drawablesController.bgSquares:
             bgS.draw()
         for rect in drawablesController.rectangles:
-            rect.draw() 
+            rect.draw()
+            if rect.isShadedV == True and rect.isShadedH != True:
+                rect.drawVLines(rect.colorHatch)
+            if rect.isShadedH == True and rect.isShadedV != True:
+                rect.drawHLines(rect.colorHatch)
+            if rect.isShadedB:
+                rect.drawBLines(rect.colorHatch)
         for gl in drawablesController.guidelines:
             gl.draw()
         for cm in drawablesController.cutmarkers:

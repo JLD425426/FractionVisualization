@@ -28,6 +28,7 @@ class Rectangle:
         self.willBeDivided = True
         self.myPointCollider = None
 
+        
         self.stateManager = stateManager
 
         #mouse var needed to pass to cutting
@@ -53,6 +54,11 @@ class Rectangle:
             # possColors = (colors.GREEN,colors.RED,colors.DARKBLUE)
             self.color = colors.WHITE
         self.isShaded = False # boolean used for toggling off/on shading
+        # booleans used for cross-hatch shading
+        self.isShadedV = False 
+        self.isShadedH = False
+        self.isShadedB = False
+        self.colorHatch = colors.WHITE
 
         # draw outer guidelines and bg square only if rectangle is original square
         if self.isOriginalSquare == True:
@@ -210,7 +216,9 @@ class Rectangle:
                         rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
                         if rC.isShaded == True:
                             r.isShaded = True
-                            r.changeColor(rC.color)
+                            r.isShadedV = True
+                            r.changeColorHatch(rC.colorHatch)
+                            #   #r.changeColor(rC.color)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:
@@ -237,6 +245,45 @@ class Rectangle:
 
     def changeColor(self, color):
         self.color = color
+
+    def changeColorHatch(self, color):
+        self.colorHatch = color
+
+    def drawVLines(self, color):
+        #xAdder = (int)(self.width / 3)
+        for i in range(1,5):
+            #iterator = (int)(self.width * (1/i))
+            partition = i / 5
+            drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
+            drawertopYstart = self.topLeftY
+            drawerbotXend = drawertopXstart
+            drawerbotYend = self.bottomRightY
+            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
+
+    def drawHLines(self, color): 
+       #yAdder = (int)(self.height / 3)
+        for j in range(1,5):
+            partition = j / 5
+            drawertopXstart = self.topLeftX 
+            drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
+            drawerbotXend = self.bottomRightX 
+            drawerbotYend = drawertopYstart
+            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
+    
+    def drawBLines(self, color):
+        for i in range(1,5):
+            #iterator = (int)(self.width * (1/i))
+            partition = i / 5
+            drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
+            drawertopYstart = self.topLeftY
+            drawerbotXend = drawertopXstart
+            drawerbotYend = self.bottomRightY
+            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
+            drawertopXstart = self.topLeftX 
+            drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
+            drawerbotXend = self.bottomRightX 
+            drawerbotYend = drawertopYstart
+            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
 
 
 
