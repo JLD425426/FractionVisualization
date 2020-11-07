@@ -204,7 +204,7 @@ def main_prog():
         stateManager = StateManagerMult(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
-        testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager)
+        testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
 
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
@@ -213,18 +213,23 @@ def main_prog():
     elif program_OperationType == ADDITION:
         #stateManager = StateManagerAdd(program_CuttingType,screen)
         pass
+
     elif program_OperationType == SUBTRACTION:
         #stateManager = StateManagerSub(program_CuttingType,screen)
         pass
+
     elif program_OperationType == DIVISION:
         stateManager = StateManagerDiv(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
-        testRectangle = Rectangle(WIDTH-525,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager)
+
+        testRectangle = Rectangle(WIDTH-525,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        testRectangle2 = Rectangle(WIDTH-175,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager)
+        testRectangle2 = Rectangle(WIDTH-175,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
         cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
-    
+
+        colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
+        stateManager.setColorPicker(colorPicker)
 
     isProgramRunning = True
     check = False
@@ -253,7 +258,12 @@ def main_prog():
 
         #---------UPDATE BEGIN-------UPDATE ALL OBJECTS
         mouse.update(check)
-        stateManager.update(testRectangle.myCutter)
+        if program_OperationType == MULTIPLICATION:
+            stateManager.update(testRectangle.myCutter)
+        elif program_OperationType == DIVISION:
+            stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
+        else:
+            stateManager.update(testRectangle.myCutter)
         
         for rect in drawablesController.rectangles:
             rect.update(mouse)
@@ -326,6 +336,8 @@ def main_prog():
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()
         cutter.draw()
+        if program_OperationType == DIVISION:
+            cutter2.draw()
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()

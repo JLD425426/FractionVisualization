@@ -27,12 +27,13 @@ class StateManagerDiv:
 
         # Other states
         self.DONE = 4
-        self.MOVING = 5 # for debuging
+        self.MOVING = 5
 
         self.currentState = self.CUTTINGVERTICALLY
 
         self.drawablesController = None
         self.mouse = None
+        self.colorPicker = None
 
         self.screen = screen
         self.WIDTH = 700
@@ -42,38 +43,36 @@ class StateManagerDiv:
 
         self.rectsData = None
         self.hasInvertedRectData = False
-        self.colorPicker = None
+        
 
 
-    def update(self, cutter):
+    def update(self, cutter, cutter2):
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
-            if cutter.getState() == "Waiting":
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
                 self.currentState = self.SHADINGVERTICALLY
 
         # manager is now shading vertically, now can shade current rects
         elif self.currentState == self.SHADINGVERTICALLY:
             self.shadeVertical()
+            self.shadeVertical2()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.CUTTINGHORIZONTALLY 
+                self.currentState = self.CUTTINGHORIZONTALLY
                 cutter.setStateCutHorizontal()
+                cutter2.setStateCutHorizontal()
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
-            if cutter.getState() == "Waiting":
-                self.currentState = self.SHADINGHORIZONTALLY
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                self.currentState = self.MOVING
 
-        # manager now shading horizontally
-        elif self.currentState == self.SHADINGHORIZONTALLY:
-            if self.hasInvertedRectData == False:
-                self.invertRectData()
-                self.hasInvertedRectData = True
-            self.shadeHorizontal()
-            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.DONE
+
 
     def draw(self):
         if self.currentState == self.SHADINGVERTICALLY:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.SHADINGVERTICALLY2:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.SHADINGHORIZONTALLY:
@@ -97,16 +96,44 @@ class StateManagerDiv:
     def shadeVertical(self):
         if self.mouse.leftMouseReleasedThisFrame == True:
             for rect in self.drawablesController.rectangles:
-                if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
-                    if rect.isShaded == False:
-                        rect.changeColor(colors.RED)
-                        rect.isShaded = True
-                    elif rect.isShaded == True:
-                        rect.changeColor(colors.WHITE)
-                        rect.isShaded = False
+                if rect.ownerID == 1:
+                    if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
+                        if rect.isShaded == False:
+                            #rect.drawLines(self.colorPicker.myColor, 0)
+                            #0 = Vertical, set an internal rect variable to 1
+                            #   #rect.changeColor(self.colorPicker.myColor)
+                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.isShadedV = True
+                            rect.isShaded = True
+                        elif rect.isShaded == True:
+                            #   #rect.changeColor(colors.WHITE)
+                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.isShaded = False
+
+    def shadeVertical2(self):
+        if self.mouse.leftMouseReleasedThisFrame == True:
+            for rect in self.drawablesController.rectangles:
+                if rect.ownerID == 2:
+                    if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
+                        if rect.isShaded == False:
+                            #rect.drawLines(self.colorPicker.myColor, 0)
+                            #0 = Vertical, set an internal rect variable to 1
+                            #   #rect.changeColor(self.colorPicker.myColor)
+                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.isShadedV = True
+                            rect.isShaded = True
+                        elif rect.isShaded == True:
+                            #   #rect.changeColor(colors.WHITE)
+                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.isShaded = False
+
+    # needed for horiozntal shading. gets transpose of rectsData
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
 
+    # loop through all drawablesController rectangles. If its colliding with mouse and mouse released then
+    # loop through each rectangle in eac row of rects data. If any rectangle in that row is selected, changle all colors
+    # of rects in that row
     def shadeHorizontal(self):
         for rect in self.drawablesController.rectangles:
             if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True and self.mouse.leftMouseReleasedThisFrame:
@@ -114,19 +141,30 @@ class StateManagerDiv:
                     for r in row:
                         if r == rect:
                             for r1 in row:
-                                if r1.color == colors.RED:
-                                    r1.changeColor(colors.ORANGE)
-                                elif r1.color == colors.WHITE:
-                                    r1.changeColor(colors.YELLOW)
+                                if r1.colorHatch == self.colorPicker.verticalColor:
+                                    r1.isShadedH = True
+                                    r1.isShadedB = True
+                                    r1.changeColorHatch(self.colorPicker.getBlendedColor())
+                                    #rect.drawVLines(self.colorPicker.myColor)
+                                    #1 = Horizontal, set an internal rect variable to 2
+                                    #if two then (?)
+                                    ##r1.changeColor(self.colorPicker.getBlendedColor())
+                                elif r1.colorHatch == colors.WHITE:
+                                    r1.isShadedH = True
+                                    r1.changeColorHatch(self.colorPicker.myColor)
+                                    ##r1.changeColor(self.colorPicker.myColor)
 
     def get_answer(self):
         numerator = 0
         denominator = 0
         for rect in self.drawablesController.rectangles:
             denominator += 1
-            if rect.color == colors.ORANGE:
+            if rect.isShadedB == True:
                 numerator += 1
+            #   #if rect.color == self.colorPicker.getBlendedColor():
+                #   #numerator += 1
         return (numerator, denominator)
+
 
 
 

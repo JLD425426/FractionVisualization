@@ -12,7 +12,7 @@ from cutterFraction import CutterFraction
 import random
 
 class Rectangle:
-    def __init__(self, xx, yy, w, h, screen,drawablesController,isOriginalSquare, mouse,stateManager):
+    def __init__(self, xx, yy, w, h, screen,drawablesController,isOriginalSquare, mouse,stateManager, ownerID):
         # the xPosition and yPosition refer to the middle point of the rectangle
         # include a origin point
         self.xPosition = xx
@@ -28,6 +28,9 @@ class Rectangle:
         self.willBeDivided = True
         self.myPointCollider = None
 
+        # Keeps track of which original rectangle it is a part of for shading in division
+        # 0 if original test rect, 1 for first (left) rectangle, 2 for second (right), doesn't apply to multiplication
+        self.ownerID = ownerID
         
         self.stateManager = stateManager
 
@@ -178,7 +181,10 @@ class Rectangle:
         for i in range(0,self.numberHorizontalRects):
             r = None
             if self.willBeDivided == True:
-                r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
+                if self.ownerID == 1:
+                    r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 1)
+                if self.ownerID == 2:
+                    r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 2)
             pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
             self.drawablesController.pointColliders.append(pc)
             if r != None:
@@ -208,17 +214,30 @@ class Rectangle:
             for j in range(0,self.numberVerticalRects):
                 r = None
                 if self.willBeDivided == True:
-                    r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager)
-                    rectsRow.append(r)
-                    # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
-                    if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
-                        # rC is prexisting vertical rectangle
-                        rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
-                        if rC.isShaded == True:
-                            r.isShaded = True
-                            r.isShadedV = True
-                            r.changeColorHatch(rC.colorHatch)
-                            #   #r.changeColor(rC.color)
+                    if self.ownerID == 1:
+                        r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 1)
+                        rectsRow.append(r)
+                        # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
+                        if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
+                            # rC is prexisting vertical rectangle
+                            rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
+                            if rC.isShaded == True:
+                                r.isShaded = True
+                                r.isShadedV = True
+                                r.changeColorHatch(rC.colorHatch)
+                                #   #r.changeColor(rC.color)
+                    elif self.ownerID == 2:
+                        r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 2)
+                        rectsRow.append(r)
+                        # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
+                        if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
+                            # rC is prexisting vertical rectangle
+                            rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
+                            if rC.isShaded == True:
+                                r.isShaded = True
+                                r.isShadedV = True
+                                r.changeColorHatch(rC.colorHatch)
+                                #   #r.changeColor(rC.color)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:

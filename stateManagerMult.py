@@ -65,7 +65,6 @@ class StateManagerMult:
                 self.currentState = self.DONE
 
 
-
     def draw(self):
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
