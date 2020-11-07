@@ -199,7 +199,8 @@ class Rectangle:
         #first create a copy of drawables controller list-these rects must be deleted at end of funct (vertical rects)
         copyList = list()
         for r in self.drawablesController.rectangles:
-            copyList.append(r)
+            if r.ownerID == self.ownerID:
+                copyList.append(r)
         #remove self from copy list b/c we dont want to use it for collision checking for shaded value
         copyList.remove(self)
 
