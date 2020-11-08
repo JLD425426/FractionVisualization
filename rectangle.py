@@ -136,9 +136,21 @@ class Rectangle:
 
     def putDown(self,mouse):
         mouse.whoisHeld = None
-
+        replaced = None
         for pc in self.drawablesController.pointColliders:
             if self.isCollidingWithPoint(pc.x,pc.y):
+                if pc.isOccupied:
+                    for rect in self.drawablesController.rectangles:
+                        if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
+                            if rect.colorHatch == colors.WHITE or rect.ownerID == 1:
+                                self.updatePosition(self.xOrigin, self.yOrigin)
+                                return
+                            else:
+                                replaced = rect
+                else:
+                    if self.xOrigin == pc.x and self.yOrigin == pc.y:
+                        self.updatePosition(self.xOrigin, self.yOrigin)
+                        return
                 # check to see if the spot occupied has matching height and width 
                 # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
                 # if neither statement is true, call snapback to the origin
@@ -149,6 +161,13 @@ class Rectangle:
                     self.yOrigin = pc.y
                     pc.isOccupied = True
                     self.myPointCollider = pc
+                    self.changeColorHatch(colors.BLACK)
+                    self.stateManager.invertRectData()
+                    self.isShadedH = True
+                    self.isShadedB = True
+                    self.ownerID = 2
+                    if replaced:
+                        self.drawablesController.rectangles.remove(replaced)
                     return
                 elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
                     #need to work on rotate
@@ -157,6 +176,13 @@ class Rectangle:
                     self.rotatePosition(pc.x,pc.y)
                     pc.isOccupied = True
                     self.myPointCollider = pc
+                    self.changeColorHatch(colors.BLACK)
+                    self.stateManager.invertRectData()
+                    self.isShadedH = True
+                    self.isShadedB = True
+                    self.ownerID = 2
+                    if replaced:
+                        self.drawablesController.rectangles.remove(replaced)
                     return
                 else:
                     pass

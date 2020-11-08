@@ -66,16 +66,16 @@ class StateManagerDiv:
             if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
                 self.currentState = self.MOVING
 
+        elif self.currentState == self.MOVING:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.DONE
 
 
     def draw(self):
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
-        elif self.currentState == self.SHADINGVERTICALLY2:
-            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
-        elif self.currentState == self.SHADINGHORIZONTALLY:
+        elif self.currentState == self.MOVING:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Finish!', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
 
@@ -131,41 +131,18 @@ class StateManagerDiv:
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
 
-    # loop through all drawablesController rectangles. If its colliding with mouse and mouse released then
-    # loop through each rectangle in eac row of rects data. If any rectangle in that row is selected, changle all colors
-    # of rects in that row
-    def shadeHorizontal(self):
-        for rect in self.drawablesController.rectangles:
-            if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True and self.mouse.leftMouseReleasedThisFrame:
-                for row in self.rectsData:
-                    for r in row:
-                        if r == rect:
-                            for r1 in row:
-                                if r1.colorHatch == self.colorPicker.verticalColor:
-                                    r1.isShadedH = True
-                                    r1.isShadedB = True
-                                    r1.changeColorHatch(self.colorPicker.getBlendedColor())
-                                    #rect.drawVLines(self.colorPicker.myColor)
-                                    #1 = Horizontal, set an internal rect variable to 2
-                                    #if two then (?)
-                                    ##r1.changeColor(self.colorPicker.getBlendedColor())
-                                elif r1.colorHatch == colors.WHITE:
-                                    r1.isShadedH = True
-                                    r1.changeColorHatch(self.colorPicker.myColor)
-                                    ##r1.changeColor(self.colorPicker.myColor)
 
     def get_answer(self):
         numerator = 0
         denominator = 0
         for rect in self.drawablesController.rectangles:
-            denominator += 1
-            if rect.isShadedB == True:
-                numerator += 1
+            if rect.ownerID == 2 and rect.colorHatch != colors.WHITE:
+                denominator += 1
+                if rect.isShadedB == True:
+                    numerator += 1
             #   #if rect.color == self.colorPicker.getBlendedColor():
                 #   #numerator += 1
         return (numerator, denominator)
-
-
 
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__

@@ -223,9 +223,9 @@ def main_prog():
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
-        testRectangle = Rectangle(WIDTH-525,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
+        testRectangle = Rectangle(WIDTH-500,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        testRectangle2 = Rectangle(WIDTH-175,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
+        testRectangle2 = Rectangle(WIDTH-150,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
         cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
 
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
