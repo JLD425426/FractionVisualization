@@ -11,6 +11,8 @@ from stateManagerMult import StateManagerMult
 from stateManagerDiv import StateManagerDiv
 from fractionHandler import Fraction
 from colorpicker import ColorPicker
+from problemDisplay import ProblemDisplay
+from problemGenerator import ProblemGenerator
 
 pygame.init()
 
@@ -54,6 +56,10 @@ ADDITION = 1
 SUBTRACTION = 2
 DIVISION = 3
 program_OperationType = MULTIPLICATION
+# problemGenerator declared globally so user can either:
+# 1)restart session but keep same problem
+# 2)restart session but get new problem
+problemGenerator = ProblemGenerator() 
 
 # Function runs the main menu 
 def main_menu():
@@ -231,6 +237,17 @@ def main_prog():
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
 
+    # init problemDisplay here, every operation will have
+    problemDisplay = ProblemDisplay(screen,WIDTH,HEIGHT,stateManager,program_OperationType)
+    # set up problemGenerator here because it needs to know problemDisplay
+    problemGenerator.setProblemDisplay(problemDisplay)
+    problemGenerator.setOperationType(program_OperationType)
+    if problemGenerator.needsNewProblem == True:
+        problemGenerator.getProblem()
+        problemGenerator.needsNewProblem = False
+    else:
+        problemGenerator.resetCurrentProblem()
+
     isProgramRunning = True
     check = False
     click = False       # To check if Main Menu button is clicked
@@ -275,15 +292,22 @@ def main_prog():
         
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
-        # Menu button and logic to go back to main screen
+        # Menu button and logic to go back to main screen and get new problem
         menu_button = pygame.Rect(WIDTH-100, 0, 100, 50)
         if menu_button.collidepoint((mouse.mx, mouse.my)):
             if click:
+                problemGenerator.needsNewProblem = True
                 main_menu()
 
-        restart_button = pygame.Rect(WIDTH-250, 0, 100, 50)
+        restart_button = pygame.Rect(WIDTH-220, 0, 100, 50)
         if restart_button.collidepoint((mouse.mx, mouse.my)):
             if click:
+                main_prog()
+        
+        newProblem_button = pygame.Rect(WIDTH - 370, 0 , 130, 50)
+        if newProblem_button.collidepoint((mouse.mx, mouse.my)):
+            if click:
+                problemGenerator.needsNewProblem = True
                 main_prog()
         
         # drawing here
@@ -293,30 +317,11 @@ def main_prog():
         pygame.draw.rect(screen, (8, 41, 255), menu_button)
         draw_text('Main Menu', button_font, (0,0,0), screen, WIDTH-50, 25)
         pygame.draw.rect(screen, (8, 41, 255), restart_button)
-        draw_text('Restart', button_font, (0,0,0), screen, WIDTH-200, 25)
+        draw_text('Restart', button_font, (0,0,0), screen, WIDTH-170, 25)
+        pygame.draw.rect(screen, (8, 41, 255), newProblem_button) # for new prob button
+        draw_text('New Problem', button_font, (0,0,0), screen, WIDTH-305, 25) # for new prob button
         state_message = "Current state: " + stateManager.getCurrentState()
-        draw_text(state_message, button_font, (0,0,0), screen, 200, 25)
-        
-        if(stateManager.getCurrentState() == "Finished"):
-            numerator, denominator = stateManager.get_answer()
-            userAnswer = Fraction(numerator, denominator)
-            canreduce = userAnswer.canReduce()
-            #answer1 = userAnswer.ftoString()
-            if canreduce == True:
-                userAnswerReduced = Fraction(userAnswer.getNum(), userAnswer.getDenom())
-                userAnswerReduced.finalReduce()
-                #answer2 = userAnswerReduced.ftoString()
-                draw_text(str(userAnswer.getNum()), button_font, (0,0,0), screen, WIDTH-437, HEIGHT-620)
-                draw_text('---', button_font, (0,0,0), screen, WIDTH-437, HEIGHT-600)
-                draw_text(str(userAnswer.getDenom()), button_font, (0,0,0), screen, WIDTH-437, HEIGHT-580)
-                draw_text('=', button_font, (0,0,0), screen, WIDTH-350, HEIGHT-600)
-                draw_text(str(userAnswerReduced.getNum()), button_font, (0,0,0), screen, WIDTH-263, HEIGHT-620)
-                draw_text('---', button_font, (0,0,0), screen, WIDTH-262, HEIGHT-600)
-                draw_text(str(userAnswerReduced.getDenom()), button_font, (0,0,0), screen, WIDTH-263, HEIGHT-580)
-            else:
-                draw_text(str(userAnswer.getNum()), button_font, (0,0,0), screen, WIDTH-350, HEIGHT-620)
-                draw_text('---', button_font, (0,0,0), screen, WIDTH-350, HEIGHT-600)
-                draw_text(str(userAnswer.getDenom()), button_font, (0,0,0), screen, WIDTH-350, HEIGHT-580)
+        draw_text(state_message, button_font, (0,0,0), screen, 160, 25)
 
         tempRectList = list()
         for bgS in drawablesController.bgSquares:
@@ -352,6 +357,7 @@ def main_prog():
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()
+        problemDisplay.draw()
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
         #update screen and set framerate
