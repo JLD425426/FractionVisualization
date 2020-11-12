@@ -142,7 +142,7 @@ class Rectangle:
                 if pc.isOccupied:
                     for rect in self.drawablesController.rectangles:
                         if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                            if rect.colorHatch == colors.WHITE or rect.ownerID == 1:
+                            if rect.color == colors.WHITE or rect.ownerID == 1:
                                 self.updatePosition(self.xOrigin, self.yOrigin)
                                 return
                             else:
@@ -162,6 +162,7 @@ class Rectangle:
                     pc.isOccupied = True
                     self.myPointCollider = pc
                     self.changeColorHatch(colors.BLACK)
+                    self.color = colors.WHITE
                     self.stateManager.invertRectData()
                     self.isShadedH = True
                     self.isShadedB = True
@@ -177,6 +178,7 @@ class Rectangle:
                     pc.isOccupied = True
                     self.myPointCollider = pc
                     self.changeColorHatch(colors.BLACK)
+                    self.color = colors.WHITE
                     self.stateManager.invertRectData()
                     self.isShadedH = True
                     self.isShadedB = True
@@ -256,7 +258,6 @@ class Rectangle:
                             r.isShadedV = True
                             r.changeColorHatch(rC.colorHatch)
                             r.changeColor(rC.color)
-                            #   #r.changeColor(rC.color)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:

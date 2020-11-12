@@ -7,6 +7,10 @@ import numpy as np
 class StateManagerMult:
     def __init__(self,cuttingType,screen):
 
+        self.MULT = 1
+        self.DIV = 2
+        self.operation_type = self.MULT
+
         #define cutting types
         self.FRACTIONCUTTING = 0
         self.VARCUTTING = 1

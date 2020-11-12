@@ -82,8 +82,15 @@ class ColorPicker:
                     self.brushTip.set_at((x,y),(newColor[2],newColor[1],newColor[0],0))
         if isPhaseChange == False:
             for rect in self.drawablesController.rectangles:
-                if rect.color == oldColor:
-                    rect.color = newColor
+                if self.stateManager.operation_type == self.stateManager.MULT:
+                    if rect.colorHatch == oldColor:
+                        rect.colorHatch = newColor
+                elif self.stateManager.operation_type == self.stateManager.DIV:
+                    if rect.color == oldColor:
+                        pass
+                        # We don't want all other rect colors redrawn in this case, but we also want
+                        #   all sub rects in the same rectangle to be the same color
+                        # rect.color = newColor
         self.myColor = newColor
             
 
