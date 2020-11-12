@@ -102,12 +102,12 @@ class StateManagerDiv:
                             #rect.drawLines(self.colorPicker.myColor, 0)
                             #0 = Vertical, set an internal rect variable to 1
                             #   #rect.changeColor(self.colorPicker.myColor)
-                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.changeColor(self.colorPicker.myColor)
                             rect.isShadedV = True
                             rect.isShaded = True
                         elif rect.isShaded == True:
                             #   #rect.changeColor(colors.WHITE)
-                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.changeColor(self.colorPicker.myColor)
                             rect.isShaded = False
 
     def shadeVertical2(self):
@@ -119,15 +119,15 @@ class StateManagerDiv:
                             #rect.drawLines(self.colorPicker.myColor, 0)
                             #0 = Vertical, set an internal rect variable to 1
                             #   #rect.changeColor(self.colorPicker.myColor)
-                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.changeColor(self.colorPicker.myColor)
                             rect.isShadedV = True
                             rect.isShaded = True
                         elif rect.isShaded == True:
                             #   #rect.changeColor(colors.WHITE)
-                            rect.changeColorHatch(self.colorPicker.myColor)
+                            rect.changeColor(self.colorPicker.myColor)
                             rect.isShaded = False
 
-    # needed for horiozntal shading. gets transpose of rectsData
+    # needed for horizontal shading. gets transpose of rectsData
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
 

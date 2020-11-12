@@ -94,7 +94,7 @@ class Rectangle:
 
         if self.stateManager.getCurrentState() == "Moving":
             #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
-            if self.isOriginalSquare == False and self.ownerID != 2 and self.colorHatch != colors.WHITE:
+            if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
                 # mouse is holding no one and clicking, set self as being held
                 if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
                     mouse.whoisHeld = self
@@ -255,6 +255,7 @@ class Rectangle:
                             r.isShaded = True
                             r.isShadedV = True
                             r.changeColorHatch(rC.colorHatch)
+                            r.changeColor(rC.color)
                             #   #r.changeColor(rC.color)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
                 self.drawablesController.pointColliders.append(pc)
@@ -287,40 +288,43 @@ class Rectangle:
         self.colorHatch = color
 
     def drawVLines(self, color):
-        #xAdder = (int)(self.width / 3)
-        for i in range(1,5):
-            #iterator = (int)(self.width * (1/i))
-            partition = i / 5
-            drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
-            drawertopYstart = self.topLeftY
-            drawerbotXend = drawertopXstart
-            drawerbotYend = self.bottomRightY
-            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
+        if color != colors.WHITE:
+            #xAdder = (int)(self.width / 3)
+            for i in range(1,5):
+                #iterator = (int)(self.width * (1/i))
+                partition = i / 5
+                drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
+                drawertopYstart = self.topLeftY
+                drawerbotXend = drawertopXstart
+                drawerbotYend = self.bottomRightY
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
 
     def drawHLines(self, color): 
-       #yAdder = (int)(self.height / 3)
-        for j in range(1,5):
-            partition = j / 5
-            drawertopXstart = self.topLeftX 
-            drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
-            drawerbotXend = self.bottomRightX 
-            drawerbotYend = drawertopYstart
-            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
+        if color != colors.WHITE:
+            # yAdder = (int)(self.height / 3)
+            for j in range(1,5):
+                partition = j / 5
+                drawertopXstart = self.topLeftX 
+                drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
+                drawerbotXend = self.bottomRightX 
+                drawerbotYend = drawertopYstart
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
     
     def drawBLines(self, color):
-        for i in range(1,5):
-            #iterator = (int)(self.width * (1/i))
-            partition = i / 5
-            drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
-            drawertopYstart = self.topLeftY
-            drawerbotXend = drawertopXstart
-            drawerbotYend = self.bottomRightY
-            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
-            drawertopXstart = self.topLeftX 
-            drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
-            drawerbotXend = self.bottomRightX 
-            drawerbotYend = drawertopYstart
-            pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
+        if color != colors.WHITE:
+            for i in range(1,5):
+                #iterator = (int)(self.width * (1/i))
+                partition = i / 5
+                drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
+                drawertopYstart = self.topLeftY
+                drawerbotXend = drawertopXstart
+                drawerbotYend = self.bottomRightY
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
+                drawertopXstart = self.topLeftX 
+                drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
+                drawerbotXend = self.bottomRightX 
+                drawerbotYend = drawertopYstart
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
 
 
 
