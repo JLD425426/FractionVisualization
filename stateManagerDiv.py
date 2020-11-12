@@ -23,15 +23,10 @@ class StateManagerDiv:
         self.CUTTINGHORIZONTALLY = 2
         self.SHADINGHORIZONTALLY = 3
 
-        # States for a second rectangle?
-        self.CUTTINGVERTICALLY2 = 6
-        self.SHADINGVERTICALLY2 = 7
-        self.CUTTINGHORIZONTALLY2 = 8
-        self.SHADINGHORIZONTALLY2 = 9
-
         # Other states
         self.DONE = 4
         self.MOVING = 5
+        self.GETTINGDENOMINATOR = 6
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -44,6 +39,9 @@ class StateManagerDiv:
         self.HEIGHT = 700
         self.proceed_button = pygame.Rect(int((self.WIDTH/2)-150), int(self.HEIGHT/2+180), 300, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)
+
+        # For get answer function
+        self.numShadedRightRects = 0
 
         self.rectsData = None
         self.hasInvertedRectData = False
@@ -68,7 +66,11 @@ class StateManagerDiv:
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
             if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                self.currentState = self.MOVING
+                self.currentState = self.GETTINGDENOMINATOR
+
+        elif self.currentState == self.GETTINGDENOMINATOR:
+            self.getDenominator()
+            self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
@@ -92,6 +94,8 @@ class StateManagerDiv:
             return "Cutting Horizontally"
         elif self.currentState == self.SHADINGHORIZONTALLY:
             return "Shading Horizontally"
+        elif self.currentState == self.GETTINGDENOMINATOR:
+            return "Calculating/Loading"
         elif self.currentState == self.DONE:
             return "Finished"
         elif self.currentState == self.MOVING:
@@ -135,6 +139,13 @@ class StateManagerDiv:
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
 
+    def getDenominator(self):
+        count = 0
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 2:
+                if rect.color != colors.WHITE:
+                    count += 1
+        self.numShadedRightRects = count
 
     def get_answer(self):
         numerator = 0
@@ -146,7 +157,7 @@ class StateManagerDiv:
                     numerator += 1
             #   #if rect.color == self.colorPicker.getBlendedColor():
                 #   #numerator += 1
-        return (numerator, denominator)
+        return (numerator, self.numShadedRightRects)
 
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__

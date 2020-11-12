@@ -137,15 +137,18 @@ class Rectangle:
     def putDown(self,mouse):
         mouse.whoisHeld = None
         replaced = None
+        ogColor = colors.WHITE
         for pc in self.drawablesController.pointColliders:
             if self.isCollidingWithPoint(pc.x,pc.y):
                 if pc.isOccupied:
                     for rect in self.drawablesController.rectangles:
                         if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                            if rect.color == colors.WHITE or rect.ownerID == 1:
+                            if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1:
                                 self.updatePosition(self.xOrigin, self.yOrigin)
                                 return
                             else:
+                                if rect.color != colors.WHITE:
+                                    ogColor = rect.color
                                 replaced = rect
                 else:
                     if self.xOrigin == pc.x and self.yOrigin == pc.y:
@@ -162,7 +165,8 @@ class Rectangle:
                     pc.isOccupied = True
                     self.myPointCollider = pc
                     self.changeColorHatch(colors.BLACK)
-                    self.color = colors.WHITE
+                    if self.color != colors.WHITE or self.color != ogColor:
+                        self.color = ogColor
                     self.stateManager.invertRectData()
                     self.isShadedH = True
                     self.isShadedB = True
@@ -178,7 +182,8 @@ class Rectangle:
                     pc.isOccupied = True
                     self.myPointCollider = pc
                     self.changeColorHatch(colors.BLACK)
-                    self.color = colors.WHITE
+                    if self.color != colors.WHITE or self.color != ogColor:
+                        self.color = ogColor
                     self.stateManager.invertRectData()
                     self.isShadedH = True
                     self.isShadedB = True
