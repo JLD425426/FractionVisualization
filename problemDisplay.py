@@ -55,6 +55,8 @@ class ProblemDisplay:
         pygame.draw.line(self.screen,colors.BLACK, [xPos-10, self.fractionDividerY], [xPos+10,self.fractionDividerY], 3)
         draw_text(str(denominator), self.font, (0,0,0), self.screen, xPos, self.denominatorY)
 
+    
+
     # draw all fractions and symbols between fractions for current problem+answer
     def draw(self):
         if (self.stateManager.getCurrentState() != "Finished"): # only draw two problem fractions and x symbol

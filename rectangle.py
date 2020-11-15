@@ -296,41 +296,41 @@ class Rectangle:
     def drawVLines(self, color):
         if color != colors.WHITE:
             #xAdder = (int)(self.width / 3)
-            for i in range(1,5):
+            for i in range(1,20):
                 #iterator = (int)(self.width * (1/i))
-                partition = i / 5
+                partition = i / 20
                 drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
                 drawertopYstart = self.topLeftY
                 drawerbotXend = drawertopXstart
                 drawerbotYend = self.bottomRightY
-                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 1)
 
     def drawHLines(self, color): 
         if color != colors.WHITE:
             # yAdder = (int)(self.height / 3)
-            for j in range(1,5):
-                partition = j / 5
+            for j in range(1,20):
+                partition = j / 20
                 drawertopXstart = self.topLeftX 
                 drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
                 drawerbotXend = self.bottomRightX 
                 drawerbotYend = drawertopYstart
-                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 1) 
     
     def drawBLines(self, color):
         if color != colors.WHITE:
-            for i in range(1,5):
+            for i in range(1,20):
                 #iterator = (int)(self.width * (1/i))
-                partition = i / 5
+                partition = i / 20
                 drawertopXstart = self.topLeftX * (1 - partition) + self.bottomRightX * partition
                 drawertopYstart = self.topLeftY
                 drawerbotXend = drawertopXstart
                 drawerbotYend = self.bottomRightY
-                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4)
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 1)
                 drawertopXstart = self.topLeftX 
                 drawertopYstart = self.topLeftY * (1 - partition) + self.bottomRightY * partition
                 drawerbotXend = self.bottomRightX 
                 drawerbotYend = drawertopYstart
-                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 4) 
+                pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 2) 
 
 
 

@@ -19,6 +19,8 @@ class Fraction:
     def __init__(self, numer, denom):
         self.numerator = numer
         self.denominator = denom
+        self.isMixed = False
+        self.leadCo = 0
 
     def getNum(self):
         return self.numerator
@@ -32,14 +34,24 @@ class Fraction:
     def setDen(self, d):
         self.denominator = d
 
-    def ftoString(self):
-     #Formats the fraction into a string
-     #Returns a completed string of the fraction
-        fString1 = f"{self.numerator}"
-        fString2 = "---"
-        fString3 = f"{self.denominator}"
-        fFull =  fString1 + '\n' + fString2 + '\n' + fString3
-        return fFull
+    def setMix(self, m):
+        self.isMixed = m
+
+    def getMix(self):
+        return self.isMixed
+
+    def isImproper(self):
+        if (self.numerator >= self.denominator):
+            self.isMixed = True
+        else:
+            self.isMixed = False
+
+    def makeMixed(self):
+        self.leadCo = (int)(self.numerator / self.denominator)
+        newNumer = (int)(self.numerator % self.denominator)
+        self.numerator = newNumer
+        
+        
 
     def canReduce(self):
      #Determines whether a given fraction can be reduced or not

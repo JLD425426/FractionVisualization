@@ -51,6 +51,9 @@ class ProblemGenerator:
                 break
         # now reduce problem answer
         answer = Fraction(nAns,dAns)
+        answer.isImproper()
+        if answer.getMix() == True:
+            answer.makeMixed()
         if answer.canReduce():
             answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
@@ -82,6 +85,9 @@ class ProblemGenerator:
                 break
         # now reduce problem answer
         answer = Fraction(nAns,dAns)
+        answer.isImproper()
+        if answer.getMix() == True:
+            answer.makeMixed()
         if answer.canReduce():
             answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)

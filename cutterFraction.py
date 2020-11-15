@@ -43,6 +43,8 @@ class CutterFraction:
 
         #For drawing font
         self.message_font = pg.font.SysFont('Arial', 32)
+        self.message_fontL = pg.font.SysFont('Arial', 42)
+        self.message_fontS = pg.font.SysFont('Arial', 22)
         
     def getState(self):
         if self.state == self.CUTTINGVERTICAL:
@@ -123,7 +125,10 @@ class CutterFraction:
                 xPosition = int(xSpacing * i + self.myRect.topLeftX)
                 xOffset = int(10 + (self.myRect.width/(self.verticalGuidelinesCount+1)*.5))
                 yOffset = -20
-                draw_text("1/" + str(self.verticalGuidelinesCount),self.message_font,colors.BLACK,self.myRect.screen,xPosition + xOffset,self.myRect.topLeftY + yOffset)
+                #       #draw_text("1/" + str(self.verticalGuidelinesCount),self.message_font,colors.BLACK,self.myRect.screen,xPosition + xOffset,self.myRect.topLeftY + yOffset)
+                draw_text("1",self.message_fontS,colors.BLACK,self.myRect.screen,xPosition + xOffset,self.myRect.topLeftY + yOffset - 20)
+                pg.draw.line(self.myRect.screen,colors.BLACK,[xPosition + xOffset - 10,self.myRect.topLeftY + yOffset - 10],[xPosition + xOffset + 10,self.myRect.topLeftY + yOffset - 10], 2)
+                draw_text(str(self.verticalGuidelinesCount),self.message_fontS,colors.BLACK,self.myRect.screen,xPosition + xOffset,self.myRect.topLeftY + yOffset)
             
         # DISPLAY TEMPORARY HORIZONTAL BLUE GUIDELINES IF MOUSE Y CLOSE TO FRACTION CUT Y and draw txt
         if self.isShowingHorizontalGuidelines == True:
@@ -136,7 +141,11 @@ class CutterFraction:
                 yPosition = int(ySpacing * i + self.myRect.topLeftY)
                 yOffset = int(10 + (self.myRect.height/(self.horizontalGuidelinesCount+1)*.5))
                 xOffset = -25
-                draw_text("1/" + str(self.horizontalGuidelinesCount),self.message_font,colors.BLACK,self.myRect.screen,self.myRect.topLeftX + xOffset,yPosition + yOffset)
+                #   #draw_text("1/" + str(self.horizontalGuidelinesCount),self.message_font,colors.BLACK,self.myRect.screen,self.myRect.topLeftX + xOffset,yPosition + yOffset)
+                draw_text("1",self.message_fontS,colors.BLACK,self.myRect.screen,self.myRect.topLeftX + xOffset,yPosition + yOffset - 30)
+                pg.draw.line(self.myRect.screen,colors.BLACK,[self.myRect.topLeftX + xOffset - 10,yPosition + yOffset - 15],[self.myRect.topLeftX + xOffset + 10,yPosition + yOffset - 15], 2)
+                draw_text(str(self.horizontalGuidelinesCount),self.message_fontS,colors.BLACK,self.myRect.screen,self.myRect.topLeftX + xOffset,yPosition + yOffset)
+
                 
     # divides OG rectangle with permanant black vertical guidelines
     def divideVertical(self):
