@@ -9,6 +9,7 @@ from mouseHolder import MouseHandler
 from stateManager import manager
 from stateManagerMult import StateManagerMult
 from stateManagerDiv import StateManagerDiv
+from stateManagerSub import StateManagerSub
 from fractionHandler import Fraction
 from colorpicker import ColorPicker
 from problemDisplay import ProblemDisplay
@@ -221,8 +222,15 @@ def main_prog():
         pass
 
     elif program_OperationType == SUBTRACTION:
-        #stateManager = StateManagerSub(program_CuttingType,screen)
-        pass
+        stateManager = StateManagerSub(program_CuttingType,screen)
+        stateManager.setMouse(mouse) # link state manager and mouse
+        stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
+
+        testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
+        cutter = testRectangle.getCutter() # need to get cutter here for draw call
+
+        colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
+        stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == DIVISION:
         stateManager = StateManagerDiv(program_CuttingType,screen)
@@ -279,6 +287,8 @@ def main_prog():
             stateManager.update(testRectangle.myCutter)
         elif program_OperationType == DIVISION:
             stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
+        elif program_OperationType == SUBTRACTION:
+            stateManager.update(testRectangle.myCutter)
         else:
             stateManager.update(testRectangle.myCutter)
         

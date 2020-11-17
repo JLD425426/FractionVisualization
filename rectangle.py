@@ -93,19 +93,38 @@ class Rectangle:
                 self.finalCut()
 
         if self.stateManager.getCurrentState() == "Moving":
-            #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
-            if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
-                # mouse is holding no one and clicking, set self as being held
-                if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
-                    mouse.whoisHeld = self
-                    if self.myPointCollider != None:
-                        self.myPointCollider.isOccupied = False
-                # mouse release so remove self as being held
-                if mouse.isClick == False and mouse.whoisHeld == self:
-                    self.putDown(mouse)
-                # self is being dragged so move it around
-                if mouse.whoisHeld == self:
-                    self.updatePosition(mouse.mx,mouse.my)
+            if self.stateManager.operation_type == 3:
+                    #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
+                    if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
+                        if self.isShadedH is False:
+                            return
+                        if self.isShadedB is True or self.isShadedV is True:
+                            return
+                        # mouse is holding no one and clicking, set self as being held
+                        if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
+                            mouse.whoisHeld = self
+                            if self.myPointCollider != None:
+                                self.myPointCollider.isOccupied = False
+                        # mouse release so remove self as being held
+                        if mouse.isClick == False and mouse.whoisHeld == self:
+                            self.putDown(mouse)
+                        # self is being dragged so move it around
+                        if mouse.whoisHeld == self:
+                            self.updatePosition(mouse.mx,mouse.my)
+            else:
+                #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
+                    if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
+                        # mouse is holding no one and clicking, set self as being held
+                        if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
+                            mouse.whoisHeld = self
+                            if self.myPointCollider != None:
+                                self.myPointCollider.isOccupied = False
+                        # mouse release so remove self as being held
+                        if mouse.isClick == False and mouse.whoisHeld == self:
+                            self.putDown(mouse)
+                        # self is being dragged so move it around
+                        if mouse.whoisHeld == self:
+                            self.updatePosition(mouse.mx,mouse.my)
 
     def updatePosition(self,xx,yy):
         self.xPosition = xx
@@ -139,60 +158,117 @@ class Rectangle:
         replaced = None
         ogColor = colors.WHITE
         for pc in self.drawablesController.pointColliders:
-            if self.isCollidingWithPoint(pc.x,pc.y):
-                if pc.isOccupied:
-                    for rect in self.drawablesController.rectangles:
-                        if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                            if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1:
-                                self.updatePosition(self.xOrigin, self.yOrigin)
-                                return
-                            else:
-                                if rect.color != colors.WHITE:
-                                    ogColor = rect.color
-                                replaced = rect
-                else:
-                    if self.xOrigin == pc.x and self.yOrigin == pc.y:
-                        self.updatePosition(self.xOrigin, self.yOrigin)
+            if self.stateManager.operation_type == 2:
+                if self.isCollidingWithPoint(pc.x,pc.y):
+                    if pc.isOccupied:
+                        for rect in self.drawablesController.rectangles:
+                            if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
+                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1:
+                                    self.updatePosition(self.xOrigin, self.yOrigin)
+                                    return
+                                else:
+                                    if rect.color != colors.WHITE:
+                                        ogColor = rect.color
+                                    replaced = rect
+                    else:
+                        if self.xOrigin == pc.x and self.yOrigin == pc.y:
+                            self.updatePosition(self.xOrigin, self.yOrigin)
+                            return
+                    # check to see if the spot occupied has matching height and width 
+                    # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
+                    # if neither statement is true, call snapback to the origin
+                    if (self.width - pc.width <= 1 and self.width - pc.width >= -1 and self.height - pc.height <= 1 and self.height - pc.height >= -1):
+                        #deal with rounding errors
+                        self.updatePosition(pc.x,pc.y)
+                        self.xOrigin = pc.x
+                        self.yOrigin = pc.y
+                        pc.isOccupied = True
+                        self.myPointCollider = pc
+                        self.changeColorHatch(colors.BLACK)
+                        if self.color != colors.WHITE or self.color != ogColor:
+                            self.color = ogColor
+                        self.stateManager.invertRectData()
+                        self.isShadedH = True
+                        self.isShadedB = True
+                        self.ownerID = 2
+                        if replaced:
+                            self.drawablesController.rectangles.remove(replaced)
                         return
-                # check to see if the spot occupied has matching height and width 
-                # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
-                # if neither statement is true, call snapback to the origin
-                if (self.width - pc.width <= 1 and self.width - pc.width >= -1 and self.height - pc.height <= 1 and self.height - pc.height >= -1):
-                    #deal with rounding errors
-                    self.updatePosition(pc.x,pc.y)
-                    self.xOrigin = pc.x
-                    self.yOrigin = pc.y
-                    pc.isOccupied = True
-                    self.myPointCollider = pc
-                    self.changeColorHatch(colors.BLACK)
-                    if self.color != colors.WHITE or self.color != ogColor:
-                        self.color = ogColor
-                    self.stateManager.invertRectData()
-                    self.isShadedH = True
-                    self.isShadedB = True
-                    self.ownerID = 2
-                    if replaced:
-                        self.drawablesController.rectangles.remove(replaced)
-                    return
-                elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
-                    #need to work on rotate
-                    self.xOrigin = pc.x
-                    self.yOrigin = pc.y
-                    self.rotatePosition(pc.x,pc.y)
-                    pc.isOccupied = True
-                    self.myPointCollider = pc
-                    self.changeColorHatch(colors.BLACK)
-                    if self.color != colors.WHITE or self.color != ogColor:
-                        self.color = ogColor
-                    self.stateManager.invertRectData()
-                    self.isShadedH = True
-                    self.isShadedB = True
-                    self.ownerID = 2
-                    if replaced:
-                        self.drawablesController.rectangles.remove(replaced)
-                    return
-                else:
-                    pass
+                    elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
+                        #need to work on rotate
+                        self.xOrigin = pc.x
+                        self.yOrigin = pc.y
+                        self.rotatePosition(pc.x,pc.y)
+                        pc.isOccupied = True
+                        self.myPointCollider = pc
+                        self.changeColorHatch(colors.BLACK)
+                        if self.color != colors.WHITE or self.color != ogColor:
+                            self.color = ogColor
+                        self.stateManager.invertRectData()
+                        self.isShadedH = True
+                        self.isShadedB = True
+                        self.ownerID = 2
+                        if replaced:
+                            self.drawablesController.rectangles.remove(replaced)
+                        return
+                    else:
+                        pass
+            elif self.stateManager.operation_type == 3:
+                if self.isCollidingWithPoint(pc.x,pc.y):
+                    if pc.isOccupied:
+                        for rect in self.drawablesController.rectangles:
+                            if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
+                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.isShadedB is True:
+                                    self.updatePosition(self.xOrigin, self.yOrigin)
+                                    return
+                                else:
+                                    if rect.color != colors.WHITE:
+                                        ogColor = rect.color
+                                    replaced = rect
+                    else:
+                        if self.xOrigin == pc.x and self.yOrigin == pc.y:
+                            self.updatePosition(self.xOrigin, self.yOrigin)
+                            return
+                    # check to see if the spot occupied has matching height and width 
+                    # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
+                    # if neither statement is true, call snapback to the origin
+                    if (self.width - pc.width <= 1 and self.width - pc.width >= -1 and self.height - pc.height <= 1 and self.height - pc.height >= -1):
+                        #deal with rounding errors
+                        self.updatePosition(pc.x,pc.y)
+                        self.xOrigin = pc.x
+                        self.yOrigin = pc.y
+                        pc.isOccupied = True
+                        self.myPointCollider = pc
+                        self.changeColorHatch(colors.BLACK)
+                        if self.color != colors.WHITE or self.color != ogColor:
+                            self.color = ogColor
+                        self.stateManager.invertRectData()
+                        self.isShadedH = True
+                        self.isShadedB = True
+                        self.ownerID = 2
+                        if replaced:
+                            self.drawablesController.rectangles.remove(replaced)
+                        return
+                    elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
+                        #need to work on rotate
+                        self.xOrigin = pc.x
+                        self.yOrigin = pc.y
+                        self.rotatePosition(pc.x,pc.y)
+                        pc.isOccupied = True
+                        self.myPointCollider = pc
+                        self.changeColorHatch(colors.BLACK)
+                        if self.color != colors.WHITE or self.color != ogColor:
+                            self.color = ogColor
+                        self.stateManager.invertRectData()
+                        self.isShadedH = True
+                        self.isShadedB = True
+                        self.ownerID = 2
+                        if replaced:
+                            self.drawablesController.rectangles.remove(replaced)
+                        return
+                    else:
+                        pass
+
         
                 
         self.updatePosition(self.xOrigin,self.yOrigin)

@@ -4,13 +4,13 @@ import pygame
 from drawText import draw_text
 import numpy as np
 
-class StateManagerMult:
+class StateManagerSub:
     def __init__(self,cuttingType,screen):
 
         self.MULT = 1
         self.DIV = 2
         self.SUB = 3
-        self.operation_type = self.MULT
+        self.operation_type = self.SUB
 
         #define cutting types
         self.FRACTIONCUTTING = 0
@@ -70,7 +70,12 @@ class StateManagerMult:
                 self.hasInvertedRectData = True #use tab for this
             self.shadeHorizontal()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.MOVING
+
+        elif self.currentState == self.MOVING:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
+
 
 
     def draw(self):
@@ -79,7 +84,11 @@ class StateManagerMult:
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.SHADINGHORIZONTALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Finish!', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            draw_text('Proceed to moving', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.MOVING:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            draw_text('Finish', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+
 
     def getCurrentState(self):
         if self.currentState == self.CUTTINGVERTICALLY:

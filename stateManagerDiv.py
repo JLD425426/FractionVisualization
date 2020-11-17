@@ -9,6 +9,7 @@ class StateManagerDiv:
 
         self.MULT = 1
         self.DIV = 2
+        self.SUB = 3
         self.operation_type = self.DIV
 
         #define cutting types
@@ -45,8 +46,11 @@ class StateManagerDiv:
 
         self.rectsData = None
         self.hasInvertedRectData = False
-        
 
+    
+    def getOperationType(self):
+        return self.operation_type
+        
 
     def update(self, cutter, cutter2):
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
