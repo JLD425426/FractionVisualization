@@ -163,7 +163,7 @@ class Rectangle:
                     if pc.isOccupied and pc.valid:
                         for rect in self.drawablesController.rectangles:
                             if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1:
+                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
                                     self.updatePosition(self.xOrigin, self.yOrigin)
                                     return
                                 else:
@@ -192,6 +192,7 @@ class Rectangle:
                         self.isShadedB = True
                         self.ownerID = 2
                         if replaced:
+                            self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                             self.drawablesController.rectangles.remove(replaced)
                         return
                     elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
@@ -266,6 +267,7 @@ class Rectangle:
                         self.isShadedB = True
                         self.ownerID = 2
                         if replaced:
+                            self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                             self.drawablesController.rectangles.remove(replaced)
                         return
                     else:
