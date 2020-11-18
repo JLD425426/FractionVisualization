@@ -3,6 +3,7 @@ WHITE = (255, 255, 255)
 GREY = (136, 140, 139)
 DARKBLUE = (25, 82, 227)
 LIGHTGREY = (220,225,225)
+DARKGREY = (95, 99, 98)
 
 
 #primary colors
