@@ -158,9 +158,9 @@ class Rectangle:
         replaced = None
         ogColor = colors.WHITE
         for pc in self.drawablesController.pointColliders:
-            if self.stateManager.operation_type == 2:
+            if self.stateManager.operation_type == 2:           # FOR DIVISION
                 if self.isCollidingWithPoint(pc.x,pc.y):
-                    if pc.isOccupied:
+                    if pc.isOccupied and pc.valid:
                         for rect in self.drawablesController.rectangles:
                             if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
                                 if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1:
@@ -209,13 +209,14 @@ class Rectangle:
                         self.isShadedB = True
                         self.ownerID = 2
                         if replaced:
+                            self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                             self.drawablesController.rectangles.remove(replaced)
                         return
                     else:
                         pass
-            elif self.stateManager.operation_type == 3:
+            elif self.stateManager.operation_type == 3:         # FOR SUBTRACTION
                 if self.isCollidingWithPoint(pc.x,pc.y):
-                    if pc.isOccupied:
+                    if pc.isOccupied and pc.valid:
                         for rect in self.drawablesController.rectangles:
                             if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
                                 if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.isShadedB is True:
@@ -247,6 +248,7 @@ class Rectangle:
                         self.isShadedB = True
                         self.ownerID = 2
                         if replaced:
+                            self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                             self.drawablesController.rectangles.remove(replaced)
                         return
                     elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
@@ -294,8 +296,8 @@ class Rectangle:
                     r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 1)
                 if self.ownerID == 2:
                     r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 2)
-            pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
-            self.drawablesController.pointColliders.append(pc)
+            pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, False)
+            # self.drawablesController.pointColliders.append(pc)
             if r != None:
                 r.myPointCollider = pc
 
@@ -334,12 +336,14 @@ class Rectangle:
                     if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:
                         # rC is prexisting vertical rectangle
                         rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
+                        if self.drawablesController.pointColliders.count(rC.myPointCollider) > 0:
+                            self.drawablesController.pointColliders.remove(rC.myPointCollider)
                         if rC.isShaded == True:
                             r.isShaded = True
                             r.isShadedV = True
                             r.changeColorHatch(rC.colorHatch)
                             r.changeColor(rC.color)
-                pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength)
+                pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, True)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:
                     r.myPointCollider = pc
@@ -352,6 +356,8 @@ class Rectangle:
                 if r1 == r2:
                     self.drawablesController.rectangles.remove(r1)
         # finally remove original rect from list
+        if self.drawablesController.pointColliders.count(self.myPointCollider) > 0:
+            self.drawablesController.pointColliders.remove(self.myPointCollider)
         self.drawablesController.rectangles.remove(self)
 
     def getRectCollider(self, li, xx, yy):
