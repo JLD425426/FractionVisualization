@@ -117,10 +117,15 @@ class StateManagerDiv:
                             rect.changeColor(self.colorPicker.myColor)
                             rect.isShadedV = True
                             rect.isShaded = True
+                            #change all colors of shaded rects in corresponding square to new color
+                            for _r in self.drawablesController.rectangles:
+                                if _r.ownerID == 1 and _r.isShadedV == True:
+                                    _r.changeColor(self.colorPicker.myColor)
                         elif rect.isShaded == True:
                             #   #rect.changeColor(colors.WHITE)
-                            rect.changeColor(self.colorPicker.myColor)
+                            rect.changeColor(colors.WHITE)
                             rect.isShaded = False
+                            rect.isShadedV = False
 
     def shadeVertical2(self):
         if self.mouse.leftMouseReleasedThisFrame == True:
@@ -134,10 +139,15 @@ class StateManagerDiv:
                             rect.changeColor(self.colorPicker.myColor)
                             rect.isShadedV = True
                             rect.isShaded = True
+                            #change all colors of shaded rects in corresponding square to new color
+                            for _r in self.drawablesController.rectangles:
+                                if _r.ownerID == 2 and _r.isShadedV == True:
+                                    _r.changeColor(self.colorPicker.myColor)
                         elif rect.isShaded == True:
                             #   #rect.changeColor(colors.WHITE)
-                            rect.changeColor(self.colorPicker.myColor)
+                            rect.changeColor(colors.WHITE)
                             rect.isShaded = False
+                            rect.isShadedV = False
 
     # needed for horizontal shading. gets transpose of rectsData
     def invertRectData(self):

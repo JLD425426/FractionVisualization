@@ -108,7 +108,9 @@ class StateManagerMult:
                         rect.isShaded = True
                     elif rect.isShaded == True:
                         #   #rect.changeColor(colors.WHITE)
-                        rect.changeColorHatch(self.colorPicker.myColor)
+                        #rect.changeColorHatch(self.colorPicker.myColor)
+                        rect.changeColorHatch(colors.WHITE)
+                        rect.isShadedV = False
                         rect.isShaded = False
     # needed for horiozntal shading. gets transpose of rectsData
     def invertRectData(self):
@@ -123,9 +125,18 @@ class StateManagerMult:
                 for row in self.rectsData:
                     for r in row:
                         if r == rect:
+                            self.colorPicker.enabled = False
                             for r1 in row:
-                                if r1.colorHatch == self.colorPicker.verticalColor:
-                                    r1.isShadedH = True
+                                if r1.isShadedB == True or r1.isShadedH == True: # its already been shaded by user, let them go back
+                                    if r1.isShadedB == True:
+                                        r1.isShadedB = False
+                                        r1.changeColorHatch(self.colorPicker.verticalColor)
+                                    elif r1.isShadedH == True:
+                                        r1.isShadedH = False
+                                        r1.changeColorHatch(colors.WHITE)
+
+                                elif r1.colorHatch == self.colorPicker.verticalColor:
+                                    #r1.isShadedH = True
                                     r1.isShadedB = True
                                     r1.changeColorHatch(self.colorPicker.getBlendedColor())
                                     #rect.drawVLines(self.colorPicker.myColor)
