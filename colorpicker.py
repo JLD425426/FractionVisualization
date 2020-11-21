@@ -34,36 +34,40 @@ class ColorPicker:
         # for state mgmt of colorpicker
         self.betweenShadingAlarm = False
         self.verticalColor = None
+        self.enabled = True
+
 
 
     def update(self):
-        # shading vertically
-        if self.stateManager.getCurrentState() == "Shading Vertically":
-            self.checkForColorChange()
-            self.betweenShadingAlarm = True
-        
-        # alarm between shading types so that this will if will execute exactly once
-        if self.stateManager.getCurrentState() != "Shading Vertically" and self.betweenShadingAlarm == True:
-            self.verticalColor = self.myColor
-            self.primeHorizontalColors()
-            self.changeColor(self.myColor,self.colorBlots[0].color,True)
-            self.betweenShadingAlarm = False
+        if self.enabled == True: #only execute if color picker is enabled
+            # shading vertically
+            if self.stateManager.getCurrentState() == "Shading Vertically":
+                self.checkForColorChange()
+                self.betweenShadingAlarm = True
+            
+            # alarm between shading types so that this will if will execute exactly once
+            if self.stateManager.getCurrentState() != "Shading Vertically" and self.betweenShadingAlarm == True:
+                self.verticalColor = self.myColor
+                self.primeHorizontalColors()
+                self.changeColor(self.myColor,self.colorBlots[0].color,True)
+                self.betweenShadingAlarm = False
 
-        # shading horizontally
-        if self.stateManager.getCurrentState() == "Shading Horizontally":
-            self.checkForColorChange()
+            # shading horizontally
+            if self.stateManager.getCurrentState() == "Shading Horizontally":
+                self.checkForColorChange()
         
 
 
     def draw(self):
 
-        if self.stateManager.getCurrentState() == "Shading Horizontally" or self.stateManager.getCurrentState() == "Shading Vertically":
-            self.screen.blit(self.brushTip,(10,self.SCREENHEIGHT-225)) # draw brushtip
+        if self.enabled == True: # only draw if enabled
+            if self.stateManager.getCurrentState() == "Shading Horizontally" or self.stateManager.getCurrentState() == "Shading Vertically":
+                self.screen.blit(self.brushTip,(10,self.SCREENHEIGHT-225)) # draw brushtip
 
-            self.screen.blit(self.palette,(10,self.SCREENHEIGHT-225)) # draw palette base
-            
-            for cB in self.colorBlots: # draw all selectable color blots
-                self.screen.blit(cB.spr,(cB.x,cB.y))
+                self.screen.blit(self.palette,(10,self.SCREENHEIGHT-225)) # draw palette base
+                
+                for cB in self.colorBlots: # draw all selectable color blots
+                    self.screen.blit(cB.spr,(cB.x,cB.y))
 
     def checkForColorChange(self):
         # loops thru colorBlots and if close to mouse and click->set new color based on colorblot
