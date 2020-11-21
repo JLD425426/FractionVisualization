@@ -226,6 +226,7 @@ def main_prog():
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
+        underneathRect = pygame.Rect(WIDTH/2-175, HEIGHT/2-175, 350, 350)
         testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
 
@@ -237,6 +238,7 @@ def main_prog():
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
+        underneathRect = pygame.Rect(WIDTH-640, HEIGHT/2-170, 280, 280)
         testRectangle = Rectangle(WIDTH-500,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
         testRectangle2 = Rectangle(WIDTH-150,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
@@ -333,9 +335,12 @@ def main_prog():
         state_message = "Current state: " + stateManager.getCurrentState()
         draw_text(state_message, button_font, (0,0,0), screen, 160, 25)
 
+
         tempRectList = list()
         for bgS in drawablesController.bgSquares:
             bgS.draw()
+        if program_OperationType == DIVISION or program_OperationType == SUBTRACTION:
+            pygame.draw.rect(screen, colors.DARKGREY, underneathRect)
         for rect in drawablesController.rectangles:
             if rect.ownerID == 2:
                 rect.draw()
