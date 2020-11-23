@@ -86,7 +86,7 @@ class ColorPicker:
                     self.brushTip.set_at((x,y),(newColor[2],newColor[1],newColor[0],0))
         if isPhaseChange == False:
             for rect in self.drawablesController.rectangles:
-                if self.stateManager.operation_type == self.stateManager.MULT:
+                if self.stateManager.operation_type == self.stateManager.MULT or self.stateManager.operation_type == self.stateManager.SUB:
                     if rect.colorHatch == oldColor:
                         rect.colorHatch = newColor
                 elif self.stateManager.operation_type == self.stateManager.DIV:

@@ -9,7 +9,7 @@ class BgSquare:
         self.height = height
         self.screen = screen
         self.drawablesController = drawablesController
-        self.color = colors.LIGHTGREY
+        self.color = colors.DARKGREY
         self.drawablesController.bgSquares.append(self)
 
     def draw(self):

@@ -26,6 +26,7 @@ class StateManagerSub:
 
         self.DONE = 4
         self.MOVING = 5 # for debuging
+        self.THROWINGAWAY = 6
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -74,7 +75,11 @@ class StateManagerSub:
 
         elif self.currentState == self.MOVING:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.DONE
+                self.currentState = self.THROWINGAWAY
+        elif self.currentState == self.THROWINGAWAY:
+                if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                    self.currentState = self.DONE
+        
 
 
 
@@ -86,6 +91,9 @@ class StateManagerSub:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to moving', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.MOVING:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            draw_text('Throw away', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.THROWINGAWAY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Finish', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
 
@@ -103,6 +111,8 @@ class StateManagerSub:
             return "Finished"
         elif self.currentState == self.MOVING:
             return "Moving"
+        elif self.currentState == self.THROWINGAWAY:
+            return "Throwing Away"
 
     def shadeVertical(self):
         if self.mouse.leftMouseReleasedThisFrame == True:
@@ -116,8 +126,8 @@ class StateManagerSub:
                         rect.isShadedV = True
                         rect.isShaded = True
                     elif rect.isShaded == True:
-                        #   #rect.changeColor(colors.WHITE)
-                        rect.changeColorHatch(self.colorPicker.myColor)
+                        rect.changeColorHatch(colors.WHITE)
+                        rect.isShadedV = False
                         rect.isShaded = False
     # needed for horiozntal shading. gets transpose of rectsData
     def invertRectData(self):
@@ -133,8 +143,17 @@ class StateManagerSub:
                     for r in row:
                         if r == rect:
                             for r1 in row:
-                                if r1.colorHatch == self.colorPicker.verticalColor:
-                                    r1.isShadedH = True
+                                self.colorPicker.enabled = False
+                                if r1.isShadedB == True or r1.isShadedH == True: # its already been shaded by user, let them go back
+                                    if r1.isShadedB == True:
+                                        r1.isShadedB = False
+                                        r1.changeColorHatch(self.colorPicker.verticalColor)
+                                    elif r1.isShadedH == True:
+                                        r1.isShadedH = False
+                                        r1.changeColorHatch(colors.WHITE)
+
+                                elif r1.colorHatch == self.colorPicker.verticalColor:
+                                    #r1.isShadedH = True
                                     r1.isShadedB = True
                                     r1.changeColorHatch(self.colorPicker.getBlendedColor())
                                     #rect.drawVLines(self.colorPicker.myColor)

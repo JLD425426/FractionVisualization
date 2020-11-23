@@ -69,7 +69,7 @@ class ProblemDisplay:
             canreduce = userAnswer.canReduce()
             if canreduce == True: # user answer can be reduced so theres 7 total symbols
                 userAnswerReduced = Fraction(userAnswer.getNum(),userAnswer.getDenom())
-                userAnswerReduced.finalReduce()
+                #userAnswerReduced.finalReduce()
                 # if user num and denom match known problem num and denom they got it right -> set isEqualSymbol to =
                 if userAnswerReduced.getNum() == self.numeratorAnswer and userAnswerReduced.getDenom() == self.denominatorAnswer:
                     isEqualSymbol = '='
@@ -85,6 +85,7 @@ class ProblemDisplay:
                 #draw stuff from right of equal sign moving right
                 self.drawFraction(userAnswer.getNum(),userAnswer.getDenom(),self.xMid + self.xOffset)
                 draw_text('=', self.font, (0,0,0),self.screen,self.xMid + self.xOffset * 2,self.yDraw)
+                userAnswerReduced.finalReduce()
                 self.drawFraction(userAnswerReduced.getNum(),userAnswerReduced.getDenom(),self.xMid + self.xOffset * 3)
                 if self.hasRightAnswer: # draw checkmark
                     self.drawSprite(self.checkmark,True)
@@ -98,7 +99,7 @@ class ProblemDisplay:
                     isEqualSymbol = '=/='
                     self.hasRightAnswer = False
                 self.drawFraction(self.numerator2,self.denominator2,self.xMid) # draw problem fraction 2 1st because itll be in middle
-                draw_text('x',self.font,(0,0,0),self.screen,self.xMid- self.xOffset,self.yDraw)
+                draw_text(self.operationSymbol,self.font,(0,0,0),self.screen,self.xMid- self.xOffset,self.yDraw)
                 self.drawFraction(self.numerator1,self.denominator1,self.xMid - self.xOffset * 2)
                 draw_text(isEqualSymbol,self.font,(0,0,0),self.screen,self.xMid + self.xOffset,self.yDraw)
                 self.drawFraction(userAnswer.getNum(),userAnswer.getDenom(),self.xMid + self.xOffset * 2)

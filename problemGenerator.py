@@ -54,8 +54,8 @@ class ProblemGenerator:
         answer.isImproper()
         if answer.getMix() == True:
             answer.makeMixed()
-        if answer.canReduce():
-            answer.finalReduce()
+        #if answer.canReduce():
+        #    answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
@@ -70,21 +70,25 @@ class ProblemGenerator:
             d1 = random.randint(1,6)
             n2 = random.randint(1,6)
             d2 = random.randint(1,6)
-            nAns = n1 * n2
-            dAns = d1 * d2
+            fraction1 = n1/d1
+            fraction2 = n2/d2
             if n1 >= d1: # on to next loop b/c mixed fraction, ie 3/2 
                 continue
             if n2 >= d2: # same thing, mixed fraction
                 continue
-            if nAns < dAns:
+            if fraction1 > fraction2: # only allow positive answers
                 break
         # now reduce problem answer
-        answer = Fraction(nAns,dAns)
+        #answer = Fraction(nAns,dAns)
+        fraction1 = Fraction(n1,d1)
+        fraction2 = Fraction(n2,d2)
+        nA, dA = fraction1.fSub(fraction2.numerator,fraction2.denominator)
+        answer = Fraction(nA,dA)
         answer.isImproper()
         if answer.getMix() == True:
             answer.makeMixed()
-        if answer.canReduce():
-            answer.finalReduce()
+        #if answer.canReduce():
+         #   answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
@@ -113,8 +117,8 @@ class ProblemGenerator:
         answer.isImproper()
         if answer.getMix() == True:
             answer.makeMixed()
-        if answer.canReduce():
-            answer.finalReduce()
+        #if answer.canReduce():
+        #    answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
