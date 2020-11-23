@@ -14,6 +14,7 @@ from fractionHandler import Fraction
 from colorpicker import ColorPicker
 from problemDisplay import ProblemDisplay
 from problemGenerator import ProblemGenerator
+from trashCan import TrashCan
 
 pygame.init()
 
@@ -205,6 +206,7 @@ def main_prog():
     mouse = MouseHandler()
     drawablesController = DrawablesController()
     colorPicker = None
+    trashCan = None
 
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
@@ -230,7 +232,9 @@ def main_prog():
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
 
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
+        trashCan = TrashCan(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
+        stateManager.setTrashCan(trashCan)
 
     elif program_OperationType == DIVISION:
         stateManager = StateManagerDiv(program_CuttingType,screen)
@@ -289,6 +293,8 @@ def main_prog():
             stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
         elif program_OperationType == SUBTRACTION:
             stateManager.update(testRectangle.myCutter)
+            if TrashCan != None:
+                trashCan.update()
         else:
             stateManager.update(testRectangle.myCutter)
         
@@ -368,6 +374,8 @@ def main_prog():
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()
+        if trashCan != None:
+            trashCan.draw()
         problemDisplay.draw()
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False

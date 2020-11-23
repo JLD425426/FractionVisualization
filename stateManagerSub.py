@@ -26,13 +26,14 @@ class StateManagerSub:
 
         self.DONE = 4
         self.MOVING = 5 # for debuging
-        self.THROWINGAWAY = 6
+        ##self.THROWINGAWAY = 6
 
         self.currentState = self.CUTTINGVERTICALLY
 
         self.drawablesController = None
         self.mouse = None
         self.colorPicker = None
+        self.trashCan = None
 
         self.screen = screen
         self.WIDTH = 700
@@ -75,12 +76,12 @@ class StateManagerSub:
 
         elif self.currentState == self.MOVING:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.THROWINGAWAY
-        elif self.currentState == self.THROWINGAWAY:
-                if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                    self.currentState = self.DONE
+                self.currentState = self.DONE
+                ##self.currentState = self.THROWINGAWAY
+        ##elif self.currentState == self.THROWINGAWAY:
+        ##        if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+        ##            self.currentState = self.DONE
         
-
 
 
     def draw(self):
@@ -92,10 +93,10 @@ class StateManagerSub:
             draw_text('Proceed to moving', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.MOVING:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Throw away', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
-        elif self.currentState == self.THROWINGAWAY:
-            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Finish', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+        ##elif self.currentState == self.THROWINGAWAY:
+        ##    pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+        ##    draw_text('Finish', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
 
 
     def getCurrentState(self):
@@ -111,8 +112,8 @@ class StateManagerSub:
             return "Finished"
         elif self.currentState == self.MOVING:
             return "Moving"
-        elif self.currentState == self.THROWINGAWAY:
-            return "Throwing Away"
+        ##elif self.currentState == self.THROWINGAWAY:
+        ##    return "Throwing Away"
 
     def shadeVertical(self):
         if self.mouse.leftMouseReleasedThisFrame == True:
@@ -154,6 +155,7 @@ class StateManagerSub:
 
                                 elif r1.colorHatch == self.colorPicker.verticalColor:
                                     #r1.isShadedH = True
+                                    r1.isShadedV = False
                                     r1.isShadedB = True
                                     r1.changeColorHatch(self.colorPicker.getBlendedColor())
                                     #rect.drawVLines(self.colorPicker.myColor)
@@ -170,7 +172,8 @@ class StateManagerSub:
         denominator = 0
         for rect in self.drawablesController.rectangles:
             denominator += 1
-            if rect.isShadedB == True:
+            if rect.isTrash == False and rect.isShadedV == True:
+            ##if rect.isShadedB == True:
                 numerator += 1
             #   #if rect.color == self.colorPicker.getBlendedColor():
                 #   #numerator += 1
@@ -186,3 +189,5 @@ class StateManagerSub:
         self.mouse = m
     def setColorPicker(self, c):
         self.colorPicker = c
+    def setTrashCan(self, v):
+        self.trashCan = v

@@ -63,6 +63,8 @@ class Rectangle:
         self.isShadedB = False
         self.colorHatch = colors.WHITE
 
+        self.isTrash = False
+
         # draw outer guidelines and bg square only if rectangle is original square
         if self.isOriginalSquare == True:
             GuideLine(self.topLeftX,self.topLeftY,"vertical",self,self.screen,self.drawablesController, True)
@@ -93,13 +95,17 @@ class Rectangle:
                 self.finalCut()
 
         if self.stateManager.getCurrentState() == "Moving":
-            if self.stateManager.operation_type == 3:
+            if self.stateManager.operation_type == 3:       #Subtraction
                     #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
-                    if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
+                    ##if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
+                    if self.isOriginalSquare == False and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
                         if self.isShadedH is False:
                             return
-                        if self.isShadedB is True or self.isShadedV is True:
+                        #if self.isShadedB is True or self.isShadedV is True:
+                        #    return
+                        if self.isShadedV is True:
                             return
+                           
                         # mouse is holding no one and clicking, set self as being held
                         if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
                             mouse.whoisHeld = self
@@ -114,6 +120,7 @@ class Rectangle:
             else:
                 #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
                     if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
+                    ##if self.isOriginalSquare == False and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
                         # mouse is holding no one and clicking, set self as being held
                         if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
                             mouse.whoisHeld = self
@@ -152,6 +159,21 @@ class Rectangle:
             return True
         else:
             return False
+
+    def isCollidingWithTrash(self):
+        topLX = 0
+        topLY = 500
+        botRX = 250
+        botRY = 700
+        if (self.topLeftX >= topLX and self.topLeftY >= topLY and self.bottomRightX <= botRX and self.bottomRightY <= botRY):
+            return True
+        else:
+            return False
+
+        ##if (xx > self.topLeftX and xx < self.bottomRightX and yy > self.topLeftY and yy < self.bottomRightY):
+        ##    return True
+        ##else:
+        ##    return False
 
     def putDown(self,mouse):
         mouse.whoisHeld = None
@@ -247,7 +269,7 @@ class Rectangle:
                         self.stateManager.invertRectData()
                         self.isShadedH = True
                         self.isShadedB = True
-                        self.ownerID = 2
+                        #   #self.ownerID = 2
                         if replaced:
                             self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                             self.drawablesController.rectangles.remove(replaced)
@@ -265,13 +287,19 @@ class Rectangle:
                         self.stateManager.invertRectData()
                         self.isShadedH = True
                         self.isShadedB = True
-                        self.ownerID = 2
+                        #   #self.ownerID = 2
                         if replaced:
                             self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                             self.drawablesController.rectangles.remove(replaced)
                         return
                     else:
                         pass
+                ##elif self.isCollidingWithPoint(114,577):
+                elif self.isCollidingWithTrash() or self.isCollidingWithPoint(114, 577):
+                    self.xOrigin = 700
+                    self.yOrigin = 700
+                    self.isTrash = True
+
 
         
                 

@@ -70,19 +70,30 @@ class ProblemGenerator:
             d1 = random.randint(1,6)
             n2 = random.randint(1,6)
             d2 = random.randint(1,6)
-            fraction1 = n1/d1
-            fraction2 = n2/d2
-            if n1 >= d1: # on to next loop b/c mixed fraction, ie 3/2 
+            ##f1 = Fraction(n1, d1)
+            #fraction1 = n1/d1
+            #fraction2 = n2/d2
+            ##if n1 >= d1: # on to next loop b/c mixed fraction, ie 3/2 
+            ##    continue
+            ##nA, dA = f1.fSub(n2,d2)
+            ##if nA <= 0:
+            ##    continue
+            if n1 >= d1:
                 continue
             if n2 >= d2: # same thing, mixed fraction
                 continue
-            if fraction1 > fraction2: # only allow positive answers
+            f1 = Fraction(n1, d1)
+            f2 = Fraction(n2, d2)
+            nA,dA = f1.fSub(n2,d2)
+            if nA >= 0:
                 break
+            ##if fraction1 > fraction2: # only allow positive answers
+            ##    break
         # now reduce problem answer
         #answer = Fraction(nAns,dAns)
-        fraction1 = Fraction(n1,d1)
-        fraction2 = Fraction(n2,d2)
-        nA, dA = fraction1.fSub(fraction2.numerator,fraction2.denominator)
+        ##fraction1 = Fraction(n1,d1)
+        ##fraction2 = Fraction(n2,d2)
+        
         answer = Fraction(nA,dA)
         answer.isImproper()
         if answer.getMix() == True:
@@ -104,7 +115,7 @@ class ProblemGenerator:
             dAns = d1 * n2
             if d1 == 1 or d2 == 1:
                 continue
-            if ((nAns) / (dAns)) >= 1: # answer too big, loop again
+            #   #if ((nAns) / (dAns)) >= 1: # answer too big, loop again
                 continue
             if n1 > d1 or n2 > d2: # if num bigger than denom, loop again
                 continue
