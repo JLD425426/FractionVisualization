@@ -108,10 +108,10 @@ class StateManagerSub:
             return "Cutting Horizontally"
         elif self.currentState == self.SHADINGHORIZONTALLY:
             return "Shading Horizontally"
-        elif self.currentState == self.DONE:
-            return "Finished"
         elif self.currentState == self.MOVING:
             return "Moving"
+        elif self.currentState == self.DONE:
+            return "Finished"
         ##elif self.currentState == self.THROWINGAWAY:
         ##    return "Throwing Away"
 
@@ -152,10 +152,11 @@ class StateManagerSub:
                                     elif r1.isShadedH == True:
                                         r1.isShadedH = False
                                         r1.changeColorHatch(colors.WHITE)
-
-                                elif r1.colorHatch == self.colorPicker.verticalColor:
+                                #   #elif r1.colorHatch == self.colorPicker.verticalColor:
+                                elif r1.isShadedV == True:
                                     #r1.isShadedH = True
                                     r1.isShadedV = False
+                                    r1.isShadedH = False
                                     r1.isShadedB = True
                                     r1.changeColorHatch(self.colorPicker.getBlendedColor())
                                     #rect.drawVLines(self.colorPicker.myColor)
@@ -167,17 +168,25 @@ class StateManagerSub:
                                     r1.changeColorHatch(self.colorPicker.myColor)
                                     ##r1.changeColor(self.colorPicker.myColor)
 
-    def get_answer(self):
-        numerator = 0
+
+    def get_answerDenom(self):
         denominator = 0
         for rect in self.drawablesController.rectangles:
             denominator += 1
+        return denominator
+
+    def get_answerNumer(self):
+        numerator = 0
+        ##denominator = 0
+        ##denominator = 0
+        for rect in self.drawablesController.rectangles:
+            ##denominator += 1
             if rect.isTrash == False and rect.isShadedV == True:
             ##if rect.isShadedB == True:
                 numerator += 1
             #   #if rect.color == self.colorPicker.getBlendedColor():
                 #   #numerator += 1
-        return (numerator, denominator)
+        return numerator
 
 
 

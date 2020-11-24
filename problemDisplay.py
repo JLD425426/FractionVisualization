@@ -45,6 +45,9 @@ class ProblemDisplay:
         self.numeratorAnswer = -1
         self.denominatorAnswer = -1
 
+        self.usernumerator = -1
+        self.userdenominator = -1
+
         #sprites
         self.checkmark = pg.image.load('assets/checkmark.png')
         self.x = pg.image.load('assets/x.png')
@@ -63,15 +66,24 @@ class ProblemDisplay:
             draw_text(self.operationSymbol,self.font,(0,0,0),self.screen,self.xMid,self.yDraw)
             self.drawFraction(self.numerator1,self.denominator1,self.xMid - self.xOffset)
             self.drawFraction(self.numerator2,self.denominator2,self.xMid + self.xOffset)
+            if (self.stateManager.getCurrentState() == "Shading Horizontally"):
+                self.userdenominator = self.stateManager.get_answerDenom()
         elif (self.stateManager.getCurrentState() == "Finished"):
-            numerator, denominator = self.stateManager.get_answer()
-            userAnswer = Fraction(numerator, denominator)
-            canreduce = userAnswer.canReduce()
-            if canreduce == True: # user answer can be reduced so theres 7 total symbols
+            self.usernumerator = self.stateManager.get_answerNumer()
+            userAnswer = Fraction(self.usernumerator, self.userdenominator)
+            cpuAnswer = Fraction(self.numeratorAnswer, self.denominatorAnswer)
+            canreduce = False
+            cpucanreduce = False
+            if self.usernumerator != 0 and cpuAnswer.getNum() != 0:
+                canreduce = userAnswer.canReduce()
+                cpucanreduce = cpuAnswer.canReduce()
+            if canreduce == True and cpucanreduce == True: # user answer can be reduced so theres 7 total symbols
                 userAnswerReduced = Fraction(userAnswer.getNum(),userAnswer.getDenom())
-                #userAnswerReduced.finalReduce()
+                userAnswerReduced.finalReduce()
+                cpuAnswerReduced = Fraction(cpuAnswer.getNum(),cpuAnswer.getDenom())
+                cpuAnswerReduced.finalReduce()
                 # if user num and denom match known problem num and denom they got it right -> set isEqualSymbol to =
-                if userAnswerReduced.getNum() == self.numeratorAnswer and userAnswerReduced.getDenom() == self.denominatorAnswer:
+                if userAnswerReduced.getNum() == cpuAnswerReduced.getNum() and userAnswerReduced.getDenom() == cpuAnswerReduced.getDenom():
                     isEqualSymbol = '='
                     self.hasRightAnswer = True
                 else:

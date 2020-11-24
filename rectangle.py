@@ -98,26 +98,27 @@ class Rectangle:
             if self.stateManager.operation_type == 3:       #Subtraction
                     #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
                     ##if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
-                    if self.isOriginalSquare == False and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
-                        if self.isShadedH is False:
-                            return
+                if self.isOriginalSquare == False and self.colorHatch != colors.WHITE:
+                        #   #if self.isShadedH is False:
+                        #   #    return
                         #if self.isShadedB is True or self.isShadedV is True:
                         #    return
-                        if self.isShadedV is True:
-                            return
+                        #   #if self.isShadedV is True:
+                        #   #    return
                            
                         # mouse is holding no one and clicking, set self as being held
-                        if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
-                            mouse.whoisHeld = self
-                            if self.myPointCollider != None:
-                                self.myPointCollider.isOccupied = False
-                        # mouse release so remove self as being held
-                        if mouse.isClick == False and mouse.whoisHeld == self:
-                            self.putDown(mouse)
-                        # self is being dragged so move it around
-                        if mouse.whoisHeld == self:
-                            self.updatePosition(mouse.mx,mouse.my)
-            else:
+                        if self.isShadedB is True or self.isShadedH is True:
+                            if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
+                                mouse.whoisHeld = self
+                                if self.myPointCollider != None:
+                                    self.myPointCollider.isOccupied = False
+                            # mouse release so remove self as being held
+                            if mouse.isClick == False and mouse.whoisHeld == self:
+                                self.putDown(mouse)
+                            # self is being dragged so move it around
+                            if mouse.whoisHeld == self:
+                                self.updatePosition(mouse.mx,mouse.my)
+                else:
                 #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
                     if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
                     ##if self.isOriginalSquare == False and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
@@ -165,7 +166,7 @@ class Rectangle:
         topLY = 500
         botRX = 250
         botRY = 700
-        if (self.topLeftX >= topLX and self.topLeftY >= topLY and self.bottomRightX <= botRX and self.bottomRightY <= botRY):
+        if (self.topLeftX >= topLX and self.topLeftY >= topLY and self.bottomRightX <= botRX and self.bottomRightY <= botRY) and self:
             return True
         else:
             return False
@@ -242,7 +243,9 @@ class Rectangle:
                     if pc.isOccupied and pc.valid:
                         for rect in self.drawablesController.rectangles:
                             if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.isShadedB is True:
+                                if ((rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.isShadedB is True or rect.isShadedH is True or (rect.color == colors.WHITE and rect.colorHatch == colors.WHITE) or (self.isShadedB == True and rect.color == colors.WHITE and rect.colorHatch != colors.WHITE)):
+                                #   #if(rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.isShadedB is True:
+                                #if rect.color == colors.WHITE or rect.colorHatch == colors.BLACK or rect.isShadedB is True:
                                     self.updatePosition(self.xOrigin, self.yOrigin)
                                     return
                                 else:
@@ -258,6 +261,7 @@ class Rectangle:
                     # if neither statement is true, call snapback to the origin
                     if (self.width - pc.width <= 1 and self.width - pc.width >= -1 and self.height - pc.height <= 1 and self.height - pc.height >= -1):
                         #deal with rounding errors
+                        ##if 
                         self.updatePosition(pc.x,pc.y)
                         self.xOrigin = pc.x
                         self.yOrigin = pc.y
@@ -267,38 +271,43 @@ class Rectangle:
                         if self.color != colors.WHITE or self.color != ogColor:
                             self.color = ogColor
                         self.stateManager.invertRectData()
-                        self.isShadedH = True
+                        #   #self.isShadedH = True
                         self.isShadedB = True
-                        #   #self.ownerID = 2
+                            #   #self.ownerID = 2
                         if replaced:
                             self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                             self.drawablesController.rectangles.remove(replaced)
                         return
-                    elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
+                    ##elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
                         #need to work on rotate
-                        self.xOrigin = pc.x
-                        self.yOrigin = pc.y
-                        self.rotatePosition(pc.x,pc.y)
-                        pc.isOccupied = True
-                        self.myPointCollider = pc
-                        self.changeColorHatch(colors.BLACK)
-                        if self.color != colors.WHITE or self.color != ogColor:
-                            self.color = ogColor
-                        self.stateManager.invertRectData()
-                        self.isShadedH = True
-                        self.isShadedB = True
-                        #   #self.ownerID = 2
-                        if replaced:
-                            self.drawablesController.pointColliders.remove(replaced.myPointCollider)
-                            self.drawablesController.rectangles.remove(replaced)
-                        return
+                    ##    self.xOrigin = pc.x
+                    ##    self.yOrigin = pc.y
+                    ##    self.rotatePosition(pc.x,pc.y)
+                    ##    pc.isOccupied = True
+                    ##    self.myPointCollider = pc
+                    ##    self.changeColorHatch(colors.BLACK)
+                    ##    if self.color != colors.WHITE or self.color != ogColor:
+                    ##        self.color = ogColor
+                    ##    self.stateManager.invertRectData()
+                    ##    self.isShadedH = True
+                    ##    self.isShadedB = True
+                    ##    #   #self.ownerID = 2
+                    ##    if replaced:
+                    ##        self.drawablesController.pointColliders.remove(replaced.myPointCollider)
+                    ##        self.drawablesController.rectangles.remove(replaced)
+                    ##    return
                     else:
                         pass
                 ##elif self.isCollidingWithPoint(114,577):
                 elif self.isCollidingWithTrash() or self.isCollidingWithPoint(114, 577):
-                    self.xOrigin = 700
-                    self.yOrigin = 700
-                    self.isTrash = True
+                    if self.isShadedB is True:
+                        self.xOrigin = 700
+                        self.yOrigin = 700
+                        self.isTrash = True
+                    else:
+                        self.updatePosition(self.xOrigin, self.yOrigin)
+                        return
+
 
 
         

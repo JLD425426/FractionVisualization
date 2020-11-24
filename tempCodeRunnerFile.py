@@ -1,1 +1,2 @@
-s
+
+        for rect in drawablesController.rec

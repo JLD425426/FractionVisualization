@@ -27,6 +27,6 @@ class TrashCan:
 
     def draw(self):
         if self.enabled == True:
-            if self.stateManager.getCurrentState() == "Moving":
+            if self.stateManager.getCurrentState() == "Moving" or self.stateManager.getCurrentState() == "Finished":
                 self.screen.blit(self.hide, (528,self.SCREENHEIGHT-200))
                 self.screen.blit(self.trash,(2,self.SCREENHEIGHT-200))
