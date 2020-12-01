@@ -173,6 +173,17 @@ class StateManagerDiv:
                 #   #numerator += 1
         return (numerator, self.numShadedRightRects)
 
+    def get_answerDenom(self):
+        return self.numShadedRightRects
+
+    def get_answerNumer(self):
+        numerator = 0
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 2 and rect.colorHatch != colors.WHITE:
+                if rect.isShadedB == True:
+                    numerator += 1
+        return numerator
+
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):

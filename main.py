@@ -327,7 +327,7 @@ def main_prog():
                 main_prog()
         
         # drawing here
-        screen.fill(colors.GREY) #fill screen bg   
+        screen.fill(colors.BGCOLOR) #fill screen bg   
 
         # Drawing menu button
         pygame.draw.rect(screen, (8, 41, 255), menu_button)

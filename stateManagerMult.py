@@ -159,6 +159,20 @@ class StateManagerMult:
                 #   #numerator += 1
         return (numerator, denominator)
 
+    def get_answerDenom(self):
+        denominator = 0
+        for rect in self.drawablesController.rectangles:
+            denominator += 1
+        return denominator
+
+    def get_answerNumer(self):
+        numerator = 0
+        for rect in self.drawablesController.rectangles:
+            if rect.isShadedB == True:
+                numerator += 1
+        return numerator
+    
+
 
 
 

@@ -44,6 +44,9 @@ class StateManagerSub:
         self.rectsData = None
         self.hasInvertedRectData = False
 
+        self.vColor = colors.WHITE
+        self.hColor = colors.WHITE
+
     def getOperationType(self):
         return self.operation_type
 
@@ -119,17 +122,15 @@ class StateManagerSub:
         if self.mouse.leftMouseReleasedThisFrame == True:
             for rect in self.drawablesController.rectangles:
                 if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
-                    if rect.isShaded == False:
-                        #rect.drawLines(self.colorPicker.myColor, 0)
-                        #0 = Vertical, set an internal rect variable to 1
-                        #   #rect.changeColor(self.colorPicker.myColor)
-                        rect.changeColorHatch(self.colorPicker.myColor)
+                    if rect.isShadedV == False:
                         rect.isShadedV = True
-                        rect.isShaded = True
-                    elif rect.isShaded == True:
-                        rect.changeColorHatch(colors.WHITE)
+                        rect.vColor = self.colorPicker.myColor
+                        for r in self.drawablesController.rectangles:
+                            if r.isShadedV == True:
+                                r.vColor = self.colorPicker.myColor
+                                self.vColor = self.colorPicker.myColor
+                    elif rect.isShadedV == True:
                         rect.isShadedV = False
-                        rect.isShaded = False
     # needed for horiozntal shading. gets transpose of rectsData
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
@@ -138,6 +139,7 @@ class StateManagerSub:
     # loop through each rectangle in eac row of rects data. If any rectangle in that row is selected, changle all colors
     # of rects in that row
     def shadeHorizontal(self):
+        self.hColor = self.colorPicker.myColor
         for rect in self.drawablesController.rectangles:
             if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True and self.mouse.leftMouseReleasedThisFrame:
                 for row in self.rectsData:
@@ -145,28 +147,27 @@ class StateManagerSub:
                         if r == rect:
                             for r1 in row:
                                 self.colorPicker.enabled = False
-                                if r1.isShadedB == True or r1.isShadedH == True: # its already been shaded by user, let them go back
-                                    if r1.isShadedB == True:
-                                        r1.isShadedB = False
-                                        r1.changeColorHatch(self.colorPicker.verticalColor)
-                                    elif r1.isShadedH == True:
+                                if (r1.isShadedV == False and r1.isShadedH == False and r1.isShadedB == False) or r1.isShadedV == True: # horizontal line not shaded, make white rects shaded horizontally and vertically shaded rects shaded both ways
+                                    if r1.isShadedV == True: # for vertically shaded rects
+                                        r1.isShadedV = False
                                         r1.isShadedH = False
-                                        r1.changeColorHatch(colors.WHITE)
-                                #   #elif r1.colorHatch == self.colorPicker.verticalColor:
-                                elif r1.isShadedV == True:
-                                    #r1.isShadedH = True
-                                    r1.isShadedV = False
-                                    r1.isShadedH = False
-                                    r1.isShadedB = True
-                                    r1.changeColorHatch(self.colorPicker.getBlendedColor())
-                                    #rect.drawVLines(self.colorPicker.myColor)
-                                    #1 = Horizontal, set an internal rect variable to 2
-                                    #if two then (?)
-                                    ##r1.changeColor(self.colorPicker.getBlendedColor())
-                                elif r1.colorHatch == colors.WHITE:
-                                    r1.isShadedH = True
-                                    r1.changeColorHatch(self.colorPicker.myColor)
-                                    ##r1.changeColor(self.colorPicker.myColor)
+                                        r1.isShadedB = True
+                                        r1.hColor = self.colorPicker.myColor
+                                    else: # for white rects
+                                        r1.isShadedV = False
+                                        r1.isShadedH = True
+                                        r1.isShadedB = False
+                                        r1.hColor = self.colorPicker.myColor
+                                elif r1.isShadedH == True or r1.isShadedB == True: #undo shading here
+                                    if r1.isShadedB == True:
+                                        r1.isShadedV = True
+                                        r1.isShadedH = False
+                                        r1.isShadedB = False
+                                    elif r1.isShadedH == True:
+                                        r1.isShadedV = False
+                                        r1.isShadedH = False
+                                        r1.isShadedB = False
+
 
 
     def get_answerDenom(self):

@@ -2,9 +2,9 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (136, 140, 139)
 DARKBLUE = (25, 82, 227)
-LIGHTGREY = (220,225,225)
+LIGHTGREY = (198,204,204)
 DARKGREY = (95, 99, 98)
-
+BGCOLOR = (224, 198, 139)
 
 #primary colors
 #RED = (255, 0, 0)
