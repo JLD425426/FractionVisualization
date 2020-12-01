@@ -182,7 +182,7 @@ class StateManagerSub:
         ##denominator = 0
         for rect in self.drawablesController.rectangles:
             ##denominator += 1
-            if rect.isTrash == False and rect.isShadedV == True:
+            if rect.isTrash == False and (rect.isShadedV == True or rect.isShadedB == True):
             ##if rect.isShadedB == True:
                 numerator += 1
             #   #if rect.color == self.colorPicker.getBlendedColor():
