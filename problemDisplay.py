@@ -69,6 +69,7 @@ class ProblemDisplay:
             if (self.stateManager.getCurrentState() == "Shading Horizontally"):
                 self.userdenominator = self.stateManager.get_answerDenom()
         elif (self.stateManager.getCurrentState() == "Finished"):
+            self.userdenominator = self.stateManager.get_answerDenom()
             self.usernumerator = self.stateManager.get_answerNumer()
             userAnswer = Fraction(self.usernumerator, self.userdenominator)
             cpuAnswer = Fraction(self.numeratorAnswer, self.denominatorAnswer)
