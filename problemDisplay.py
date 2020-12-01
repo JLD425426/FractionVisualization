@@ -66,8 +66,11 @@ class ProblemDisplay:
             draw_text(self.operationSymbol,self.font,(0,0,0),self.screen,self.xMid,self.yDraw)
             self.drawFraction(self.numerator1,self.denominator1,self.xMid - self.xOffset)
             self.drawFraction(self.numerator2,self.denominator2,self.xMid + self.xOffset)
+            if (self.stateManager.getCurrentState() == "Shading Horizontally"):
+                self.userdenominator = self.stateManager.get_answerDenom()
         elif (self.stateManager.getCurrentState() == "Finished"):
-            self.userdenominator = self.stateManager.get_answerDenom()
+            if self.stateManager.operation_type == 2:
+                self.userdenominator = self.stateManager.get_answerDenom()
             self.usernumerator = self.stateManager.get_answerNumer()
             userAnswer = Fraction(self.usernumerator, self.userdenominator)
             cpuAnswer = Fraction(self.numeratorAnswer, self.denominatorAnswer)
