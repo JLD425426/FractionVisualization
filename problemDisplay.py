@@ -79,11 +79,14 @@ class ProblemDisplay:
             if self.usernumerator != 0 and cpuAnswer.getNum() != 0:
                 canreduce = userAnswer.canReduce()
                 cpucanreduce = cpuAnswer.canReduce()
-            if canreduce == True and cpucanreduce == True: # user answer can be reduced so theres 7 total symbols
+            else:
+                userAnswer.denominator = cpuAnswer.denominator
+            if canreduce == True or cpucanreduce == True: # user answer can be reduced so theres 7 total symbols
                 userAnswerReduced = Fraction(userAnswer.getNum(),userAnswer.getDenom())
                 userAnswerReduced.finalReduce()
                 cpuAnswerReduced = Fraction(cpuAnswer.getNum(),cpuAnswer.getDenom())
-                cpuAnswerReduced.finalReduce()
+                if cpuAnswerReduced.canReduce() == True:
+                    cpuAnswerReduced.finalReduce()
                 # if user num and denom match known problem num and denom they got it right -> set isEqualSymbol to =
                 if userAnswerReduced.getNum() == cpuAnswerReduced.getNum() and userAnswerReduced.getDenom() == cpuAnswerReduced.getDenom():
                     isEqualSymbol = '='

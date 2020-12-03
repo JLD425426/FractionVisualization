@@ -344,6 +344,8 @@ def main_prog():
         for bgS in drawablesController.bgSquares:
             bgS.draw()
         for rect in drawablesController.rectangles:
+            #
+            #move to rectangle class
             if rect.ownerID == 2:
                 rect.draw()
                 if rect.isShadedV == True and rect.isShadedH != True:
