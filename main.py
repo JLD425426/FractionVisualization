@@ -103,6 +103,7 @@ def main_menu():
         if quit_button.collidepoint((m1x, m1y)):    # Quits game on quit button click
             if click:
                 quit_message()
+        """
         if cuttingType_button.collidepoint((m1x,m1y)):
             if click:
                 if program_CuttingType == FRACTIONCUTTING:
@@ -111,12 +112,13 @@ def main_menu():
                     program_CuttingType = CMCUTTING
                 elif program_CuttingType == CMCUTTING:
                     program_CuttingType = FRACTIONCUTTING
+        """
         if operationType_button.collidepoint((m1x,m1y)):
             if click:
                 if program_OperationType == MULTIPLICATION:
-                    program_OperationType = ADDITION
-                elif program_OperationType == ADDITION:
                     program_OperationType = SUBTRACTION
+                #elif program_OperationType == ADDITION:
+                    #program_OperationType = SUBTRACTION
                 elif program_OperationType == SUBTRACTION:
                     program_OperationType = DIVISION
                 elif program_OperationType == DIVISION:
@@ -131,12 +133,13 @@ def main_menu():
         pygame.draw.rect(screen, (8, 41, 255), quit_button)
         draw_text('Quit', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
         pygame.draw.rect(screen, (8, 41, 255), cuttingType_button)
-
+        """
         if program_CuttingType == CMCUTTING:
             draw_text('Cut with cutmarkers', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
         elif program_CuttingType == VARCUTTING:
             draw_text('Variable cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        elif program_CuttingType == FRACTIONCUTTING:
+        """
+        if program_CuttingType == FRACTIONCUTTING:
             draw_text('Fraction cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
         pygame.draw.rect(screen, (8, 41, 255), operationType_button)
 
