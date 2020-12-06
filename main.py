@@ -93,8 +93,8 @@ def main_menu():
         # Create start and quit buttons with rect
         start_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/4), 200, 50)
         quit_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3), 200, 50)
-        cuttingType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
-        operationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 120, 200, 50)
+        # cuttingType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
+        operationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
 
         # Check if mouse is on a button when clicked
         if start_button.collidepoint((m1x, m1y)):   # Calls main program if start is selected
@@ -132,25 +132,25 @@ def main_menu():
         draw_text('Start', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25))
         pygame.draw.rect(screen, (8, 41, 255), quit_button)
         draw_text('Quit', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
-        pygame.draw.rect(screen, (8, 41, 255), cuttingType_button)
+        # pygame.draw.rect(screen, (8, 41, 255), cuttingType_button)
         """
         if program_CuttingType == CMCUTTING:
             draw_text('Cut with cutmarkers', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
         elif program_CuttingType == VARCUTTING:
             draw_text('Variable cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        """
         if program_CuttingType == FRACTIONCUTTING:
             draw_text('Fraction cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
+        """
         pygame.draw.rect(screen, (8, 41, 255), operationType_button)
 
         if program_OperationType == MULTIPLICATION:
-            draw_text('Multiplication', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145))
+            draw_text('Multiplication', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
         elif program_OperationType == ADDITION:
-            draw_text('Addition', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145)) 
+            draw_text('Addition', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85)) 
         elif program_OperationType == SUBTRACTION:
-            draw_text('Subtraction', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145)) 
+            draw_text('Subtraction', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85)) 
         elif program_OperationType == DIVISION:
-            draw_text('Division', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145)) 
+            draw_text('Division', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85)) 
 
         click = False
         pygame.display.update()
