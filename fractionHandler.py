@@ -48,8 +48,9 @@ class Fraction:
 
     def makeMixed(self):
         self.leadCo = (int)(self.numerator / self.denominator)
-        newNumer = (int)(self.numerator % self.denominator)
-        self.numerator = newNumer
+        if self.numerator <= self.denominator:
+            newNumer = (int)(self.numerator % self.denominator)
+            self.numerator = newNumer
         
         
 
