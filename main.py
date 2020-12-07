@@ -72,15 +72,18 @@ def main_menu():
     click = False
     m1x = 0      # Get error if you don't set value for mx and my here
     m1y = 0      # Maybe pass as parameter for main_prog()
-    while True:
+    isProgramRunning = True
+    while isProgramRunning:
 
         # Main event loop
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit()
+                isProgramRunning = False
+                break
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    pygame.quit()
+                    isProgramRunning = False
+                    break
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
                     click = True
@@ -161,7 +164,8 @@ def quit_message():
     click = False
     m1x = 0      # Get error if you don't set value for mx and my here
     m1y = 0      # Maybe pass as parameter for main_prog()
-    while True:
+    isProgramRunning = True
+    while isProgramRunning:
  
         m1x, m1y = pygame.mouse.get_pos()   # Get mouse position
 
@@ -317,6 +321,8 @@ def main_prog():
             if click:
                 problemGenerator.needsNewProblem = True
                 main_menu()
+                isProgramRunning = False
+                break
 
         restart_button = pygame.Rect(WIDTH-220, 0, 100, 50)
         if restart_button.collidepoint((mouse.mx, mouse.my)):
