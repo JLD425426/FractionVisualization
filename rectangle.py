@@ -265,6 +265,7 @@ class Rectangle:
                     return
                 else:
                     pass
+        self.updatePosition(self.xOrigin, self.yOrigin)
         
     def putDownSub(self,mouse):
         mouse.whoisHeld = None
@@ -326,7 +327,7 @@ class Rectangle:
                                     return
                                 else:
                                     pass
-                                
+                    
                                 
                 else:
                     # snap back to og position
