@@ -129,7 +129,7 @@ class Fraction:
     
     def fDiv(self, numer2, denom2):
         quoNum = self.numerator * denom2
-        quoDen = self.denominator + numer2
+        quoDen = self.denominator * numer2
         return quoNum, quoDen
     
     def fProportion(self, n, d, equiv):
