@@ -34,7 +34,7 @@ class StateManagerMult:
         self.colorPicker = None
 
         self.screen = screen
-        self.WIDTH = 700
+        self.WIDTH = 1200
         self.HEIGHT = 700
         self.proceed_button = pygame.Rect(int((self.WIDTH/2)-150), int(self.HEIGHT/2+180), 300, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)

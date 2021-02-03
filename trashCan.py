@@ -31,4 +31,4 @@ class TrashCan:
             if self.stateManager.getCurrentState() == "Moving" or self.stateManager.getCurrentState() == "Finished":
                 #self.screen.blit(self.hide, (528,self.SCREENHEIGHT-200))
                 self.screen.blit(self.trash,(2,self.SCREENHEIGHT-200))
-                pg.draw.rect(self.screen, colors.BGCOLOR, [528,self.SCREENHEIGHT-200,250,250],0)
+                pg.draw.rect(self.screen, colors.BGCOLOR, [self.SCREENWIDTH-172,self.SCREENHEIGHT-200,250,250],0)

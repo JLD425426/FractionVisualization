@@ -19,7 +19,7 @@ from trashCan import TrashCan
 pygame.init()
 
 # Define dimensions for window
-WIDTH, HEIGHT = 700, 700
+WIDTH, HEIGHT = 1200, 700
 
 # define window
 screenDimensions = (WIDTH, HEIGHT)
@@ -31,6 +31,7 @@ title_font = pygame.font.SysFont('Arial', 60)
 button_font = pygame.font.SysFont('Arial', 25)
 smallButton_font = pygame.font.SysFont('Arial',20)
 message_font = pygame.font.SysFont('Arial', 32)
+message_font_s = pygame.font.SysFont('Arial', 30)
 
 # define bool to decide when program ends
 isProgramRunning = True
@@ -94,9 +95,9 @@ def main_menu():
                     click = True
  
         screen.fill((255, 245, 112))        # Fill background
-        screen.blit(background_img, (0, 100))
+        screen.blit(background_img, (int((WIDTH-864)/2), 0))
         m1x, m1y = pygame.mouse.get_pos()   # Get mouse position
-        title_bar = pygame.Rect(0, 0, 695, 100)
+        title_bar = pygame.Rect(0, 0, 1200, 100)
 
         # Create start and quit buttons with rect
         operationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/4), 200, 50)
@@ -195,7 +196,7 @@ def quit_message():
         m1x, m1y = pygame.mouse.get_pos()   # Get mouse position
 
         # Create pop up window
-        pop_up = pygame.Rect(100, 50, 500, 500)
+        pop_up = pygame.Rect(int(WIDTH/3), 120, 400, 350)
 
         # Create yes and no buttons with rect
         yes_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3), 200, 50)
@@ -211,11 +212,11 @@ def quit_message():
         
         # Drawing the buttons and text for pop-up
         pygame.draw.rect(screen, (255, 255, 255), pop_up)
-        draw_text('Are you sure you would like to quit?', message_font, (0,0,0), screen, 350, 140)
+        draw_text('Are you sure you would like to quit?', message_font_s, (0,0,0), screen, (int)(WIDTH/2), (HEIGHT-560))
         pygame.draw.rect(screen, (8, 41, 255), yes_button)
-        draw_text('Yes', button_font, (0,0,0), screen, 350, 258)
+        draw_text('Yes', button_font, (0,0,0), screen, (int)(WIDTH/2), (HEIGHT-442))
         pygame.draw.rect(screen, (8, 41, 255), no_button)
-        draw_text('No', button_font, (0,0,0), screen, 350, 375)
+        draw_text('No', button_font, (0,0,0), screen, (int)(WIDTH/2), (HEIGHT-325))
 
         # Main event loop
         for event in pygame.event.get():
@@ -273,11 +274,11 @@ def main_prog():
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
-        testRectangle = Rectangle(WIDTH-500,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
+        testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        testRectangle2 = Rectangle(WIDTH-150,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
+        testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
         cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
-
+        ##For 3 Squares, Use (int)(WIDTH/4), (int)((WIDTH/4)*2), etc.
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
 

@@ -274,7 +274,7 @@ class Rectangle:
         # First check collision with trash, if colliding and isShaded B then its trrash, if not -snap ack to origin, return
         if self.isCollidingWithTrash() or self.isCollidingWithPoint(114, 577):
                 if self.isShadedB is True:
-                    self.xOrigin = 700
+                    self.xOrigin = 1200
                     self.yOrigin = 700
                     self.isTrash = True
                     self.updatePosition(self.xOrigin,self.yOrigin)
