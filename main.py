@@ -29,6 +29,7 @@ pygame.display.set_caption("425 Project")
 # Create fonts for interface
 title_font = pygame.font.SysFont('Arial', 60)
 button_font = pygame.font.SysFont('Arial', 25)
+smallButton_font = pygame.font.SysFont('Arial',20)
 message_font = pygame.font.SysFont('Arial', 32)
 
 # define bool to decide when program ends
@@ -40,9 +41,6 @@ fps = 60
 
 # Load image in for background
 background_img = pygame.image.load("assets/yellow_background.jpg")
-
-# Create state manager
-stateManager = manager("cutting")
 
 # create bool to decide when mouse is clicked
 check = False
@@ -63,11 +61,18 @@ program_OperationType = MULTIPLICATION
 # 2)restart session but get new problem
 problemGenerator = ProblemGenerator() 
 
+# declare program creation type as global var, set to enum of either random problem
+RANDOMPROBLEM = 0
+USERPROBLEM = 1
+program_problemCreationType = RANDOMPROBLEM
+
+
 # Function runs the main menu 
 def main_menu():
 
     global program_CuttingType
     global program_OperationType
+    global program_problemCreationType
 
     click = False
     m1x = 0      # Get error if you don't set value for mx and my here
@@ -84,7 +89,7 @@ def main_menu():
                 if event.key == K_ESCAPE:
                     isProgramRunning = False
                     break
-            if event.type == MOUSEBUTTONUP:
+            if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
  
@@ -94,15 +99,20 @@ def main_menu():
         title_bar = pygame.Rect(0, 0, 695, 100)
 
         # Create start and quit buttons with rect
-        start_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/4), 200, 50)
-        quit_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3), 200, 50)
-        # cuttingType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
-        operationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
+        operationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/4), 200, 50)
+        creationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3), 200, 50)
+        start_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
+        quit_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 120, 200, 50)
+        
 
         # Check if mouse is on a button when clicked
-        if start_button.collidepoint((m1x, m1y)):   # Calls main program if start is selected
+        if start_button.collidepoint((m1x, m1y)):   # Calls main program if start is selected and RNG problem or createUserProblem if user wants to make own problem
             if click:
-                main_prog()
+                if program_problemCreationType == RANDOMPROBLEM:
+                    problemGenerator.setProblemCreationType(RANDOMPROBLEM)
+                    main_prog()
+                elif program_problemCreationType == USERPROBLEM:
+                    createUserProblem()
         if quit_button.collidepoint((m1x, m1y)):    # Quits game on quit button click
             if click:
                 quit_message()
@@ -127,15 +137,28 @@ def main_menu():
                 elif program_OperationType == DIVISION:
                     program_OperationType = MULTIPLICATION
 
+        #toggle program_problemCreationType depending on click
+        if creationType_button.collidepoint((m1x,m1y)):
+            if click:
+                if program_problemCreationType == RANDOMPROBLEM:
+                    program_problemCreationType = USERPROBLEM
+                elif program_problemCreationType == USERPROBLEM:
+                    program_problemCreationType = RANDOMPROBLEM
+
         # Drawing the buttons and text for menu
         pygame.draw.rect(screen, (245, 222, 47), title_bar)
         pygame.draw.rect(screen, (0, 0, 0), title_bar, 7)
         draw_text('Main Menu', title_font, (8, 41, 255), screen, int(WIDTH/2), int(HEIGHT/12))
-        pygame.draw.rect(screen, (8, 41, 255), start_button)
-        draw_text('Start', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25))
-        pygame.draw.rect(screen, (8, 41, 255), quit_button)
-        draw_text('Quit', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
-        # pygame.draw.rect(screen, (8, 41, 255), cuttingType_button)
+        pygame.draw.rect(screen, (8, 41, 255), operationType_button)
+        if program_OperationType == MULTIPLICATION:
+            draw_text('Multiplication', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25))
+        elif program_OperationType == ADDITION:
+            draw_text('Addition',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25)) 
+        elif program_OperationType == SUBTRACTION:
+            draw_text('Subtraction', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25)) 
+        elif program_OperationType == DIVISION:
+            draw_text('Division', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25)) 
+
         """
         if program_CuttingType == CMCUTTING:
             draw_text('Cut with cutmarkers', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
@@ -144,21 +167,23 @@ def main_menu():
         if program_CuttingType == FRACTIONCUTTING:
             draw_text('Fraction cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
         """
-        pygame.draw.rect(screen, (8, 41, 255), operationType_button)
+        pygame.draw.rect(screen,(8,41,255), creationType_button)
+        if program_problemCreationType == RANDOMPROBLEM:
+            draw_text('Random Problem', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
+        elif program_problemCreationType == USERPROBLEM:
+            draw_text('Create your own problem', smallButton_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
 
-        if program_OperationType == MULTIPLICATION:
-            draw_text('Multiplication', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        elif program_OperationType == ADDITION:
-            draw_text('Addition', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85)) 
-        elif program_OperationType == SUBTRACTION:
-            draw_text('Subtraction', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85)) 
-        elif program_OperationType == DIVISION:
-            draw_text('Division', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85)) 
+        pygame.draw.rect(screen,(8,41,255),start_button)
+        draw_text("Start", button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85) )
+
+        pygame.draw.rect(screen,(8,41,255), quit_button)
+        draw_text("Quit", button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145) )
 
         click = False
         pygame.display.update()
         clock.tick(60)
  
+    pygame.quit()
 # Displays "are you sure you want to quit" message and gets click response
 def quit_message():
     click = False
@@ -395,6 +420,196 @@ def main_prog():
         clock.tick(fps)
 
     #end of main loop
+    pygame.quit()
+
+#fuunction to control user creating their own problem
+def createUserProblem():
+    click = False
+    m1x = 0      # Get error if you don't set value for mx and my here
+    m1y = 0      # Maybe pass as parameter for main_prog()
+    isProgramRunning = True
+    global program_OperationType
+
+    # operationSymbol is for drawing purposes in main loop
+    operationSymbol = ""
+    if program_OperationType == MULTIPLICATION:
+        operationSymbol = "x"
+    elif program_OperationType == SUBTRACTION:
+        operationSymbol = "-"
+    elif program_OperationType == DIVISION:
+        operationSymbol = "/"
+
+    problemFont = pygame.font.SysFont('Arial', 64)
+
+    #to ensure only 1 rect can be selected at once, string var, n1 n2 d1 d2
+    selectedRect = ""
+    selectionClock = 0 #for blinking to highlight to user which number is selected
+    selectionIndex = -1
+    #init numerator and denominator values as a list 
+    #n1, d1, n2, d2
+    fractionValues = [1,1,1,1]
+
+    while isProgramRunning:
+        m1x, m1y = pygame.mouse.get_pos()   # Get mouse position     
+        # Main event loop
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                isProgramRunning = False
+                break
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                if event.key == pygame.K_1 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 1
+                elif event.key == pygame.K_2 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 2
+                elif event.key == pygame.K_3 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 3
+                elif event.key == pygame.K_4 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 4
+                elif event.key == pygame.K_5 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 5
+                elif event.key == pygame.K_6 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 6
+                elif event.key == pygame.K_7 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 7
+                elif event.key == pygame.K_8 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 8
+                elif event.key == pygame.K_9 and selectionIndex != -1:
+                    fractionValues[selectionIndex] = 9
+                    
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        #-----------LOGIC-------------
+
+        # Create yes and no buttons with rect
+        backButtonX = 50
+        backButtonY = HEIGHT - 100
+        back_button = pygame.Rect(backButtonX, backButtonY, 200, 50)
+        startButtonX = WIDTH - 250
+        startButtonY = HEIGHT - 100
+        start_button = pygame.Rect(startButtonX, startButtonY, 200, 50)
+        #operation rect
+        operationRectWidth = 100
+        operationRectHeight = 100
+        operationRectX = int(WIDTH / 2) - int(operationRectWidth / 2)
+        operationRectY = int(HEIGHT / 2) - int(operationRectHeight / 2)
+        operationRect = pygame.Rect(operationRectX,operationRectY,operationRectWidth,operationRectHeight)
+        #create numerator and denmon rects
+        boxWidth = 100
+        boxHeight = 100
+        numer1RectX = operationRectX - 100
+        numer1RectY = operationRectY - 52
+        numer1Rect = pygame.Rect(numer1RectX,numer1RectY,boxWidth,boxHeight)
+
+        denom1RectX = numer1RectX
+        denom1RectY = operationRectY + 52
+        denom1Rect = pygame.Rect(denom1RectX,denom1RectY,boxWidth,boxHeight)
+
+        numer2RectX = operationRectX + 100
+        numer2RectY = numer1RectY
+        numer2Rect = pygame.Rect(numer2RectX,numer2RectY,boxWidth,boxHeight)
+
+        denom2RectX = numer2RectX
+        denom2RectY = denom1RectY
+        denom2Rect = pygame.Rect(numer2RectX,denom1RectY,boxWidth,boxHeight)
+
+
+        # Check if mouse is on a button when clicked
+        if back_button.collidepoint((m1x, m1y)):   # go back to main menu
+            if click:
+                main_menu()
+                break
+        if start_button.collidepoint((m1x, m1y)):    # begin main loop
+            if click:
+                problemGenerator.setProblemCreationType(USERPROBLEM)
+                problemGenerator.fractionValues = fractionValues
+                main_prog()
+        # for selecting n1 n2 d1 d2
+        if numer1Rect.collidepoint((m1x,m1y)):
+            if click:
+                selectedRect = "n1"
+                selectionIndex = 0
+                selectionClock = 30
+        if numer2Rect.collidepoint((m1x,m1y)):
+            if click:
+                selectedRect = "n2"
+                selectionIndex = 2
+                selectionClock = 30
+        if denom1Rect.collidepoint((m1x,m1y)):
+            if click:
+                selectedRect = "d1"
+                selectionIndex = 1
+                selectionClock = 30
+        if denom2Rect.collidepoint((m1x,m1y)):
+            if click:
+                selectedRect = "d2"
+                selectionIndex = 3
+                selectionClock = 30
+        
+        # check for collisions with operationRect and set operation type accordingly
+        if operationRect.collidepoint((m1x,m1y)):
+            if click:
+                if program_OperationType == MULTIPLICATION:
+                    program_OperationType = SUBTRACTION
+                    operationSymbol = "-"
+                elif program_OperationType == SUBTRACTION:
+                    program_OperationType = DIVISION
+                    operationSymbol = "/"
+                elif program_OperationType == DIVISION:
+                    operationSymbol = "x"
+                    program_OperationType = MULTIPLICATION
+
+        #----------- BEGIN DRAW, END LOGIC-------------------#
+        # draw back and start buttons and corresponding text
+        draw_text('Create Your Problem', title_font, (0,0,0), screen, int(WIDTH/2), int(HEIGHT/12))
+        pygame.draw.rect(screen, (8, 41, 255), back_button)
+        draw_text('Back', button_font, (0,0,0), screen, backButtonX + 100, backButtonY + 25)
+        pygame.draw.rect(screen, (8, 41, 255), start_button)
+        draw_text('Start', button_font, (0,0,0), screen, startButtonX + 100, startButtonY + 25)
+        # draw operation rect
+        pygame.draw.rect(screen,(255,255,255),operationRect)
+        draw_text(operationSymbol, problemFont, (0,0,0), screen, operationRectX + 50, operationRectY + 50)
+
+        # draw numerator and denominator rects
+        pygame.draw.rect(screen,(255,255,255),numer1Rect)
+        pygame.draw.rect(screen,(255,255,255),denom1Rect)
+        pygame.draw.rect(screen,(255,255,255),numer2Rect)
+        pygame.draw.rect(screen,(255,255,255),denom2Rect)
+        # draw fraction divider to left and right of operationRect
+        pygame.draw.line(screen,(0,0,0), [operationRectX - 100, operationRectY + int(operationRectHeight/2)], [operationRectX,operationRectY + int(operationRectHeight/2)], 5)
+        pygame.draw.line(screen,(0,0,0), [operationRectX + 100, operationRectY + int(operationRectHeight/2)], [operationRectX + 200,operationRectY + int(operationRectHeight/2)], 5)
+
+        if selectionClock > 30:
+            # draw line to show user which numer/denom they are currently selecting
+            if selectedRect == "n1":
+                pygame.draw.line(screen,(0,0,0),[numer1RectX + 20,numer2RectY+80],[numer1RectX+80,numer2RectY+80],4)
+            elif selectedRect == "n2":
+                pygame.draw.line(screen,(0,0,0),[numer2RectX + 20,numer2RectY+80],[numer2RectX+80,numer2RectY+80],4)
+            elif selectedRect == "d1":
+                pygame.draw.line(screen,(0,0,0),[denom1RectX + 20,denom1RectY+80],[denom1RectX+80,denom1RectY+80],4)
+            elif selectedRect == "d2":
+                pygame.draw.line(screen,(0,0,0),[denom2RectX + 20,denom2RectY+80],[denom2RectX+80,denom2RectY+80],4)
+        if selectionClock >= 60:
+            selectionClock = 0
+
+        # draw correct number text for each numerator and denominator
+        #n1
+        draw_text(str(fractionValues[0]), problemFont, (0,0,0), screen, numer1RectX+50, numer1RectY+50)
+        #d1
+        draw_text(str(fractionValues[1]), problemFont, (0,0,0), screen, denom1RectX+50, denom1RectY+50)
+        #n2
+        draw_text(str(fractionValues[2]), problemFont, (0,0,0), screen, numer2RectX+50, numer2RectY+50)
+        #d2
+        draw_text(str(fractionValues[3]), problemFont, (0,0,0), screen, denom2RectX+50, denom2RectY+50)
+
+        # finally update screen and tick clock, reset click
+        click = False
+        pygame.display.update()
+        selectionClock += 1
+        clock.tick(60)
     pygame.quit()
 
 # Call main menu

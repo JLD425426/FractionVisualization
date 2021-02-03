@@ -8,6 +8,18 @@ class ProblemGenerator:
         self.needsNewProblem = True
         self.currentProblem = None
 
+        self.RANDOMPROBLEM = 0
+        self.USERPROBLEM = 1
+        self.program_problemCreationType = self.RANDOMPROBLEM
+
+        # for user created problems, will contain a list of 4 values representing n1,d1,n2,d2
+        # this list is set when user hits start in createUserProblem
+        self.fractionValues = list()
+
+    def setProblemCreationType(self,pType):
+        self.program_problemCreationType = pType
+
+
     def setProblemDisplay(self,problemDisplay):
         self.problemDisplay = problemDisplay
 
@@ -24,7 +36,10 @@ class ProblemGenerator:
 
     # call correct getProblem function based off operation type
     def getProblem(self):
-        if self.operationType == "Multiplication":
+        if self.program_problemCreationType == self.USERPROBLEM:
+            print("USER PROBLEM!")
+            self.getProblemUserGen()
+        elif self.operationType == "Multiplication":
             self.getProblemMultiplication()
         elif self.operationType == "Addition":
             self.getProblemAddition()
@@ -32,6 +47,46 @@ class ProblemGenerator:
             self.getProblemSubtraction()
         elif self.operationType == "Division":
             self.getProblemDivision()
+
+    def getProblemUserGen(self):
+        n1 = self.fractionValues[0]
+        d1 = self.fractionValues[1]
+        n2 = self.fractionValues[2]
+        d2 = self.fractionValues[3]
+
+        if self.operationType == "Multiplication":
+            nAns = n1 * n2
+            dAns = d1 * d2
+            answer = Fraction(nAns,dAns)
+            answer.isImproper()
+            if answer.getMix() == True:
+                answer.makeMixed()
+            self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+            self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+
+        elif self.operationType == "Subtraction":
+            f1 = Fraction(n1, d1)
+            f2 = Fraction(n2, d2)
+            nA,dA = f1.fSub(n2,d2)
+            answer = Fraction(nA,dA)
+            answer.isImproper()
+            if answer.getMix() == True:
+                answer.makeMixed()
+            self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+            self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+
+        elif self.operationType == "Division":
+            nAns = n1 * d2
+            dAns = d1 * n2
+            answer = Fraction(nAns,dAns)
+            answer.isImproper()
+            if answer.getMix() == True:
+                answer.makeMixed()
+            self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+            self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+
+            
+
 
     def getProblemMultiplication(self):
         nAns = -1
