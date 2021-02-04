@@ -11,7 +11,6 @@ class StateManagerDiv:
         self.DIV = 2
         self.SUB = 3
         self.operation_type = self.DIV
-
         #define cutting types
         self.FRACTIONCUTTING = 0
         self.VARCUTTING = 1
@@ -41,6 +40,10 @@ class StateManagerDiv:
         self.proceed_button = pygame.Rect(int((self.WIDTH/2)-150), int(self.HEIGHT/2+180), 300, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)
 
+        # Need actual CPU answer to check if > 1
+        self.cpuDenomAns = 0
+        self.cpuNumerAns = 0
+
         # For get answer function
         self.numShadedRightRects = 0
 
@@ -52,11 +55,15 @@ class StateManagerDiv:
         return self.operation_type
         
 
-    def update(self, cutter, cutter2):
+    def update(self, cutter, cutter2, cutter3):
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
-            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                self.currentState = self.SHADINGVERTICALLY
+            if cutter3 is None:
+                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                    self.currentState = self.SHADINGVERTICALLY
+            else:
+                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting" and cutter3.getState() == "Waiting":
+                    self.currentState = self.SHADINGVERTICALLY
 
         # manager is now shading vertically, now can shade current rects
         elif self.currentState == self.SHADINGVERTICALLY:
@@ -66,14 +73,24 @@ class StateManagerDiv:
                 self.currentState = self.CUTTINGHORIZONTALLY
                 cutter.setStateCutHorizontal()
                 cutter2.setStateCutHorizontal()
+                if cutter3 is not None:
+                    cutter3.setStateCutHorizontal()
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
-            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                self.currentState = self.GETTINGDENOMINATOR
+            if cutter3 is None:
+                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                    self.currentState = self.GETTINGDENOMINATOR
+            else: 
+                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting" and cutter3.getState() == "Waiting":
+                    self.currentState = self.GETTINGDENOMINATOR
 
         elif self.currentState == self.GETTINGDENOMINATOR:
             self.getDenominator()
+
+            ##################################################
+            # Add in third rectangle here if answer is > 1   #
+            ##################################################
             self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:

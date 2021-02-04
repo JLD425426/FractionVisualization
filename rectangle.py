@@ -212,14 +212,15 @@ class Rectangle:
             if self.isCollidingWithPoint(pc.x,pc.y):
                 if pc.isOccupied and pc.valid:
                     for rect in self.drawablesController.rectangles:
-                        if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                            if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
-                                self.updatePosition(self.xOrigin, self.yOrigin)
-                                return
-                            else:
-                                if rect.color != colors.WHITE:
-                                    ogColor = rect.color
-                                replaced = rect
+                        if rect.myPointCollider is not None:
+                            if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
+                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
+                                    self.updatePosition(self.xOrigin, self.yOrigin)
+                                    return
+                                else:
+                                    if rect.color != colors.WHITE:
+                                        ogColor = rect.color
+                                    replaced = rect
                 else:
                     if self.xOrigin == pc.x and self.yOrigin == pc.y:
                         self.updatePosition(self.xOrigin, self.yOrigin)

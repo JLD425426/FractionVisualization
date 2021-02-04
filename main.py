@@ -273,11 +273,10 @@ def main_prog():
         stateManager = StateManagerDiv(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
-
-        testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
-        cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
-        cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
+        #testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
+        #cutter = testRectangle.getCutter() # need to get cutter here for draw call
+        #testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
+        #cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
         ##For 3 Squares, Use (int)(WIDTH/4), (int)((WIDTH/4)*2), etc.
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
@@ -292,6 +291,23 @@ def main_prog():
         problemGenerator.needsNewProblem = False
     else:
         problemGenerator.resetCurrentProblem()
+
+    # Creating division rectangles down here because we first need to know what the problem answer will be
+    stateManager.cpuDenomAns = problemGenerator.problemDisplay.denominatorAnswer
+    stateManager.cpuNumerAns = problemGenerator.problemDisplay.numeratorAnswer
+    if program_OperationType == DIVISION:
+        if stateManager.cpuNumerAns > stateManager.cpuDenomAns:
+                testRectangle = Rectangle((int)((WIDTH/4))-50,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
+                cutter = testRectangle.getCutter() # need to get cutter here for draw call
+                testRectangle2 = Rectangle((int)((WIDTH/4)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
+                cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
+                testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 3)
+                cutter3 = testRectangle3.getCutter() # need to get cutter here for draw call
+        else:
+                testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
+                cutter = testRectangle.getCutter() # need to get cutter here for draw call
+                testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
+                cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
 
     isProgramRunning = True
     check = False
@@ -318,12 +334,16 @@ def main_prog():
                     click = False
                     #hold = False
 
+
         #---------UPDATE BEGIN-------UPDATE ALL OBJECTS
         mouse.update(check)
         if program_OperationType == MULTIPLICATION:
             stateManager.update(testRectangle.myCutter)
         elif program_OperationType == DIVISION:
-            stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
+            if stateManager.cpuNumerAns > stateManager.cpuDenomAns:
+                stateManager.update(testRectangle.myCutter, testRectangle2.myCutter, testRectangle3.myCutter)
+            else:
+                stateManager.update(testRectangle.myCutter, testRectangle2.myCutter, None)
         elif program_OperationType == SUBTRACTION:
             stateManager.update(testRectangle.myCutter)
             if TrashCan != None:
@@ -363,6 +383,7 @@ def main_prog():
         
         # drawing here
         screen.fill(colors.BGCOLOR) #fill screen bg   
+
 
         # Drawing menu button
         pygame.draw.rect(screen, (8, 41, 255), menu_button)
@@ -408,6 +429,8 @@ def main_prog():
         cutter.draw()
         if program_OperationType == DIVISION:
             cutter2.draw()
+            if stateManager.cpuNumerAns > stateManager.cpuDenomAns:
+                cutter3.draw()
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()
