@@ -1,8 +1,12 @@
 from cutterFraction import CutterFraction
+from rectangle import Rectangle
 import colors
 import pygame
 from drawText import draw_text
 import numpy as np
+
+# Define dimensions for window
+WIDTH, HEIGHT = 1200, 700
 
 class StateManagerDiv:
     def __init__(self,cuttingType,screen):
@@ -44,6 +48,10 @@ class StateManagerDiv:
         self.cpuDenomAns = 0
         self.cpuNumerAns = 0
 
+        # For third rectangle to check if done auto cutting
+        self.rectCreated = 0
+        self.autoCutDone = 0
+
         # For get answer function
         self.numShadedRightRects = 0
 
@@ -55,14 +63,10 @@ class StateManagerDiv:
         return self.operation_type
         
 
-    def update(self, cutter, cutter2, cutter3):
+    def update(self, cutter, cutter2):
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
-            if cutter3 is None:
                 if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                    self.currentState = self.SHADINGVERTICALLY
-            else:
-                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting" and cutter3.getState() == "Waiting":
                     self.currentState = self.SHADINGVERTICALLY
 
         # manager is now shading vertically, now can shade current rects
@@ -73,27 +77,27 @@ class StateManagerDiv:
                 self.currentState = self.CUTTINGHORIZONTALLY
                 cutter.setStateCutHorizontal()
                 cutter2.setStateCutHorizontal()
-                if cutter3 is not None:
-                    cutter3.setStateCutHorizontal()
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
-            if cutter3 is None:
-                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                    self.currentState = self.GETTINGDENOMINATOR
-            else: 
-                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting" and cutter3.getState() == "Waiting":
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
                     self.currentState = self.GETTINGDENOMINATOR
 
         elif self.currentState == self.GETTINGDENOMINATOR:
             self.getDenominator()
-
-            ##################################################
-            # Add in third rectangle here if answer is > 1   #
-            ##################################################
             self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
+            if self.cpuDenomAns < self.cpuNumerAns:
+                if self.rectCreated == 0:
+
+                    testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,self.screen,self.drawablesController,True,self.mouse,self, 3)
+                    cutter3 = testRectangle3.getCutter()
+                    vCuts = cutter2.verticalGuidelinesCount
+                    hCuts = cutter2.horizontalGuidelinesCount
+                    cutter3.autoCut(hCuts, vCuts)
+                    cutter3.state = cutter3.FINALCUT
+                    self.rectCreated = 1
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
 

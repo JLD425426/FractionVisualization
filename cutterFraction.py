@@ -65,7 +65,6 @@ class CutterFraction:
         pass
 
     def update(self, mouse):
-
         # ENTRY STATE: VERTICAL CUTTING
         if self.state == self.CUTTINGVERTICAL:
             if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
@@ -146,7 +145,22 @@ class CutterFraction:
                 pg.draw.line(self.myRect.screen,colors.BLACK,[self.myRect.topLeftX + xOffset - 10,yPosition + yOffset - 15],[self.myRect.topLeftX + xOffset + 10,yPosition + yOffset - 15], 2)
                 draw_text(str(self.horizontalGuidelinesCount),self.message_fontS,colors.BLACK,self.myRect.screen,self.myRect.topLeftX + xOffset,yPosition + yOffset)
 
-                
+    def autoCut(self, hCuts, vCuts):
+        self.verticalGuidelinesCount = vCuts
+        xLength = self.myRect.width
+        xSpacing = xLength / self.verticalGuidelinesCount
+        for i in range(1,self.verticalGuidelinesCount):
+            xPosition = int(xSpacing * i + self.myRect.topLeftX)
+            gl = GuideLine(xPosition,self.myRect.topLeftY,"vertical",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+        
+        self.horizontalGuidelinesCount = hCuts
+        yLength = self.myRect.height
+        ySpacing = yLength / self.horizontalGuidelinesCount
+        for i in range(1,self.horizontalGuidelinesCount):
+            yPosition = int(ySpacing * i + self.myRect.topLeftY)
+            gl = GuideLine(self.myRect.topLeftX,yPosition,"horizontal",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+
+
     # divides OG rectangle with permanant black vertical guidelines
     def divideVertical(self):
         xLength = self.myRect.width

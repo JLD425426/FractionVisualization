@@ -301,8 +301,9 @@ def main_prog():
                 cutter = testRectangle.getCutter() # need to get cutter here for draw call
                 testRectangle2 = Rectangle((int)((WIDTH/4)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
                 cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
-                testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 3)
-                cutter3 = testRectangle3.getCutter() # need to get cutter here for draw call
+                #testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 3)
+                #cutter3 = testRectangle3.getCutter() # need to get cutter here for draw call
+                
         else:
                 testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
                 cutter = testRectangle.getCutter() # need to get cutter here for draw call
@@ -341,9 +342,9 @@ def main_prog():
             stateManager.update(testRectangle.myCutter)
         elif program_OperationType == DIVISION:
             if stateManager.cpuNumerAns > stateManager.cpuDenomAns:
-                stateManager.update(testRectangle.myCutter, testRectangle2.myCutter, testRectangle3.myCutter)
+                stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
             else:
-                stateManager.update(testRectangle.myCutter, testRectangle2.myCutter, None)
+                stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
         elif program_OperationType == SUBTRACTION:
             stateManager.update(testRectangle.myCutter)
             if TrashCan != None:
@@ -430,7 +431,7 @@ def main_prog():
         if program_OperationType == DIVISION:
             cutter2.draw()
             if stateManager.cpuNumerAns > stateManager.cpuDenomAns:
-                cutter3.draw()
+                pass
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()

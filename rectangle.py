@@ -126,7 +126,7 @@ class Rectangle:
             if self.stateManager.operation_type == 2:       #Division
                     #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
                     ##if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
-                if self.isOriginalSquare == False and self.colorHatch != colors.WHITE and self.ownerID != 2:
+                if self.isOriginalSquare == False and self.colorHatch != colors.WHITE and (self.ownerID != 2 and self.ownerID != 3):
                         #   #if self.isShadedH is False:
                         #   #    return
                         #if self.isShadedB is True or self.isShadedV is True:
