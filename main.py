@@ -15,6 +15,7 @@ from colorpicker import ColorPicker
 from problemDisplay import ProblemDisplay
 from problemGenerator import ProblemGenerator
 from trashCan import TrashCan
+from problemValidation import isValidProblem
 
 pygame.init()
 
@@ -41,7 +42,8 @@ clock = pygame.time.Clock()
 fps = 60
 
 # Load image in for background
-background_img = pygame.image.load("assets/yellow_background.jpg")
+# background_img = pygame.image.load("assets/yellow_background.jpg")
+background_img = pygame.image.load("assets/testBG1.png")
 
 # create bool to decide when mouse is clicked
 check = False
@@ -95,7 +97,8 @@ def main_menu():
                     click = True
  
         screen.fill((255, 245, 112))        # Fill background
-        screen.blit(background_img, (int((WIDTH-864)/2), 0))
+        # screen.blit(background_img, (int((WIDTH-864)/2), 0))
+        screen.blit(background_img,(0,0))
         m1x, m1y = pygame.mouse.get_pos()   # Get mouse position
         title_bar = pygame.Rect(0, 0, 1200, 100)
 
@@ -104,6 +107,7 @@ def main_menu():
         creationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3), 200, 50)
         start_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
         quit_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 120, 200, 50)
+        
         
 
         # Check if mouse is on a button when clicked
@@ -147,7 +151,7 @@ def main_menu():
                     program_problemCreationType = RANDOMPROBLEM
 
         # Drawing the buttons and text for menu
-        pygame.draw.rect(screen, (245, 222, 47), title_bar)
+        pygame.draw.rect(screen, colors.TITLEBAR, title_bar)
         pygame.draw.rect(screen, (0, 0, 0), title_bar, 7)
         draw_text('Main Menu', title_font, (8, 41, 255), screen, int(WIDTH/2), int(HEIGHT/12))
         pygame.draw.rect(screen, (8, 41, 255), operationType_button)
@@ -465,6 +469,7 @@ def createUserProblem():
         operationSymbol = "/"
 
     problemFont = pygame.font.SysFont('Arial', 64)
+    errorFont = pygame.font.SysFont('Arial',20)
 
     #to ensure only 1 rect can be selected at once, string var, n1 n2 d1 d2
     selectedRect = ""
@@ -473,6 +478,8 @@ def createUserProblem():
     #init numerator and denominator values as a list 
     #n1, d1, n2, d2
     fractionValues = [1,1,1,1]
+
+    validationResult = ""
 
     while isProgramRunning:
         m1x, m1y = pygame.mouse.get_pos()   # Get mouse position     
@@ -496,12 +503,6 @@ def createUserProblem():
                     fractionValues[selectionIndex] = 5
                 elif event.key == pygame.K_6 and selectionIndex != -1:
                     fractionValues[selectionIndex] = 6
-                elif event.key == pygame.K_7 and selectionIndex != -1:
-                    fractionValues[selectionIndex] = 7
-                elif event.key == pygame.K_8 and selectionIndex != -1:
-                    fractionValues[selectionIndex] = 8
-                elif event.key == pygame.K_9 and selectionIndex != -1:
-                    fractionValues[selectionIndex] = 9
                     
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -509,13 +510,19 @@ def createUserProblem():
 
         #-----------LOGIC-------------
 
-        # Create yes and no buttons with rect
+        # Create back and start button rects
         backButtonX = 50
         backButtonY = HEIGHT - 100
         back_button = pygame.Rect(backButtonX, backButtonY, 200, 50)
         startButtonX = WIDTH - 250
         startButtonY = HEIGHT - 100
         start_button = pygame.Rect(startButtonX, startButtonY, 200, 50)
+        # Create error msg rect
+        errorRectX = WIDTH / 2
+        errorRectY = HEIGHT - 100
+        errorRectWidth = 600
+        errorRectHeight = 50
+        errorRect = pygame.Rect(int(errorRectX - errorRectWidth/2),errorRectY,errorRectWidth,errorRectHeight)
         #operation rect
         operationRectWidth = 100
         operationRectHeight = 100
@@ -549,9 +556,13 @@ def createUserProblem():
                 break
         if start_button.collidepoint((m1x, m1y)):    # begin main loop
             if click:
-                problemGenerator.setProblemCreationType(USERPROBLEM)
-                problemGenerator.fractionValues = fractionValues
-                main_prog()
+                validationResult = isValidProblem(fractionValues[0],fractionValues[1],fractionValues[2],fractionValues[3],program_OperationType)
+                if validationResult == True: #the problem is good so start main loop
+                    problemGenerator.setProblemCreationType(USERPROBLEM)
+                    problemGenerator.fractionValues = fractionValues
+                    main_prog()
+                    isProgramRunning = False
+                    break
         # for selecting n1 n2 d1 d2
         if numer1Rect.collidepoint((m1x,m1y)):
             if click:
@@ -589,20 +600,26 @@ def createUserProblem():
 
         #----------- BEGIN DRAW, END LOGIC-------------------#
         # draw back and start buttons and corresponding text
+        background_img = pygame.image.load("assets/testBG1.png")
+        screen.blit(background_img, (0, 0))
+
         draw_text('Create Your Problem', title_font, (0,0,0), screen, int(WIDTH/2), int(HEIGHT/12))
         pygame.draw.rect(screen, (8, 41, 255), back_button)
         draw_text('Back', button_font, (0,0,0), screen, backButtonX + 100, backButtonY + 25)
         pygame.draw.rect(screen, (8, 41, 255), start_button)
         draw_text('Start', button_font, (0,0,0), screen, startButtonX + 100, startButtonY + 25)
+        #draw error rect and validation errors
+        pygame.draw.rect(screen,colors.TEXTBOX,errorRect)
+        draw_text(validationResult,errorFont,(255,0,0),screen,errorRectX,errorRectY + 25)
         # draw operation rect
-        pygame.draw.rect(screen,(255,255,255),operationRect)
+        pygame.draw.rect(screen,colors.TEXTBOX,operationRect)
         draw_text(operationSymbol, problemFont, (0,0,0), screen, operationRectX + 50, operationRectY + 50)
 
         # draw numerator and denominator rects
-        pygame.draw.rect(screen,(255,255,255),numer1Rect)
-        pygame.draw.rect(screen,(255,255,255),denom1Rect)
-        pygame.draw.rect(screen,(255,255,255),numer2Rect)
-        pygame.draw.rect(screen,(255,255,255),denom2Rect)
+        pygame.draw.rect(screen,colors.TEXTBOX,numer1Rect)
+        pygame.draw.rect(screen,colors.TEXTBOX,denom1Rect)
+        pygame.draw.rect(screen,colors.TEXTBOX,numer2Rect)
+        pygame.draw.rect(screen,colors.TEXTBOX,denom2Rect)
         # draw fraction divider to left and right of operationRect
         pygame.draw.line(screen,(0,0,0), [operationRectX - 100, operationRectY + int(operationRectHeight/2)], [operationRectX,operationRectY + int(operationRectHeight/2)], 5)
         pygame.draw.line(screen,(0,0,0), [operationRectX + 100, operationRectY + int(operationRectHeight/2)], [operationRectX + 200,operationRectY + int(operationRectHeight/2)], 5)

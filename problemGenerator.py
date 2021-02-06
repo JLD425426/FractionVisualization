@@ -37,7 +37,6 @@ class ProblemGenerator:
     # call correct getProblem function based off operation type
     def getProblem(self):
         if self.program_problemCreationType == self.USERPROBLEM:
-            print("USER PROBLEM!")
             self.getProblemUserGen()
         elif self.operationType == "Multiplication":
             self.getProblemMultiplication()
