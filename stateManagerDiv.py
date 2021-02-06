@@ -97,6 +97,9 @@ class StateManagerDiv:
                     hCuts = cutter2.horizontalGuidelinesCount
                     cutter3.autoCut(hCuts, vCuts)
                     cutter3.state = cutter3.FINALCUT
+                    for rect in self.drawablesController.rectangles:
+                        if rect.ownerID == 3:
+                            rect.changeColor(colors.WHITE)
                     self.rectCreated = 1
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
