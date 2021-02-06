@@ -152,6 +152,8 @@ class CutterFraction:
         for i in range(1,self.verticalGuidelinesCount):
             xPosition = int(xSpacing * i + self.myRect.topLeftX)
             gl = GuideLine(xPosition,self.myRect.topLeftY,"vertical",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+        self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+        self.myRect.cutSquareVertical()
         
         self.horizontalGuidelinesCount = hCuts
         yLength = self.myRect.height
@@ -159,6 +161,8 @@ class CutterFraction:
         for i in range(1,self.horizontalGuidelinesCount):
             yPosition = int(ySpacing * i + self.myRect.topLeftY)
             gl = GuideLine(self.myRect.topLeftX,yPosition,"horizontal",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+        self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
+        self.myRect.finalCut()
 
 
     # divides OG rectangle with permanant black vertical guidelines
