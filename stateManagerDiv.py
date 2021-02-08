@@ -101,6 +101,7 @@ class StateManagerDiv:
                         if rect.ownerID == 3:
                             rect.changeColor(colors.WHITE)
                     self.rectCreated = 1
+                    self.auto_color_rect()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
 
@@ -207,6 +208,16 @@ class StateManagerDiv:
                 if rect.isShadedB == True:
                     numerator += 1
         return numerator
+
+    def auto_color_rect(self):
+        twos, threes = [], []
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 2:
+                twos.append(rect)
+            elif rect.ownerID == 3:
+                threes.append(rect)
+        for i in range(len(threes)):
+            threes[i].color = twos[i].color
 
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__

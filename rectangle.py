@@ -214,7 +214,7 @@ class Rectangle:
                     for rect in self.drawablesController.rectangles:
                         if rect.myPointCollider is not None:
                             if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
+                                if rect.color == colors.WHITE or rect.ownerID == 1 or rect.isOriginalSquare:
                                     self.updatePosition(self.xOrigin, self.yOrigin)
                                     return
                                 else:
