@@ -44,6 +44,7 @@ class ProblemDisplay:
         self.denominator2 = -1
         self.numeratorAnswer = -1
         self.denominatorAnswer = -1
+        self.leadcoAnswer = -1
 
         self.usernumerator = -1
         self.userdenominator = -1
@@ -58,7 +59,11 @@ class ProblemDisplay:
         pygame.draw.line(self.screen,colors.BLACK, [xPos-10, self.fractionDividerY], [xPos+10,self.fractionDividerY], 3)
         draw_text(str(denominator), self.font, (0,0,0), self.screen, xPos, self.denominatorY)
 
-    
+    def drawFractionMixed(self,leadco,numerator,denominator,xPos):
+        draw_text(str(leadco), self.font, (0,0,0), self.screen, xPos - 20, self.fractionDividerY)
+        draw_text(str(numerator), self.font, (0,0,0), self.screen, xPos, self.numeratorY)
+        pygame.draw.line(self.screen,colors.BLACK, [xPos-10, self.fractionDividerY], [xPos+10,self.fractionDividerY], 3)
+        draw_text(str(denominator), self.font, (0,0,0), self.screen, xPos, self.denominatorY)
 
     # draw all fractions and symbols between fractions for current problem+answer
     def draw(self):
@@ -76,17 +81,28 @@ class ProblemDisplay:
             cpuAnswer = Fraction(self.numeratorAnswer, self.denominatorAnswer)
             canreduce = False
             cpucanreduce = False
-            if self.usernumerator != 0 and cpuAnswer.getNum() != 0:
+            ismixed = False
+            cpuismixed = False
+
+            if userAnswer.isImproper() == True and cpuAnswer.isImproper() == True:
+                ismixed = True
+                cpuismixed = True
+                userAnswer.makeMixed()
+                cpuAnswer.makeMixed()
+                self.leadcoAnswer = cpuAnswer.getLeadC()
+                userAnswer.denominator = cpuAnswer.denominator
+            elif userAnswer.getNum() != 0 and cpuAnswer.getNum() != 0:
                 canreduce = userAnswer.canReduce()
                 cpucanreduce = cpuAnswer.canReduce()
             else:
                 userAnswer.denominator = cpuAnswer.denominator
+
+
             if canreduce == True or cpucanreduce == True: # user answer can be reduced so theres 7 total symbols
                 userAnswerReduced = Fraction(userAnswer.getNum(),userAnswer.getDenom())
                 userAnswerReduced.finalReduce()
                 cpuAnswerReduced = Fraction(cpuAnswer.getNum(),cpuAnswer.getDenom())
-                if cpuAnswerReduced.canReduce() == True:
-                    cpuAnswerReduced.finalReduce()
+                cpuAnswerReduced.finalReduce()
                 # if user num and denom match known problem num and denom they got it right -> set isEqualSymbol to =
                 if userAnswerReduced.getNum() == cpuAnswerReduced.getNum() and userAnswerReduced.getDenom() == cpuAnswerReduced.getDenom():
                     isEqualSymbol = '='
@@ -108,6 +124,24 @@ class ProblemDisplay:
                     self.drawSprite(self.checkmark,True)
                 else:
                     self.drawSprite(self.x,True) # draw x b/c user wrong
+            elif ismixed == True or cpuismixed == True: # user answer is a mixed fraction so there will be 6 symbols
+                if userAnswer.getNum() == cpuAnswer.getNum() and userAnswer.getDenom() == cpuAnswer.getDenom() and userAnswer.getLeadC() == cpuAnswer.getLeadC():
+                    isEqualSymbol = '='
+                    self.hasRightAnswer = True
+                else:
+                    isEqualSymbol = '=/='
+                    self.hasRightAnswer = False
+                #left side
+                self.drawFraction(self.numerator2,self.denominator2,self.xMid - self.xOffset)
+                draw_text(self.operationSymbol,self.font,(0,0,0),self.screen,self.xMid- self.xOffset * 2,self.yDraw)
+                self.drawFraction(self.numerator1,self.denominator1,self.xMid - self.xOffset*3)
+                #right side
+                draw_text(isEqualSymbol,self.font,(0,0,0),self.screen,self.xMid + self.xOffset,self.yDraw)
+                self.drawFractionMixed(userAnswer.getLeadC(),userAnswer.getNum(),userAnswer.getDenom(),self.xMid + self.xOffset * 2)
+                if self.hasRightAnswer: # draw checkmark
+                   self.drawSprite(self.checkmark,False)
+                else:
+                   self.drawSprite(self.x, False) # draw x because user wrng
             else: #canreduce = False so there will be 5 symbols
                 if userAnswer.getNum() == self.numeratorAnswer and userAnswer.getDenom() == self.denominatorAnswer:
                     isEqualSymbol = '='

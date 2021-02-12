@@ -40,6 +40,9 @@ class Fraction:
     def getMix(self):
         return self.isMixed
 
+    def getLeadC(self):
+        return self.leadCo
+
     def isImproper(self):
         if (self.numerator >= self.denominator):
             self.isMixed = True
@@ -48,9 +51,10 @@ class Fraction:
 
     def makeMixed(self):
         self.leadCo = (int)(self.numerator / self.denominator)
-        if self.numerator <= self.denominator:
-            newNumer = (int)(self.numerator % self.denominator)
-            self.numerator = newNumer
+        self.numerator = (int)(self.numerator % self.denominator)
+        #if self.numerator <= self.denominator:
+        #    newNumer = (int)(self.numerator % self.denominator)
+        #    self.numerator = newNumer
         
         
 

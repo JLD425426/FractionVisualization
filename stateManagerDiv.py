@@ -88,7 +88,7 @@ class StateManagerDiv:
             self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
-            if self.cpuDenomAns < self.cpuNumerAns:
+            if self.get_answerDenom() < self.get_answerNumer():
                 if self.rectCreated == 0:
 
                     testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,self.screen,self.drawablesController,True,self.mouse,self, 3)
