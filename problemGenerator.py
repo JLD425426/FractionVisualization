@@ -57,9 +57,6 @@ class ProblemGenerator:
             nAns = n1 * n2
             dAns = d1 * d2
             answer = Fraction(nAns,dAns)
-            answer.isImproper()
-            if answer.getMix() == True:
-                answer.makeMixed()
             self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
             self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
@@ -68,9 +65,6 @@ class ProblemGenerator:
             f2 = Fraction(n2, d2)
             nA,dA = f1.fSub(n2,d2)
             answer = Fraction(nA,dA)
-            answer.isImproper()
-            if answer.getMix() == True:
-                answer.makeMixed()
             self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
             self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
@@ -78,9 +72,6 @@ class ProblemGenerator:
             nAns = n1 * d2
             dAns = d1 * n2
             answer = Fraction(nAns,dAns)
-            answer.isImproper()
-            if answer.getMix() == True:
-                answer.makeMixed()
             self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
             self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
@@ -179,11 +170,8 @@ class ProblemGenerator:
                 break
         # now reduce problem answer
         answer = Fraction(nAns,dAns)
-        answer.isImproper()
-        if answer.getMix() == True:
-            answer.makeMixed()
-        #if answer.canReduce():
-        #    answer.finalReduce()
+        if answer.getNum() < answer.getDenom() and answer.canReduce():
+           answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 

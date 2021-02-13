@@ -91,9 +91,9 @@ class ProblemDisplay:
                 cpuAnswer.makeMixed()
                 self.leadcoAnswer = cpuAnswer.getLeadC()
                 userAnswer.denominator = cpuAnswer.denominator
-            elif userAnswer.getNum() != 0 and cpuAnswer.getNum() != 0:
-                canreduce = userAnswer.canReduce()
-                cpucanreduce = cpuAnswer.canReduce()
+            elif userAnswer.canReduce() == True and cpuAnswer.canReduce() == True:
+                canreduce = True
+                cpucanreduce = True
             else:
                 userAnswer.denominator = cpuAnswer.denominator
 
@@ -136,8 +136,8 @@ class ProblemDisplay:
                 draw_text(self.operationSymbol,self.font,(0,0,0),self.screen,self.xMid- self.xOffset * 2,self.yDraw)
                 self.drawFraction(self.numerator1,self.denominator1,self.xMid - self.xOffset*3)
                 #right side
-                draw_text(isEqualSymbol,self.font,(0,0,0),self.screen,self.xMid + self.xOffset,self.yDraw)
-                self.drawFractionMixed(userAnswer.getLeadC(),userAnswer.getNum(),userAnswer.getDenom(),self.xMid + self.xOffset * 2)
+                draw_text(isEqualSymbol,self.font,(0,0,0),self.screen,self.xMid,self.yDraw)
+                self.drawFractionMixed(userAnswer.getLeadC(),userAnswer.getNum(),userAnswer.getDenom(),self.xMid + self.xOffset)
                 if self.hasRightAnswer: # draw checkmark
                    self.drawSprite(self.checkmark,False)
                 else:

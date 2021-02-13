@@ -300,7 +300,7 @@ def main_prog():
     stateManager.cpuDenomAns = problemGenerator.problemDisplay.denominatorAnswer
     stateManager.cpuNumerAns = problemGenerator.problemDisplay.numeratorAnswer
     if program_OperationType == DIVISION:
-        if problemGenerator.problemDisplay.leadcoAnswer < 0:
+        if problemGenerator.problemDisplay.numeratorAnswer > problemGenerator.problemDisplay.denominatorAnswer:
                 testRectangle = Rectangle((int)((WIDTH/4))-50,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
                 cutter = testRectangle.getCutter() # need to get cutter here for draw call
                 testRectangle2 = Rectangle((int)((WIDTH/4)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)

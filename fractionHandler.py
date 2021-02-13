@@ -46,8 +46,10 @@ class Fraction:
     def isImproper(self):
         if (self.numerator >= self.denominator):
             self.isMixed = True
+            return True
         else:
             self.isMixed = False
+            return False
 
     def makeMixed(self):
         self.leadCo = (int)(self.numerator / self.denominator)
