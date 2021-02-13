@@ -210,13 +210,19 @@ class Rectangle:
         ogColor = colors.WHITE
         for pc in self.drawablesController.pointColliders:
             if self.isCollidingWithPoint(pc.x,pc.y):
+                # do not allow rects to be dragged onto empty(grey spaces) here by checking if the pc is not occupied
+                if pc.isOccupied == False:
+                    self.updatePosition(self.xOrigin, self.yOrigin)
+                    return
+ 
                 if pc.isOccupied and pc.valid:
                     for rect in self.drawablesController.rectangles:
                         if rect.myPointCollider is not None:
                             if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
                                 # #for not allow rects to be dragged onto white squares
                                 # if (rect.color == colors.WHITE or rect.ownerID == 1 or rect.isOriginalSquare):
-                                if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
+                                # if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
+                                if (rect.color == colors.WHITE or rect.ownerID == 1 or rect.isOriginalSquare):
                                     self.updatePosition(self.xOrigin, self.yOrigin)
                                     return
                                 else:

@@ -166,6 +166,8 @@ class ProblemGenerator:
                 continue
             if n1 == d1 or n2 == d2: # loop again if fraction == 1
                 continue
+            if ((n1 * d2) / (d1 * n2) > 2): # do not allow answers greater than 2
+                continue
             else:
                 break
         # now reduce problem answer
