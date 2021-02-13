@@ -18,6 +18,8 @@ def isValidProblemMultx(n1,d1,n2,d2):
   # do not allow problem to continue b/c one of 2 input fractions is mixed
   if (n1 > d1 or n2 > d2):
     return "For multiplication, numerator must be larger than its corresponding denominator"
+  if (d1 == 1 or d2 == 1):
+    return "For multiplication, the denominators must be greater than 1"
   return True
 
 def isValidProblemSubtract(n1,d1,n2,d2):

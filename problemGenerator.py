@@ -171,9 +171,12 @@ class ProblemGenerator:
             else:
                 break
         # now reduce problem answer
+        # answer = Fraction(nAns,dAns)
+        # if answer.getNum() < answer.getDenom() and answer.canReduce():
+        #    answer.finalReduce()
+        # self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+        # self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         answer = Fraction(nAns,dAns)
-        if answer.getNum() < answer.getDenom() and answer.canReduce():
-           answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 

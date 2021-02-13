@@ -322,8 +322,9 @@ def main_prog():
     while isProgramRunning:
         # main event loop -- user keyboard/mouse input here
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == QUIT:
                 isProgramRunning = False
+                break
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     check = True
@@ -380,12 +381,16 @@ def main_prog():
         if restart_button.collidepoint((mouse.mx, mouse.my)):
             if click:
                 main_prog()
+                isProgramRunning = False
+                break
         
         newProblem_button = pygame.Rect(WIDTH - 370, 0 , 130, 50)
         if newProblem_button.collidepoint((mouse.mx, mouse.my)):
             if click:
                 problemGenerator.needsNewProblem = True
                 main_prog()
+                isProgramRunning = False
+                break
         
         # drawing here
         screen.fill(colors.BGCOLOR) #fill screen bg   
