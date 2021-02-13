@@ -148,7 +148,7 @@ class Rectangle:
                                 self.updatePosition(mouse.mx,mouse.my)
                 else:
                 #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
-                    if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
+                    if self.isOriginalSquare == False and self.ownerID != 2 and self.ownerID != 3 and(self.colorHatch != colors.WHITE or self.color != colors.WHITE):
                     ##if self.isOriginalSquare == False and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
                         # mouse is holding no one and clicking, set self as being held
                         if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":

@@ -58,6 +58,12 @@ class StateManagerDiv:
         self.rectsData = None
         self.hasInvertedRectData = False
 
+        # for setting third rect or not 
+        self.hasThreeSquares = False
+        # for making sure third square gets generated once
+        self.hasCreatedThirdSquare = False
+
+
     
     def getOperationType(self):
         return self.operation_type
@@ -88,9 +94,22 @@ class StateManagerDiv:
             self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
-            if self.get_answerDenom() < self.get_answerNumer():
-                if self.rectCreated == 0:
+            # if self.get_answerDenom() < self.get_answerNumer():
+            #     if self.rectCreated == 0:
 
+            #         testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,self.screen,self.drawablesController,True,self.mouse,self, 3)
+            #         cutter3 = testRectangle3.getCutter()
+            #         vCuts = cutter2.verticalGuidelinesCount
+            #         hCuts = cutter2.horizontalGuidelinesCount
+            #         cutter3.autoCut(hCuts, vCuts)
+            #         cutter3.state = cutter3.FINALCUT
+            #         for rect in self.drawablesController.rectangles:
+            #             if rect.ownerID == 3:
+            #                 rect.changeColor(colors.WHITE)
+            #         self.rectCreated = 1
+            #         self.auto_color_rect()
+            if self.hasThreeSquares == True:
+                if self.hasCreatedThirdSquare == False:
                     testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,self.screen,self.drawablesController,True,self.mouse,self, 3)
                     cutter3 = testRectangle3.getCutter()
                     vCuts = cutter2.verticalGuidelinesCount
@@ -101,7 +120,9 @@ class StateManagerDiv:
                         if rect.ownerID == 3:
                             rect.changeColor(colors.WHITE)
                     self.rectCreated = 1
+                    self.hasCreatedThirdSquare = True
                     self.auto_color_rect()
+
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
 

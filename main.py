@@ -305,6 +305,7 @@ def main_prog():
                 cutter = testRectangle.getCutter() # need to get cutter here for draw call
                 testRectangle2 = Rectangle((int)((WIDTH/4)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
                 cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
+                stateManager.hasThreeSquares = True
                 #testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 3)
                 #cutter3 = testRectangle3.getCutter() # need to get cutter here for draw call
                 
