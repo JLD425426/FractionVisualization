@@ -60,10 +60,13 @@ class ProblemDisplay:
         draw_text(str(denominator), self.font, (0,0,0), self.screen, xPos, self.denominatorY)
 
     def drawFractionMixed(self,leadco,numerator,denominator,xPos):
-        draw_text(str(leadco), self.font, (0,0,0), self.screen, xPos - 20, self.fractionDividerY)
-        draw_text(str(numerator), self.font, (0,0,0), self.screen, xPos, self.numeratorY)
-        pygame.draw.line(self.screen,colors.BLACK, [xPos-10, self.fractionDividerY], [xPos+10,self.fractionDividerY], 3)
-        draw_text(str(denominator), self.font, (0,0,0), self.screen, xPos, self.denominatorY)
+        if (numerator != 0):
+            draw_text(str(leadco), self.font, (0,0,0), self.screen, xPos - 20, self.fractionDividerY)
+            draw_text(str(numerator), self.font, (0,0,0), self.screen, xPos, self.numeratorY)
+            pygame.draw.line(self.screen,colors.BLACK, [xPos-10, self.fractionDividerY], [xPos+10,self.fractionDividerY], 3)
+            draw_text(str(denominator), self.font, (0,0,0), self.screen, xPos, self.denominatorY)
+        else:
+            draw_text(str(leadco), self.font, (0,0,0), self.screen, xPos - 20, self.fractionDividerY)
 
     # draw all fractions and symbols between fractions for current problem+answer
     def draw(self):
