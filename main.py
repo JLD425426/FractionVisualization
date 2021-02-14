@@ -58,7 +58,7 @@ MULTIPLICATION = 0
 ADDITION = 1
 SUBTRACTION = 2
 DIVISION = 3
-program_OperationType = MULTIPLICATION
+program_OperationType = DIVISION
 # problemGenerator declared globally so user can either:
 # 1)restart session but keep same problem
 # 2)restart session but get new problem
@@ -81,6 +81,25 @@ def main_menu():
     m1x = 0      # Get error if you don't set value for mx and my here
     m1y = 0      # Maybe pass as parameter for main_prog()
     isProgramRunning = True
+
+    #for button states
+    isDivHover = isDivClicked = isMultHover = isMultClicked = isSubHover = isSubClicked = False
+    if program_OperationType == MULTIPLICATION:
+        isMultClicked = True
+    elif program_OperationType == DIVISION:
+        isDivClicked = True
+    elif program_OperationType == SUBTRACTION:
+        isSubClicked = True
+
+    isRandomHover = isRandomClicked = isUserHover = isUserClicked = False
+    if program_problemCreationType == RANDOMPROBLEM:
+        isRandomClicked = True
+    elif program_problemCreationType == USERPROBLEM:
+        isUserClicked = True
+
+    isHoverStart = False
+    isHoverQuit = False
+
     while isProgramRunning:
 
         # Main event loop
@@ -102,87 +121,162 @@ def main_menu():
         m1x, m1y = pygame.mouse.get_pos()   # Get mouse position
         title_bar = pygame.Rect(0, 0, 1200, 100)
 
-        # Create start and quit buttons with rect
-        operationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/4), 200, 50)
-        creationType_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3), 200, 50)
-        start_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 60, 200, 50)
-        quit_button = pygame.Rect(int((WIDTH/2))-100, int(HEIGHT/3)+ 120, 200, 50)
-        
-        
+        startY = 164
+        operationButtonsY = startY + 40
+        operationButtonWidth = 200
+        operationButtonHeight = 50
+        operationButtonXBuffer = 20
 
-        # Check if mouse is on a button when clicked
-        if start_button.collidepoint((m1x, m1y)):   # Calls main program if start is selected and RNG problem or createUserProblem if user wants to make own problem
+        multiplicationButtonX = int(WIDTH/2 - operationButtonWidth/2)
+        multiplicationButton = pygame.Rect(multiplicationButtonX, operationButtonsY, operationButtonWidth, operationButtonHeight)
+        divisionButtonX = int(WIDTH/2 - operationButtonWidth/2) - operationButtonWidth - operationButtonXBuffer
+        divisionButton = pygame.Rect(divisionButtonX, operationButtonsY, operationButtonWidth, operationButtonHeight)
+        subtractionButtonX = int(WIDTH/2 - operationButtonWidth/2) + operationButtonWidth + operationButtonXBuffer
+        subtractionButton = pygame.Rect(subtractionButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
+
+        problemTypeY = operationButtonsY + 100
+        problemButtonsY = problemTypeY + 40
+        problemButtonWidth = 200
+        problemButtonHeight = 50
+        problemButtonXBuffer = 10
+        randomProblemButtonX = int(WIDTH/2 - problemButtonWidth - problemButtonXBuffer)
+        randomProblemButton = pygame.Rect(randomProblemButtonX,problemButtonsY,problemButtonWidth,problemButtonHeight)
+        userProblemButtonX = int(WIDTH/2 + problemButtonXBuffer)
+        userProblemButton = pygame.Rect(userProblemButtonX,problemButtonsY,problemButtonWidth,problemButtonHeight)
+
+        startQuitButtonY = problemButtonsY + 140
+        startQuitButtonWidth = 250
+        startQuitButtonHeight = 80
+        startQuitButtonXBuffer = 40
+        startButtonX = int(WIDTH/2 + startQuitButtonXBuffer)
+        startButton = pygame.Rect(startButtonX,startQuitButtonY,startQuitButtonWidth,startQuitButtonHeight)
+        quitButtonX = int(WIDTH/2 - startQuitButtonWidth - startQuitButtonXBuffer)
+        quitButton = pygame.Rect(quitButtonX,startQuitButtonY,startQuitButtonWidth,startQuitButtonHeight)
+
+        if (multiplicationButton.collidepoint((m1x,m1y))):
+            isMultHover = True
+            if click:
+                isMultClicked = True
+                isDivClicked = False
+                isSubClicked = False
+                program_OperationType = MULTIPLICATION
+        else:
+            isMultHover = False
+        if (divisionButton.collidepoint((m1x,m1y))):
+            isDivHover = True
+            if click:
+                isDivClicked = True
+                isMultClicked = False
+                isSubClicked = False
+                program_OperationType = DIVISION
+        else:
+            isDivHover = False
+        if (subtractionButton.collidepoint((m1x,m1y))):
+            isSubHover = True
+            if click:
+                isSubClicked = True
+                isMultClicked = False
+                isDivClicked = False
+                program_OperationType = SUBTRACTION
+        else:
+            isSubHover = False
+
+        if (randomProblemButton.collidepoint((m1x,m1y))):
+            isRandomHover = True
+            if click:
+                isRandomClicked =True
+                isUserClicked = False
+                program_problemCreationType = RANDOMPROBLEM
+        else:
+            isRandomHover = False
+
+        if (userProblemButton.collidepoint((m1x,m1y))):
+            isUserHover = True
+            if click:
+                isUserClicked =True
+                isRandomClicked = False
+                program_problemCreationType = USERPROBLEM
+        else:
+            isUserHover = False
+
+        if (startButton.collidepoint((m1x,m1y))):
+            isStartHover = True
             if click:
                 if program_problemCreationType == RANDOMPROBLEM:
                     problemGenerator.setProblemCreationType(RANDOMPROBLEM)
                     main_prog()
                 elif program_problemCreationType == USERPROBLEM:
                     createUserProblem()
-        if quit_button.collidepoint((m1x, m1y)):    # Quits game on quit button click
+        else:
+            isStartHover = False
+
+        if (quitButton.collidepoint((m1x,m1y))):
+            isQuitHover = True
             if click:
                 quit_message()
-        """
-        if cuttingType_button.collidepoint((m1x,m1y)):
-            if click:
-                if program_CuttingType == FRACTIONCUTTING:
-                    program_CuttingType = VARCUTTING
-                elif program_CuttingType == VARCUTTING:
-                    program_CuttingType = CMCUTTING
-                elif program_CuttingType == CMCUTTING:
-                    program_CuttingType = FRACTIONCUTTING
-        """
-        if operationType_button.collidepoint((m1x,m1y)):
-            if click:
-                if program_OperationType == MULTIPLICATION:
-                    program_OperationType = SUBTRACTION
-                #elif program_OperationType == ADDITION:
-                    #program_OperationType = SUBTRACTION
-                elif program_OperationType == SUBTRACTION:
-                    program_OperationType = DIVISION
-                elif program_OperationType == DIVISION:
-                    program_OperationType = MULTIPLICATION
-
-        #toggle program_problemCreationType depending on click
-        if creationType_button.collidepoint((m1x,m1y)):
-            if click:
-                if program_problemCreationType == RANDOMPROBLEM:
-                    program_problemCreationType = USERPROBLEM
-                elif program_problemCreationType == USERPROBLEM:
-                    program_problemCreationType = RANDOMPROBLEM
+        else:
+            isQuitHover = False
 
         # Drawing the buttons and text for menu
         pygame.draw.rect(screen, colors.TITLEBAR, title_bar)
         pygame.draw.rect(screen, (0, 0, 0), title_bar, 7)
-        draw_text('Main Menu', title_font, (8, 41, 255), screen, int(WIDTH/2), int(HEIGHT/12))
-        pygame.draw.rect(screen, (8, 41, 255), operationType_button)
-        if program_OperationType == MULTIPLICATION:
-            draw_text('Multiplication', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25))
-        elif program_OperationType == ADDITION:
-            draw_text('Addition',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25)) 
-        elif program_OperationType == SUBTRACTION:
-            draw_text('Subtraction', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25)) 
-        elif program_OperationType == DIVISION:
-            draw_text('Division', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/4)+25)) 
+        draw_text('Main Menu', title_font, (0,0,0), screen, int(WIDTH/2), int(HEIGHT/12))
 
-        """
-        if program_CuttingType == CMCUTTING:
-            draw_text('Cut with cutmarkers', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        elif program_CuttingType == VARCUTTING:
-            draw_text('Variable cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        if program_CuttingType == FRACTIONCUTTING:
-            draw_text('Fraction cutting',button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85))
-        """
-        pygame.draw.rect(screen,(8,41,255), creationType_button)
-        if program_problemCreationType == RANDOMPROBLEM:
-            draw_text('Random Problem', button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
-        elif program_problemCreationType == USERPROBLEM:
-            draw_text('Create your own problem', smallButton_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+25))
+        draw_text('Operation', pygame.font.SysFont('Arial', 48), (0,0,0), screen, WIDTH/2, startY) 
+        #draw operation buttons and their tet
+        if (isMultClicked == False and isMultHover == False):
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, multiplicationButton)
+        elif (isMultClicked == True):
+            pygame.draw.rect(screen, colors.BUTTONCLICKED, multiplicationButton)
+        elif (isMultHover == True):
+            pygame.draw.rect(screen, colors.BUTTONHOVER, multiplicationButton)
+        draw_text("Multiplication",button_font,(0,0,0),screen, multiplicationButtonX + int(operationButtonWidth/2), operationButtonsY+int(operationButtonHeight/2))
 
-        pygame.draw.rect(screen,(8,41,255),start_button)
-        draw_text("Start", button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+85) )
+        if (isDivClicked == False and isDivHover == False):
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, divisionButton)
+        elif (isDivClicked == True):
+            pygame.draw.rect(screen, colors.BUTTONCLICKED, divisionButton)
+        elif (isDivHover == True):
+            pygame.draw.rect(screen, colors.BUTTONHOVER, divisionButton)
+        draw_text("Division",button_font,(0,0,0),screen, divisionButtonX + int(operationButtonWidth/2), operationButtonsY+int(operationButtonHeight/2))
 
-        pygame.draw.rect(screen,(8,41,255), quit_button)
-        draw_text("Quit", button_font, (0,0,0), screen, WIDTH/2, int((HEIGHT/3)+145) )
+        if (isSubClicked == False and isSubHover == False):
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, subtractionButton)
+        elif (isSubClicked == True):
+            pygame.draw.rect(screen, colors.BUTTONCLICKED, subtractionButton)
+        elif (isSubHover == True):
+            pygame.draw.rect(screen, colors.BUTTONHOVER, subtractionButton)
+        draw_text("Subtraction",button_font,(0,0,0),screen, subtractionButtonX + int(operationButtonWidth/2), operationButtonsY+int(operationButtonHeight/2))
+
+        draw_text('Problem Type', pygame.font.SysFont('Arial', 48), (0,0,0), screen, WIDTH/2, problemTypeY) 
+
+        if (isRandomClicked == False and isRandomHover == False):
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, randomProblemButton)
+        elif (isRandomClicked == True):
+            pygame.draw.rect(screen, colors.BUTTONCLICKED, randomProblemButton)
+        elif (isRandomHover == True):
+            pygame.draw.rect(screen, colors.BUTTONHOVER, randomProblemButton)
+        draw_text("Random",button_font,(0,0,0),screen, randomProblemButtonX + int(problemButtonWidth/2), problemButtonsY+int(problemButtonHeight/2))
+        if (isUserClicked == False and isUserHover == False):
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, userProblemButton)
+        elif (isUserClicked == True):
+            pygame.draw.rect(screen, colors.BUTTONCLICKED, userProblemButton)
+        elif (isUserHover == True):
+            pygame.draw.rect(screen, colors.BUTTONHOVER, userProblemButton)
+        draw_text("Create Your Own",button_font,(0,0,0),screen, userProblemButtonX + int(problemButtonWidth/2), problemButtonsY+int(problemButtonHeight/2))
+        
+        if isStartHover == False:
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, startButton)
+        else:
+            pygame.draw.rect(screen, colors.BUTTONHOVER, startButton)
+        draw_text("Start",pygame.font.SysFont('Arial', 40),(0,0,0),screen, startButtonX + int(startQuitButtonWidth/2), startQuitButtonY+int(startQuitButtonHeight/2))
+        if isQuitHover == False:
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, quitButton)
+        else:
+            pygame.draw.rect(screen, colors.BUTTONHOVER, quitButton)
+        draw_text("Quit",pygame.font.SysFont('Arial', 40),(0,0,0),screen, quitButtonX + int(startQuitButtonWidth/2), startQuitButtonY+int(startQuitButtonHeight/2))
+
+
 
         click = False
         pygame.display.update()
