@@ -66,6 +66,8 @@ class Fraction:
      #Returns false if if cannot
         if self.numerator == 1:
             return False
+        elif self.numerator == 0:
+            return False
         elif self.denominator == 15 or self.denominator == 25:
             return True
         elif self.denominator % self.numerator == 0:
