@@ -93,12 +93,13 @@ class ProblemDisplay:
                 userAnswer.makeMixed()
                 cpuAnswer.makeMixed()
                 self.leadcoAnswer = cpuAnswer.getLeadC()
-                userAnswer.denominator = cpuAnswer.denominator
+                # userAnswer.denominator = cpuAnswer.denominator
             elif userAnswer.canReduce() == True and cpuAnswer.canReduce() == True:
                 canreduce = True
                 cpucanreduce = True
             else:
-                userAnswer.denominator = cpuAnswer.denominator
+                pass
+                # userAnswer.denominator = cpuAnswer.denominator
 
 
             if canreduce == True or cpucanreduce == True: # user answer can be reduced so theres 7 total symbols
