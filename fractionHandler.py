@@ -68,9 +68,9 @@ class Fraction:
             return False
         elif self.numerator == 0:
             return False
-        elif self.denominator == 15 or self.denominator == 25:
+        elif self.denominator == 25 and self.numerator % 5 == 0:
             return True
-        elif self.denominator % self.numerator == 0:
+        elif self.numerator != 0 and self.denominator % self.numerator == 0:
             return True
         elif self.numerator % 3 == 0 and self.denominator % 3 == 0:
             return True
