@@ -26,6 +26,7 @@ class StateManagerMult:
 
         self.DONE = 4
         self.MOVING = 5 # for debuging
+        self.ANSWERSUBMISSION = 6
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -37,6 +38,9 @@ class StateManagerMult:
         self.WIDTH = 1200
         self.HEIGHT = 700
         self.proceed_button = pygame.Rect(int((self.WIDTH/2)-150), int(self.HEIGHT/2+180), 300, 50)
+        self.submitAnswerButtonX = int(self.WIDTH -310)
+        self.submitAnswerButtonY = int(self.HEIGHT/2 + 110)
+        self.submitAnswerButton = pygame.Rect(self.submitAnswerButtonX, self.submitAnswerButtonY, 200, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)
 
         self.rectsData = None
@@ -70,6 +74,13 @@ class StateManagerMult:
                 self.hasInvertedRectData = True #use tab for this
             self.shadeHorizontal()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                # self.currentState = self.DONE
+                self.currentState = self.ANSWERSUBMISSION
+
+        # manager is in answer submission state, wait for user to press submit answer button to proceed
+        elif self.currentState == self.ANSWERSUBMISSION:
+            if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                # self.currentState = self.DONE
                 self.currentState = self.DONE
 
 
@@ -79,7 +90,11 @@ class StateManagerMult:
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.SHADINGHORIZONTALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Finish!', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.ANSWERSUBMISSION:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.submitAnswerButton)
+            draw_text('Submit Answer', self.button_font, (0,0,0), self.screen, self.submitAnswerButtonX + 100, self.submitAnswerButtonY + 25)
+
 
     def getCurrentState(self):
         if self.currentState == self.CUTTINGVERTICALLY:
@@ -94,6 +109,8 @@ class StateManagerMult:
             return "Finished"
         elif self.currentState == self.MOVING:
             return "Moving"
+        elif self.currentState == self.ANSWERSUBMISSION:
+            return "Submitting Answer"
 
     def shadeVertical(self):
         if self.mouse.leftMouseReleasedThisFrame == True:

@@ -16,6 +16,7 @@ from problemDisplay import ProblemDisplay
 from problemGenerator import ProblemGenerator
 from trashCan import TrashCan
 from problemValidation import isValidProblem
+from userAnswerSystem import UserAnswerSystem
 
 pygame.init()
 
@@ -409,6 +410,9 @@ def main_prog():
                 testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
                 cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
 
+    # bring in userAnswerSystem
+    userAnswerSystem = UserAnswerSystem(screen, stateManager, WIDTH, HEIGHT)
+
     isProgramRunning = True
     check = False
     click = False       # To check if Main Menu button is clicked
@@ -458,7 +462,8 @@ def main_prog():
             cm.update(mouse.isClick)
         if colorPicker != None:
             colorPicker.update()
-        
+
+        userAnswerSystem.update()
         
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
@@ -542,6 +547,7 @@ def main_prog():
         if trashCan != None:
             trashCan.draw()
         problemDisplay.draw()
+        userAnswerSystem.draw()
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
         #update screen and set framerate
