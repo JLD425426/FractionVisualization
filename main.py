@@ -416,6 +416,7 @@ def main_prog():
     isProgramRunning = True
     check = False
     click = False       # To check if Main Menu button is clicked
+    keyDown = None # for passing information to userAnswerSystem
     # main loop
     while isProgramRunning:
         # main event loop -- user keyboard/mouse input here
@@ -438,6 +439,29 @@ def main_prog():
                     #setClick(check)
                     click = False
                     #hold = False
+            if event.type == KEYDOWN:
+                if event.key == pygame.K_1:
+                    keyDown = "1"
+                elif event.key == pygame.K_2:
+                    keyDown = "2"
+                elif event.key == pygame.K_3:
+                    keyDown = "3"
+                elif event.key == pygame.K_4:
+                    keyDown = "4"
+                elif event.key == pygame.K_5:
+                    keyDown = "5"
+                elif event.key == pygame.K_6:
+                    keyDown = "6"
+                elif event.key == pygame.K_7:
+                    keyDown = "7"
+                elif event.key == pygame.K_8:
+                    keyDown = "8"
+                elif event.key == pygame.K_9:
+                    keyDown = "9"
+                elif event.key == pygame.K_0:
+                    keyDown = "0"
+                elif event.key == pygame.K_BACKSPACE:
+                    keyDown = "Backspace"
 
 
         #---------UPDATE BEGIN-------UPDATE ALL OBJECTS
@@ -463,7 +487,7 @@ def main_prog():
         if colorPicker != None:
             colorPicker.update()
 
-        userAnswerSystem.update()
+        userAnswerSystem.update(mouse.leftMouseReleasedThisFrame,keyDown)
         
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
@@ -550,6 +574,7 @@ def main_prog():
         userAnswerSystem.draw()
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
+        keyDown = None
         #update screen and set framerate
         pygame.display.flip()
         clock.tick(fps)
