@@ -85,9 +85,20 @@ class StateManagerDiv:
             self.shadeVertical()
             self.shadeVertical2()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.CUTTINGHORIZONTALLY
-                cutter.setStateCutHorizontal()
-                cutter2.setStateCutHorizontal()
+                #if there is nothing shaded, display a quick window telling the user to shade vertically, 
+                #if there are shaded rectangles, continue as normal
+                #Display that halts the state continuation will appear for 4 Seconds
+                sCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isShadedV == True:
+                        sCount += 1
+                if sCount != 0:
+                    ##self.error_detect = False
+                    self.currentState = self.CUTTINGHORIZONTALLY
+                    cutter.setStateCutHorizontal()
+                    cutter2.setStateCutHorizontal()
+                ##self.error_detect = True
+                
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
@@ -129,7 +140,15 @@ class StateManagerDiv:
                     self.auto_color_rect()
 
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.ANSWERSUBMISSION
+                sCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isShadedB == True:
+                        sCount += 1
+                if sCount != 0:
+                    ##self.error_detect = False
+                    self.currentState = self.ANSWERSUBMISSION
+                ##self.error_detect = True
+                
 
         elif self.currentState == self.ANSWERSUBMISSION:
             if self.submitAnswerButton.collidepoint(self.mouse.mx,self.mouse.my) and self.mouse.leftMouseReleasedThisFrame:

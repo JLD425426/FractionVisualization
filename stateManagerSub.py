@@ -41,6 +41,10 @@ class StateManagerSub:
         self.HEIGHT = 700
         self.proceed_button = pygame.Rect(int((self.WIDTH/2)-150), int(self.HEIGHT/2+180), 300, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)
+        ##self.pop_up = pygame.Rect(int(self.WIDTH/3), 120, 500, 500)
+        ##self.message_font_s = pygame.font.SysFont('Arial', 30)
+        ##self.timer = 0
+        ##self.error_detect = False
 
         self.submitAnswerButtonX = int(self.WIDTH -310)
         self.submitAnswerButtonY = int(self.HEIGHT/2 + 110)
@@ -65,8 +69,19 @@ class StateManagerSub:
         elif self.currentState == self.SHADINGVERTICALLY:
             self.shadeVertical()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.CUTTINGHORIZONTALLY 
-                cutter.setStateCutHorizontal()
+                #if there is nothing shaded, display a quick window telling the user to shade vertically, 
+                #if there are shaded rectangles, continue as normal
+                #Display that halts the state continuation will appear for 4 Seconds
+                sCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isShadedV == True:
+                        sCount += 1
+                if sCount != 0:
+                    ##self.error_detect = False
+                    self.currentState = self.CUTTINGHORIZONTALLY 
+                    cutter.setStateCutHorizontal()
+                ##self.error_detect = True
+                
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
@@ -80,11 +95,24 @@ class StateManagerSub:
                 self.hasInvertedRectData = True #use tab for this
             self.shadeHorizontal()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.MOVING
+                sCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isShadedH == True:
+                        sCount += 1
+                if sCount != 0:
+                    ##self.error_detect = False
+                    self.currentState = self.MOVING
+                ##self.error_detect = True
+                
 
         elif self.currentState == self.MOVING:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.ANSWERSUBMISSION
+                tCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isTrash == True:
+                        tCount += 1
+                if tCount != 0:        
+                    self.currentState = self.ANSWERSUBMISSION
                 ##self.currentState = self.THROWINGAWAY
         ##elif self.currentState == self.THROWINGAWAY:
         ##        if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
@@ -101,6 +129,11 @@ class StateManagerSub:
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            ##if self.error_detect == True:
+            ##    while (self.timer <= 300):
+            ##        pygame.draw.rect(self.screen, (255, 255, 255), self.pop_up)
+            ##        draw_text('Shading Vert', self.message_font_s, (0,0,0), self.screen, (int)(self.WIDTH/2), (self.HEIGHT-560))
+
         elif self.currentState == self.SHADINGHORIZONTALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to moving', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
@@ -114,6 +147,19 @@ class StateManagerSub:
         ##    pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
         ##    draw_text('Finish', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
 
+    ###THis does nothing!TO be fixed
+    def drawError(self):
+        while (timer <= 300):
+            pygame.draw.rect(self.screen, (255, 255, 255), self.pop_up)
+            if self.currentState == self.SHADINGVERTICALLY:
+                draw_text('Shading Vert', self.message_font_s, (0,0,0), self.screen, (int)(self.WIDTH/2), (self.HEIGHT-560))
+            elif self.currentState == self.SHADINGHORIZONTALLY:
+                draw_text('Are you sure you would like to quit?', self.message_font_s, (0,0,0), self.screen, (int)(self.WIDTH/2), (self.HEIGHT-560))
+            elif self.currentState == self.MOVING:       
+                draw_text('Are you sure you would like to quit?', self.message_font_s, (0,0,0), self.screen, (int)(self.WIDTH/2), (self.HEIGHT-560))
+            timer += 1
+    ##DISREGARD
+        
 
     def getCurrentState(self):
         if self.currentState == self.CUTTINGVERTICALLY:

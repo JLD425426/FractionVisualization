@@ -59,8 +59,18 @@ class StateManagerMult:
         elif self.currentState == self.SHADINGVERTICALLY:
             self.shadeVertical()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                self.currentState = self.CUTTINGHORIZONTALLY 
-                cutter.setStateCutHorizontal()
+                #if there is nothing shaded, display a quick window telling the user to shade vertically, 
+                #if there are shaded rectangles, continue as normal
+                #Display that halts the state continuation will appear for 4 Seconds
+                sCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isShadedV == True:
+                        sCount += 1
+                if sCount != 0:
+                    ##self.error_detect = False
+                    self.currentState = self.CUTTINGHORIZONTALLY 
+                    cutter.setStateCutHorizontal()
+                ##self.error_detect = True
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
@@ -74,8 +84,14 @@ class StateManagerMult:
                 self.hasInvertedRectData = True #use tab for this
             self.shadeHorizontal()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                sCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isShadedH == True:
+                        sCount += 1
+                if sCount != 0:
+                    ##self.error_detect = False
+                    self.currentState = self.ANSWERSUBMISSION
                 # self.currentState = self.DONE
-                self.currentState = self.ANSWERSUBMISSION
 
         # manager is in answer submission state, wait for user to press submit answer button to proceed
         elif self.currentState == self.ANSWERSUBMISSION:
