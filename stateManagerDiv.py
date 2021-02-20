@@ -63,6 +63,10 @@ class StateManagerDiv:
         self.rectsData = None
         self.hasInvertedRectData = False
 
+        # for if answer is between 1 and 2
+        self.between = False
+        # Checks if double shading has been done in the same rect
+        self.doubleShaded = False
         # for setting third rect or not 
         self.hasThreeSquares = False
         # for making sure third square gets generated once
@@ -110,20 +114,6 @@ class StateManagerDiv:
             self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
-            # if self.get_answerDenom() < self.get_answerNumer():
-            #     if self.rectCreated == 0:
-
-            #         testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,self.screen,self.drawablesController,True,self.mouse,self, 3)
-            #         cutter3 = testRectangle3.getCutter()
-            #         vCuts = cutter2.verticalGuidelinesCount
-            #         hCuts = cutter2.horizontalGuidelinesCount
-            #         cutter3.autoCut(hCuts, vCuts)
-            #         cutter3.state = cutter3.FINALCUT
-            #         for rect in self.drawablesController.rectangles:
-            #             if rect.ownerID == 3:
-            #                 rect.changeColor(colors.WHITE)
-            #         self.rectCreated = 1
-            #         self.auto_color_rect()
             if self.hasThreeSquares == True:
                 if self.hasCreatedThirdSquare == False:
                     testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,self.screen,self.drawablesController,True,self.mouse,self, 3)
@@ -138,6 +128,15 @@ class StateManagerDiv:
                     self.rectCreated = 1
                     self.hasCreatedThirdSquare = True
                     self.auto_color_rect()
+                    if self.cpuNumerAns/self.cpuDenomAns >= 2:
+                        self.thirdShade()
+            
+            if self.between is True:
+                if self.currentFilled() is True:
+                    if self.doubleShaded is False:
+                        self.secondShade()
+                        self.doubleShaded = True
+
 
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 sCount = 0
@@ -266,14 +265,77 @@ class StateManagerDiv:
 
     def auto_color_rect(self):
         twos, threes = [], []
+        newColor = colors.WHITE
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 2:
                 twos.append(rect)
             elif rect.ownerID == 3:
                 threes.append(rect)
         for i in range(len(threes)):
-            threes[i].color = twos[i].color
+            newColor = twos[i].color
+            if twos[i].color != colors.WHITE and twos[i].color != colors.GREY:
+                newColor = self.lighten(newColor)
+            threes[i].color = newColor
+            if threes[i].color != colors.WHITE:
+                threes[i].isShaded = True
 
+    def secondShade(self):
+        twos = []
+        newColor = colors.WHITE
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 2:
+                twos.append(rect)
+        total = len(twos)
+        count = 0
+        while count < total/2:
+            if twos[count].isShaded:
+                newColor = twos[count].color
+                newColor = self.lighten(newColor)
+                twos[total-count-1].color = newColor
+                twos[total-count-1].isShaded = True
+            count += 1
+    
+    def thirdShade(self):
+        threes = []
+        newColor = colors.WHITE
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 3:
+                threes.append(rect)
+        total = len(threes)
+        count = 0
+        while count < total/2:
+            if threes[count].isShaded:
+                newColor = threes[count].color
+                newColor = self.lighten(newColor)
+                threes[total-count-1].color = newColor
+                threes[total-count-1].isShaded = True
+            count += 1
+
+    def lighten(self, color):
+        if color == (colors.LIGHTBLUE or colors.LIGHTRED or colors.LIGHTYELLOW or colors.LIGHTORANGE or colors.LIGHTPURPLE or colors.LIGHTGREEN):
+            return color
+        if color == colors.RED:
+            return colors.LIGHTRED
+        if color == colors.BLUE:
+            return colors.LIGHTBLUE
+        if color == colors.YELLOW:
+            return colors.LIGHTYELLOW
+        if color == colors.ORANGE:
+            return colors.LIGHTORANGE
+        if color == colors.GREEN:
+            return colors.LIGHTGREEN
+        if color == colors.PURPLE:
+            return colors.LIGHTPURPLE
+        else:
+            return colors.WHITE
+
+    def currentFilled(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 2:
+                if rect.isShaded:
+                    if rect.isShadedB is False:
+                        return False
+        return True
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):

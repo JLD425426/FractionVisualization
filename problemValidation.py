@@ -39,6 +39,6 @@ def isValidProblemDiv(n1,d1,n2,d2):
   nAns = n1 * d2
   dAns = d1 * n2
   ans = nAns / dAns
-  if ans >= 2:
+  if ans > 3:
     return "Answer is too large. For division, the answer must be less than 2"
   return True
