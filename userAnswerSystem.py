@@ -1,14 +1,16 @@
 import colors
 import pygame as pg
 from drawText import draw_text
+from fractionHandler import Fraction
 
 class UserAnswerSystem:
 
-  def __init__(self,screen,stateManager,WIDTH, HEIGHT):
+  def __init__(self,screen,stateManager,WIDTH, HEIGHT,problemDisplay):
     self.screen = screen
     self.stateManager = stateManager
     self.WIDTH = WIDTH
     self.HEIGHT = HEIGHT
+    self.problemDisplay = problemDisplay
 
     # set which operation is happening here
     self.MULT = 1
@@ -57,6 +59,13 @@ class UserAnswerSystem:
     self.denomRectY = self.numeratorRectY + 118
     self.denomRect = pg.Rect(self.denomRectX,self.denomRectY,self.numberRectWidth,self.numberRectHeight)
 
+    self.hasCheckedAnswer = False # for making sure answer checked exactly one time
+    self.hasCorrectAnswer = False
+    self.hasReducedAnswer = False
+    self.checkmark = pg.image.load('assets/checkmark.png')
+    self.x = pg.image.load('assets/x.png')
+
+
 
 
   def update(self,click,keyDown):
@@ -80,12 +89,17 @@ class UserAnswerSystem:
         self.blinkClock +=1
       if self.blinkClock >= 60:
         self.blinkClock = 0
+    
+    elif self.stateManager.getCurrentState() == "Finished":
+      if self.hasCheckedAnswer == False:
+        self.validateAnswer()
+        self.hasCheckedAnswer = True
 
 
   def draw(self):
+
     # draw fraction if state mgr in submitting answer or finished state AND its subtraction or multx
     if (self.stateManager.getCurrentState() == "Submitting Answer" or self.stateManager.getCurrentState() == "Finished") and (self.operation_type == self.MULT or self.operation_type == self.SUB):
-      draw_text('Enter Answer Here:', self.enterAnswerHere_font, (0,0,0), self.screen, self.startX, self.startY)
       pg.draw.rect(self.screen,colors.WHITE,self.numeratorRect) #draw numerator box
       pg.draw.line(self.screen,(0,0,0), [self.divideLineStartX, self.divideLineY], [self.divideLineEndX,self.divideLineY], 5) # draw dividing line
       pg.draw.rect(self.screen,colors.WHITE,self.denomRect) #draw denominator box
@@ -94,10 +108,23 @@ class UserAnswerSystem:
 
     # only draw blinky blink if if answer is in process of submitting answer, not in finished state, no div
     if (self.stateManager.getCurrentState() == "Submitting Answer") and (self.operation_type == self.MULT or self.operation_type == self.SUB):
+      draw_text('Enter Answer Here:', self.enterAnswerHere_font, (0,0,0), self.screen, self.startX, self.startY)
       if self.selectionIndex == 0 and self.blinkClock >= 30: # numerator selected
         pg.draw.line(self.screen,(0,0,0), [self.numeratorRectX + 20, self.numeratorRectY + 80], [self.numeratorRectX + 80,self.numeratorRectY + 80], 5)
       elif self.selectionIndex == 1 and self.blinkClock >= 30: #denom selected
         pg.draw.line(self.screen,(0,0,0), [self.denomRectX + 20, self.denomRectY + 80], [self.denomRectX + 80,self.denomRectY + 80], 5)
+
+    if (self.stateManager.getCurrentState() == "Finished" and (self.operation_type == self.MULT or self.operation_type == self.SUB)):
+      if self.hasCorrectAnswer == True and self.hasReducedAnswer == True:
+        draw_text('Great Job!', self.enterAnswerHere_font, (0,0,0), self.screen, self.startX, self.startY)
+        self.screen.blit(self.checkmark,(self.numeratorRectX + 150,self.numeratorRectY + 80))
+      elif self.hasCorrectAnswer == True:
+        draw_text('Correct, but can be reduced.', self.enterAnswerHere_font, (0,0,0), self.screen, self.startX, self.startY)
+        self.screen.blit(self.checkmark,(self.numeratorRectX + 150,self.numeratorRectY + 80))
+      else:
+        draw_text('Try Again', self.enterAnswerHere_font, (0,0,0), self.screen, self.startX, self.startY)
+        self.screen.blit(self.x,(self.numeratorRectX + 150,self.numeratorRectY + 80))
+      draw_text('Your Visual Answer:', self.enterAnswerHere_font, (0,0,0), self.screen, int(self.WIDTH/2), 35)
 
 
   def interpretInput(self,keyDown):
@@ -127,3 +154,28 @@ class UserAnswerSystem:
           self.denominatorValue = int(keyDown)
         elif self.denominatorValue < 10: #one digit in denom value
           self.denominatorValue = self.denominatorValue * 10 + int(keyDown)
+
+  def validateAnswer(self):
+    #multx validation
+    numAnswer = self.problemDisplay.numeratorAnswer
+    denAnswer = self.problemDisplay.denominatorAnswer
+    realAnswerFraction = Fraction(numAnswer,denAnswer)
+    # print("num answer: " + str(numAnswer))
+    # print("den answer: " + str(denAnswer))
+    # check to see if user entered unreduced fraction, if they did-give them credit (for now)
+    if numAnswer == self.numeratorValue and denAnswer == self.denominatorValue:
+      self.hasCorrectAnswer = True
+      if realAnswerFraction.canReduce() == False:
+        self.hasReducedAnswer = True
+      else:
+        self.hasReducedAnswer = False
+      return
+    # check if real answer can be reduced, and if so, reduce it then check against user answer to see if they got correct
+    # reduced answer
+    if realAnswerFraction.canReduce():
+      realAnswerFraction.finalReduce()
+      if realAnswerFraction.numerator == self.numeratorValue and realAnswerFraction.denominator == self.denominatorValue:
+        self.hasCorrectAnswer = True
+        self.hasReducedAnswer = True
+        return
+    

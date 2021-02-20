@@ -411,7 +411,7 @@ def main_prog():
                 cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
 
     # bring in userAnswerSystem
-    userAnswerSystem = UserAnswerSystem(screen, stateManager, WIDTH, HEIGHT)
+    userAnswerSystem = UserAnswerSystem(screen, stateManager, WIDTH, HEIGHT,problemDisplay)
 
     isProgramRunning = True
     check = False
