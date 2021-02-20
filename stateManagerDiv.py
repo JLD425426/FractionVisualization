@@ -312,8 +312,6 @@ class StateManagerDiv:
             count += 1
 
     def lighten(self, color):
-        if color == (colors.LIGHTBLUE or colors.LIGHTRED or colors.LIGHTYELLOW or colors.LIGHTORANGE or colors.LIGHTPURPLE or colors.LIGHTGREEN):
-            return color
         if color == colors.RED:
             return colors.LIGHTRED
         if color == colors.BLUE:
@@ -326,8 +324,10 @@ class StateManagerDiv:
             return colors.LIGHTGREEN
         if color == colors.PURPLE:
             return colors.LIGHTPURPLE
-        else:
+        if color == colors.WHITE:
             return colors.WHITE
+        else:
+            return color
 
     def currentFilled(self):
         for rect in self.drawablesController.rectangles:
