@@ -76,6 +76,8 @@ class Fraction:
             return True
         elif self.numerator % 2 == 0 and self.denominator % 2 == 0:
             return True
+        elif self.numerator % 5 == 0 and self.denominator % 5 == 0:
+            return True
         else:
             return False
 
@@ -102,6 +104,18 @@ class Fraction:
                 while simplN % 2 == 0 and simplD % 2 == 0:
                     simplN = int(simplN/2)
                     simplD = int(simplD/2)
+            if simplN % 5 == 0 and simplD % 5 == 0:
+                simplN = int(self.numerator/5)
+                simplD = int(self.denominator/5)
+                while simplN % 5 == 0 and simplD % 5 == 0:
+                    simplN = int(simplN/5)
+                    simplD = int(simplD/5)
+            if simplN % 6 == 0 and simplD % 6 == 0:
+                simplN = int(self.numerator/6)
+                simplD = int(self.denominator/6)
+                while simplN % 6 == 0 and simplD % 6 == 0:
+                    simplN = int(simplN/6)
+                    simplD = int(simplD/6)
         self.numerator = simplN
         self.denominator = simplD
 

@@ -31,6 +31,7 @@ class StateManagerDiv:
         self.DONE = 4
         self.MOVING = 5
         self.GETTINGDENOMINATOR = 6
+        self.ANSWERSUBMISSION = 7
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -43,6 +44,10 @@ class StateManagerDiv:
         self.HEIGHT = 700
         self.proceed_button = pygame.Rect(int((self.WIDTH/2)-150), int(self.HEIGHT/2+180), 300, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)
+
+        self.submitAnswerButtonX = int(self.WIDTH/2 - 100)
+        self.submitAnswerButtonY = int(self.HEIGHT - 60)
+        self.submitAnswerButton = pygame.Rect(self.submitAnswerButtonX, self.submitAnswerButtonY, 200, 50)
 
         # Need actual CPU answer to check if > 1
         self.cpuDenomAns = 0
@@ -124,6 +129,10 @@ class StateManagerDiv:
                     self.auto_color_rect()
 
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.ANSWERSUBMISSION
+
+        elif self.currentState == self.ANSWERSUBMISSION:
+            if self.submitAnswerButton.collidepoint(self.mouse.mx,self.mouse.my) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
 
 
@@ -133,7 +142,11 @@ class StateManagerDiv:
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.MOVING:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Finish!', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.ANSWERSUBMISSION:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.submitAnswerButton)
+            draw_text('Submit Answer', self.button_font, (0,0,0), self.screen, self.submitAnswerButtonX + 100, self.submitAnswerButtonY + 25)
+
 
     def getCurrentState(self):
         if self.currentState == self.CUTTINGVERTICALLY:
@@ -150,6 +163,8 @@ class StateManagerDiv:
             return "Finished"
         elif self.currentState == self.MOVING:
             return "Moving"
+        elif self.currentState == self.ANSWERSUBMISSION:
+            return "Submitting Answer"
 
     def shadeVertical(self):
         if self.mouse.leftMouseReleasedThisFrame == True:
