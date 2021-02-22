@@ -85,12 +85,15 @@ def main_menu():
 
     #for button states
     isDivHover = isDivClicked = isMultHover = isMultClicked = isSubHover = isSubClicked = False
+    isAddHover = isAddClicked = False
     if program_OperationType == MULTIPLICATION:
         isMultClicked = True
     elif program_OperationType == DIVISION:
         isDivClicked = True
     elif program_OperationType == SUBTRACTION:
         isSubClicked = True
+    elif program_OperationType == ADDITION:
+        isAddClicked = True
 
     isRandomHover = isRandomClicked = isUserHover = isUserClicked = False
     if program_problemCreationType == RANDOMPROBLEM:
@@ -126,14 +129,18 @@ def main_menu():
         operationButtonsY = startY + 40
         operationButtonWidth = 200
         operationButtonHeight = 50
-        operationButtonXBuffer = 20
+        operationButtonXBuffer = 10
 
-        multiplicationButtonX = int(WIDTH/2 - operationButtonWidth/2)
-        multiplicationButton = pygame.Rect(multiplicationButtonX, operationButtonsY, operationButtonWidth, operationButtonHeight)
-        divisionButtonX = int(WIDTH/2 - operationButtonWidth/2) - operationButtonWidth - operationButtonXBuffer
-        divisionButton = pygame.Rect(divisionButtonX, operationButtonsY, operationButtonWidth, operationButtonHeight)
-        subtractionButtonX = int(WIDTH/2 - operationButtonWidth/2) + operationButtonWidth + operationButtonXBuffer
+
+        multiplicationButtonX = int(WIDTH/2 - operationButtonWidth - operationButtonXBuffer)
+        multiplicationButton = pygame.Rect(multiplicationButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
+        divisionButtonX = int(WIDTH/2 + operationButtonXBuffer)
+        divisionButton = pygame.Rect(divisionButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
+        subtractionButtonX = multiplicationButtonX - operationButtonWidth - operationButtonXBuffer * 2
         subtractionButton = pygame.Rect(subtractionButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
+        additionButtonX = int(WIDTH/2 + operationButtonXBuffer) + operationButtonWidth + operationButtonXBuffer * 2
+        additionButton = pygame.Rect(additionButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
+
 
         problemTypeY = operationButtonsY + 100
         problemButtonsY = problemTypeY + 40
@@ -160,6 +167,7 @@ def main_menu():
                 isMultClicked = True
                 isDivClicked = False
                 isSubClicked = False
+                isAddClicked = False
                 program_OperationType = MULTIPLICATION
         else:
             isMultHover = False
@@ -169,6 +177,7 @@ def main_menu():
                 isDivClicked = True
                 isMultClicked = False
                 isSubClicked = False
+                isAddClicked = False
                 program_OperationType = DIVISION
         else:
             isDivHover = False
@@ -178,9 +187,20 @@ def main_menu():
                 isSubClicked = True
                 isMultClicked = False
                 isDivClicked = False
+                isAddClicked = False
                 program_OperationType = SUBTRACTION
         else:
             isSubHover = False
+        if (additionButton.collidepoint((m1x,m1y))):
+            isAddHover = True
+            if click:
+                isAddClicked = True
+                isMultClicked = False
+                isSubClicked = False
+                isDivClicked = False
+                program_OperationType = ADDITION
+        else:
+            isAddHover = False
 
         if (randomProblemButton.collidepoint((m1x,m1y))):
             isRandomHover = True
@@ -248,6 +268,14 @@ def main_menu():
         elif (isSubHover == True):
             pygame.draw.rect(screen, colors.BUTTONHOVER, subtractionButton)
         draw_text("Subtraction",button_font,(0,0,0),screen, subtractionButtonX + int(operationButtonWidth/2), operationButtonsY+int(operationButtonHeight/2))
+
+        if (isAddClicked == False and isAddHover == False):
+            pygame.draw.rect(screen, colors.BUTTONSTANDARD, additionButton)
+        elif (isAddClicked == True):
+            pygame.draw.rect(screen, colors.BUTTONCLICKED, additionButton)
+        elif (isAddHover == True):
+            pygame.draw.rect(screen, colors.BUTTONHOVER, additionButton)
+        draw_text("Addition",button_font,(0,0,0),screen, additionButtonX + int(operationButtonWidth/2), operationButtonsY+int(operationButtonHeight/2))
 
         draw_text('Problem Type', pygame.font.SysFont('Arial', 48), (0,0,0), screen, WIDTH/2, problemTypeY) 
 
@@ -605,6 +633,8 @@ def createUserProblem():
         operationSymbol = "-"
     elif program_OperationType == DIVISION:
         operationSymbol = "/"
+    elif program_OperationType == ADDITION:
+        operationSymbol = "+"
 
     problemFont = pygame.font.SysFont('Arial', 64)
     errorFont = pygame.font.SysFont('Arial',20)
@@ -733,6 +763,9 @@ def createUserProblem():
                     program_OperationType = DIVISION
                     operationSymbol = "/"
                 elif program_OperationType == DIVISION:
+                    operationSymbol = "+"
+                    program_OperationType = ADDITION
+                elif program_OperationType == ADDITION:
                     operationSymbol = "x"
                     program_OperationType = MULTIPLICATION
 

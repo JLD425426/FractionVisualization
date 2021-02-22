@@ -13,6 +13,8 @@ def isValidProblem(n1,d1,n2,d2,operationType):
     return isValidProblemSubtract(n1,d1,n2,d2)
   elif operationType == DIVISION:
     return isValidProblemDiv(n1,d1,n2,d2)
+  elif operationType == ADDITION:
+    return isValidProblemAdd(n1,d1,n2,d2)
 
 def isValidProblemMultx(n1,d1,n2,d2):
   # do not allow problem to continue b/c one of 2 input fractions is mixed
@@ -41,4 +43,14 @@ def isValidProblemDiv(n1,d1,n2,d2):
   ans = nAns / dAns
   if ans > 3:
     return "Answer is too large. For division, the answer must be less than 2"
+  return True
+
+def isValidProblemAdd(n1,d1,n2,d2):
+  if n1 > d1 or n2 > d2:
+    return "For addition, each numerator must be larger than its denominator"
+  f1 = Fraction(n1, d1)
+  f2 = Fraction(n2, d2)
+  nAns,dAns = f1.fAdd(f2.numerator,f2.denominator)
+  if nAns/dAns > 2:
+    return "For addition the answer must be less than 2"
   return True
