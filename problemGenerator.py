@@ -47,6 +47,7 @@ class ProblemGenerator:
         elif self.operationType == "Division":
             self.getProblemDivision()
 
+
     def getProblemUserGen(self):
         n1 = self.fractionValues[0]
         d1 = self.fractionValues[1]
@@ -74,8 +75,6 @@ class ProblemGenerator:
             answer = Fraction(nAns,dAns)
             self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
             self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
-
-            
 
 
     def getProblemMultiplication(self):
@@ -105,7 +104,27 @@ class ProblemGenerator:
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
     def getProblemAddition(self):
-        pass
+        nAns = -1
+        dAns = -1
+        while True:
+            n1 = random.randint(1,6)
+            d1 = random.randint(1,6)
+            n2 = random.randint(1,6)
+            d2 = random.randint(1,6)
+            f1 = Fraction(n1, d1)
+            f2 = Fraction(n2, d2)
+            nAns,dAns = f1.fAdd(f2.numerator,f2.denominator)
+
+            if n1 > d1:
+                continue
+            if n2 > d2:
+                continue
+            if nAns/dAns <= 2:
+                break
+        # now reduce problem answer
+        answer = Fraction(nAns,dAns)
+        self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
+        self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
     
     def getProblemSubtraction(self):
         nAns = -1
