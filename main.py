@@ -10,6 +10,7 @@ from stateManager import manager
 from stateManagerMult import StateManagerMult
 from stateManagerDiv import StateManagerDiv
 from stateManagerSub import StateManagerSub
+from stateManagerAdd import StateManagerAdd
 from fractionHandler import Fraction
 from colorpicker import ColorPicker
 from problemDisplay import ProblemDisplay
@@ -380,8 +381,21 @@ def main_prog():
         stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == ADDITION:
-        #stateManager = StateManagerAdd(program_CuttingType,screen)
-        pass
+        stateManager = StateManagerAdd(program_CuttingType,screen)
+        stateManager.setMouse(mouse)    # link state manager and mouse
+        stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
+
+        # Create rectangles and their respective cutters
+        testRectangle = Rectangle(WIDTH/3,HEIGHT/3,270,270,screen,drawablesController,True,mouse,stateManager, 1)
+        cutter = testRectangle.getCutter() # need to get cutter here for draw call
+        testRectangle2 = Rectangle(WIDTH/3,HEIGHT-(HEIGHT/4.5),270,270,screen,drawablesController,True,mouse,stateManager, 2)
+        cutter2 = testRectangle2.getCutter()
+        testRectangle3 = Rectangle(WIDTH-(WIDTH/5.7),HEIGHT/3,270,270,screen,drawablesController,True,mouse,stateManager, 3)
+        cutter3 = testRectangle3.getCutter()
+        testRectangle4 = Rectangle(WIDTH-(WIDTH/5.7),HEIGHT-(HEIGHT/4.5),270,270,screen,drawablesController,True,mouse,stateManager, 4)
+        
+        colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
+        stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == SUBTRACTION:
         stateManager = StateManagerSub(program_CuttingType,screen)
@@ -512,8 +526,8 @@ def main_prog():
             stateManager.update(testRectangle.myCutter)
             if TrashCan != None:
                 trashCan.update()
-        else:
-            stateManager.update(testRectangle.myCutter)
+        elif program_OperationType == ADDITION:
+            stateManager.update(testRectangle.myCutter, testRectangle2.myCutter, testRectangle3.myCutter, testRectangle4.myCutter)
         
         for rect in drawablesController.rectangles:
             rect.update(mouse)
