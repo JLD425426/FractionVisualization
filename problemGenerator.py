@@ -108,9 +108,9 @@ class ProblemGenerator:
         dAns = -1
         while True:
             n1 = random.randint(1,6)
-            d1 = random.randint(1,6)
+            d1 = random.randint(2,6)
             n2 = random.randint(1,6)
-            d2 = random.randint(1,6)
+            d2 = random.randint(2,6)
             f1 = Fraction(n1, d1)
             f2 = Fraction(n2, d2)
             nAns,dAns = f1.fAdd(f2.numerator,f2.denominator)

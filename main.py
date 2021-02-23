@@ -614,6 +614,8 @@ def main_prog():
             cutter2.draw()
             if stateManager.cpuNumerAns > stateManager.cpuDenomAns:
                 pass
+        if program_OperationType == ADDITION:
+            cutter2.draw()
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()
