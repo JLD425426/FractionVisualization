@@ -204,6 +204,79 @@ class Rectangle:
         ##else:
         ##    return False
 
+    def putDownAdd(self,mouse):
+        mouse.whoisHeld = None
+        replaced = None
+        ogColor = colors.WHITE
+        for pc in self.drawablesController.pointColliders:
+            if self.isCollidingWithPoint(pc.x,pc.y):
+                # do not allow rects to be dragged onto empty(grey spaces) here by checking if the pc is not occupied
+                if pc.isOccupied == False:
+                    self.updatePosition(self.xOrigin, self.yOrigin)
+                    return
+ 
+                if pc.isOccupied and pc.valid:
+                    for rect in self.drawablesController.rectangles:
+                        if rect.myPointCollider is not None:
+                            if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
+                                # #for allow rects to be dragged onto white squares
+                                # if (rect.color == colors.WHITE or rect.ownerID == 1 or rect.isOriginalSquare):
+                                # if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
+                                if (rect.color != colors.WHITE or rect.ownerID == 1 or rect.isOriginalSquare):
+                                    self.updatePosition(self.xOrigin, self.yOrigin)
+                                    return
+                                else:
+                                    if rect.color != colors.WHITE:
+                                        ogColor = rect.color
+                                    replaced = rect
+                else:
+                    if self.xOrigin == pc.x and self.yOrigin == pc.y:
+                        self.updatePosition(self.xOrigin, self.yOrigin)
+                        return
+                # check to see if the spot occupied has matching height and width 
+                # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
+                # if neither statement is true, call snapback to the origin
+                if (self.width - pc.width <= 1 and self.width - pc.width >= -1 and self.height - pc.height <= 1 and self.height - pc.height >= -1):
+                    #deal with rounding errors
+                    self.updatePosition(pc.x,pc.y)
+                    self.xOrigin = pc.x
+                    self.yOrigin = pc.y
+                    pc.isOccupied = True
+                    self.myPointCollider = pc
+                    self.changeColorHatch(colors.BLACK)
+                    if self.color != colors.WHITE or self.color != ogColor:
+                        self.color = ogColor
+                    self.stateManager.invertRectData()
+                    self.isShadedH = True
+                    self.isShadedB = True
+                    self.ownerID = 2
+                    if replaced:
+                        self.drawablesController.pointColliders.remove(replaced.myPointCollider)
+                        self.drawablesController.rectangles.remove(replaced)
+                    return
+                elif (self.width - pc.height <= 1 and self.width - pc.height >= -1 and self.height - pc.width <= 1 and self.height - pc.width >= -1):
+                    #need to work on rotate
+                    self.xOrigin = pc.x
+                    self.yOrigin = pc.y
+                    self.rotatePosition(pc.x,pc.y)
+                    pc.isOccupied = True
+                    self.myPointCollider = pc
+                    self.changeColorHatch(colors.BLACK)
+                    if self.color != colors.WHITE or self.color != ogColor:
+                        self.color = ogColor
+                    self.stateManager.invertRectData()
+                    self.isShadedH = True
+                    self.isShadedB = True
+                    self.ownerID = 2
+                    if replaced:
+                        self.drawablesController.pointColliders.remove(replaced.myPointCollider)
+                        self.drawablesController.rectangles.remove(replaced)
+                    return
+                else:
+                    pass
+        self.updatePosition(self.xOrigin, self.yOrigin)
+            
+
     def putDownDiv(self,mouse):
         mouse.whoisHeld = None
         replaced = None

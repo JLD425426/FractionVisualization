@@ -80,7 +80,8 @@ class StateManagerSub:
                     ##self.error_detect = False
                     self.currentState = self.CUTTINGHORIZONTALLY 
                     cutter.setStateCutHorizontal()
-                ##self.error_detect = True
+                ##else:
+                    ##self.error_detect = True
                 
 
         # manager now cutting horizontally, let cutter do work
