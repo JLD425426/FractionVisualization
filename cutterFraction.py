@@ -56,6 +56,12 @@ class CutterFraction:
         elif self.state == self.FINALCUT:
             return "Final Cut"
 
+    def setStateWaiting(self):
+        self.state = self.WAITING
+
+    def setStateCutVertical(self):
+        self.state = self.CUTTINGVERTICAL
+
     def setStateCutHorizontal(self):
         self.initHorizontalCuts()
         self.state = self.CUTTINGHORIZONTAL

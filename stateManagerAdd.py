@@ -26,17 +26,16 @@ class StateManagerAdd:
         self.CUTTINGVERTICALLY1 = 0     # Cutting left two boxes vertically
         self.SHADINGVERTICALLY = 1     # Shading left two boxes vertically
         self.CUTTINGHORIZONTALLY1 = 2   # Cutting left two boxes horizontally
-        self.CUTTINGVERTICALLY2 = 3     # Cutting top right box vertically
-        self.CUTTINGHORIZONTALLY2 = 4   # Cutting top right box horizontally
-        self.CUTTINGVERTICALLY3 = 5     # Cutting bottom right box vertically
-        self.CUTTINGHORIZONTALLY3 = 6   # Cutting bottom right box horizontally
+        self.CUTTINGVERTICALLY2 = 4     # Cutting right two boxes vertically
+        self.CUTTINGHORIZONTALLY2 = 5   # Cutting right two boxes horizontally
+        
 
 
         # Other states
-        self.MOVING = 7
-        self.GETTINGDENOMINATOR = 8
-        self.ANSWERSUBMISSION = 9
-        self.DONE = 10
+        self.MOVING = 6
+        self.GETTINGDENOMINATOR = 3
+        self.ANSWERSUBMISSION = 7
+        self.DONE = 8
 
         self.currentState = self.CUTTINGVERTICALLY1
 
@@ -74,6 +73,8 @@ class StateManagerAdd:
     def update(self, cutter1, cutter2, cutter3, cutter4):
         # We only want to cut the left two rectangles here
         if self.currentState == self.CUTTINGVERTICALLY1:
+            cutter3.setStateWaiting()
+            cutter4.setStateWaiting()
             if cutter1.getState() == "Waiting" and cutter2.getState() == "Waiting":
                     self.currentState = self.SHADINGVERTICALLY
         # manager is now shading vertically, now can shade current rects
@@ -84,11 +85,16 @@ class StateManagerAdd:
                 #if there is nothing shaded, display a quick window telling the user to shade vertically, 
                 #if there are shaded rectangles, continue as normal
                 #Display that halts the state continuation will appear for 4 Seconds
-                sCount = 0
+                sCountR1 = 0
+                sCountR2 = 0
                 for rect in self.drawablesController.rectangles:
                     if rect.isShadedV == True:
-                        sCount += 1
-                if sCount != 0:
+                        if rect.ownerID == 1:
+                            sCountR1 += 1
+                        elif rect.ownerID == 2:
+                            sCountR2 += 1
+                    
+                if sCountR1 != 0 and sCountR2 != 0:
                     ##self.error_detect = False
                     self.currentState = self.CUTTINGHORIZONTALLY1
                     cutter1.setStateCutHorizontal()
@@ -97,7 +103,29 @@ class StateManagerAdd:
                 # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY1:
             if cutter1.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                    self.currentState = self.GETTINGDENOMINATOR
+                    cutter3.setStateCutVertical()
+                    cutter4.setStateCutVertical()
+                    self.currentState = self.CUTTINGVERTICALLY2
+        elif self.currentState == self.CUTTINGVERTICALLY2:
+            if cutter3.getState() == "Waiting" and cutter4.getState() == "Waiting":
+                    self.currentState = self.CUTTINGHORIZONTALLY2
+                    cutter3.setStateCutHorizontal()
+                    cutter4.setStateCutHorizontal()
+        elif self.currentState == self.CUTTINGHORIZONTALLY2:
+            if cutter3.getState() == "Waiting" and cutter4.getState() == "Waiting":
+                self.currentState = self.GETTINGDENOMINATOR
+        elif self.currentState == self.GETTINGDENOMINATOR:
+            self.getDenominator()
+            self.currentState = self.MOVING
+        elif self.currentState == self.MOVING:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.ANSWERSUBMISSION
+        elif self.currentState == self.ANSWERSUBMISSION:
+            if self.submitAnswerButton.collidepoint(self.mouse.mx,self.mouse.my) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.DONE
+                
+
+
 
     def draw(self):
         if self.currentState == self.SHADINGVERTICALLY:
@@ -118,14 +146,10 @@ class StateManagerAdd:
             return "Shading Vertically"
         elif self.currentState == self.CUTTINGHORIZONTALLY1:
             return "Cutting Horizontally 1"
-        if self.currentState == self.CUTTINGVERTICALLY2:
+        elif self.currentState == self.CUTTINGVERTICALLY2:
             return "Cutting Vertically 2"
         elif self.currentState == self.CUTTINGHORIZONTALLY2:
             return "Cutting Horizontally 2"
-        if self.currentState == self.CUTTINGVERTICALLY3:
-            return "Cutting Vertically 3"
-        elif self.currentState == self.CUTTINGHORIZONTALLY3:
-            return "Cutting Horizontally 3"
         elif self.currentState == self.GETTINGDENOMINATOR:
             return "Calculating/Loading"
         elif self.currentState == self.DONE:
@@ -179,6 +203,14 @@ class StateManagerAdd:
                             rect.isShaded = False
                             rect.isShadedV = False
 
+
+    def getDenominator(self):
+        count = 0
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 1:
+                if rect.color != colors.WHITE:
+                    count += 1
+        self.numShadedRightRects = count
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):

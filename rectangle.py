@@ -98,6 +98,21 @@ class Rectangle:
                 self.finalCut()
 
         if self.stateManager.getCurrentState() == "Moving":
+
+            if self.stateManager.operation_type == 4:       #Addition
+                if self.isOriginalSquare == False and (self.ownerID != 3 and self.ownerID != 4):
+                    if self.isShadedV is True:
+                        if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
+                                mouse.whoisHeld = self
+                                if self.myPointCollider != None:
+                                    self.myPointCollider.isOccupied = False
+                            # mouse release so remove self as being held
+                        if mouse.isClick == False and mouse.whoisHeld == self:
+                            self.putDownAdd(mouse)
+                            # self is being dragged so move it around
+                        if mouse.whoisHeld == self:
+                            self.updatePosition(mouse.mx,mouse.my)
+
             if self.stateManager.operation_type == 3:       #Subtraction
                     #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
                     ##if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
@@ -222,7 +237,7 @@ class Rectangle:
                                 # #for allow rects to be dragged onto white squares
                                 # if (rect.color == colors.WHITE or rect.ownerID == 1 or rect.isOriginalSquare):
                                 # if (rect.color == colors.WHITE and rect.colorHatch == colors.BLACK) or rect.ownerID == 1 or rect.isOriginalSquare:
-                                if (rect.color != colors.WHITE or rect.ownerID == 1 or rect.isOriginalSquare):
+                                if (rect.color != colors.WHITE or rect.ownerID == 1 or rect.ownerID == 2 or rect.isOriginalSquare):
                                     self.updatePosition(self.xOrigin, self.yOrigin)
                                     return
                                 else:
@@ -243,13 +258,17 @@ class Rectangle:
                     self.yOrigin = pc.y
                     pc.isOccupied = True
                     self.myPointCollider = pc
+
+                    ##Changing color here does not display as the WHite rectangle is drawing over top
+
                     self.changeColorHatch(colors.BLACK)
                     if self.color != colors.WHITE or self.color != ogColor:
                         self.color = ogColor
-                    self.stateManager.invertRectData()
-                    self.isShadedH = True
-                    self.isShadedB = True
-                    self.ownerID = 2
+                    #self.stateManager.invertRectData()
+                    #self.isShadedH = True
+                    #self.isShadedB = True
+                    self.ownerID = 3
+                    ##Can we change this?
                     if replaced:
                         self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                         self.drawablesController.rectangles.remove(replaced)
@@ -261,13 +280,18 @@ class Rectangle:
                     self.rotatePosition(pc.x,pc.y)
                     pc.isOccupied = True
                     self.myPointCollider = pc
+                    #self.changeColor(colors.GREEN)
+
+                    ##Changing color here does not display as the WHite rectangle is drawing over top
+                    
                     self.changeColorHatch(colors.BLACK)
                     if self.color != colors.WHITE or self.color != ogColor:
                         self.color = ogColor
-                    self.stateManager.invertRectData()
-                    self.isShadedH = True
-                    self.isShadedB = True
-                    self.ownerID = 2
+                    #self.stateManager.invertRectData()
+                    #self.isShadedH = True
+                    #self.isShadedB = True
+                    self.ownerID = 3
+                    ##Can we change this?
                     if replaced:
                         self.drawablesController.pointColliders.remove(replaced.myPointCollider)
                         self.drawablesController.rectangles.remove(replaced)
@@ -456,6 +480,8 @@ class Rectangle:
                     r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 2)
                 if self.ownerID == 3:
                     r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 3)
+                if self.ownerID == 4:
+                    r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 4)
             pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(0 * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, False)
             # self.drawablesController.pointColliders.append(pc)
             if r != None:
@@ -494,6 +520,9 @@ class Rectangle:
                         rectsRow.append(r)
                     elif self.ownerID == 3:
                         r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 3)
+                        rectsRow.append(r)
+                    elif self.ownerID == 4:
+                        r = Rectangle(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 4)
                         rectsRow.append(r)
                     # see if theres already a rectangle in r's new spot, if there is-> shade it to that rectangles color
                     if self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset)) != None:

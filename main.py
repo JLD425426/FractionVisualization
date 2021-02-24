@@ -393,7 +393,7 @@ def main_prog():
         testRectangle3 = Rectangle(WIDTH-(WIDTH/5.7),HEIGHT/3,270,270,screen,drawablesController,True,mouse,stateManager, 3)
         cutter3 = testRectangle3.getCutter()
         testRectangle4 = Rectangle(WIDTH-(WIDTH/5.7),HEIGHT-(HEIGHT/4.5),270,270,screen,drawablesController,True,mouse,stateManager, 4)
-        
+        cutter4 = testRectangle4.getCutter()
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
 
@@ -616,6 +616,8 @@ def main_prog():
                 pass
         if program_OperationType == ADDITION:
             cutter2.draw()
+            cutter3.draw()
+            cutter4.draw()
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()
