@@ -217,7 +217,6 @@ class StateManagerAdd:
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 3 or rect.ownerID == 4:
                 numRects += 1
-        print ("Denominator: " + str(numRects))
         return int(numRects/2)
 
     def get_answerNumer(self):
@@ -226,7 +225,6 @@ class StateManagerAdd:
             if rect.ownerID == 3 or rect.ownerID == 4:
                 if rect.colorHatch == colors.BLACK:
                     numRects += 1
-        print ("Numerator: " + str(numRects))
         return numRects
 
 

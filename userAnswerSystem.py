@@ -122,7 +122,7 @@ class UserAnswerSystem:
       self.enterAnswerHere_font = pg.font.SysFont('Arial', 30)
       self.startY = self.HEIGHT - 410
       self.startX = int(self.WIDTH/2) + 100
-      self.feedbackTextX = int(self.WIDTH/2) + 95
+      self.feedbackTextX = int(self.WIDTH/2) + 95 
       self.feedbackTextY = self.HEIGHT - 200
 
       # for numerator rect
@@ -218,7 +218,11 @@ class UserAnswerSystem:
       else:
         draw_text('Try Again', self.enterAnswerHere_font, (0,0,0), self.screen, self.feedbackTextX, self.feedbackTextY)
         self.screen.blit(self.x,(self.numeratorRectX + self.spriteXOffset,self.numeratorRectY + self.spriteYOffset))
-      draw_text('Your Visual Answer:', self.enterAnswerHere_font, (0,0,0), self.screen, int(self.WIDTH/2), 35)
+
+      if self.operation_type != self.ADD:
+        draw_text('Your Visual Answer:', self.enterAnswerHere_font, (0,0,0), self.screen, int(self.WIDTH/2), 35)
+      else:
+        draw_text('Your Visual Answer:', self.enterAnswerHere_font, (0,0,0), self.screen, int(self.WIDTH/2) - 275, 50)
 
 
   def interpretInput(self,keyDown):
@@ -285,4 +289,13 @@ class UserAnswerSystem:
         self.hasCorrectAnswer = True
         self.hasReducedAnswer = True
         return
+    # 
+    userAnswerFraction = Fraction(self.numeratorValue,self.denominatorValue)
+    if (userAnswerFraction.canReduce()):
+      while (userAnswerFraction.canReduce()):
+        userAnswerFraction.finalReduce()
+    if realAnswerFraction.numerator == userAnswerFraction.numerator and realAnswerFraction.denominator == userAnswerFraction.denominator:
+      self.hasCorrectAnswer = True
+      self.hasReducedAnswer = False
+      return
     

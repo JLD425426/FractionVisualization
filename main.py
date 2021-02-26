@@ -575,7 +575,10 @@ def main_prog():
         draw_text('Restart', button_font, (0,0,0), screen, WIDTH-170, 25)
         pygame.draw.rect(screen, (8, 41, 255), newProblem_button) # for new prob button
         draw_text('New Problem', button_font, (0,0,0), screen, WIDTH-305, 25) # for new prob button
-        state_message = "Current state: " + stateManager.getCurrentState()
+        if stateManager.getCurrentState() != "Finished":
+            state_message = "Current state: " + stateManager.getCurrentState()
+        else:
+            state_message = ""
         draw_text(state_message, button_font, (0,0,0), screen, 160, 25)
 
 
