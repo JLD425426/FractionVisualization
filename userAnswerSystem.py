@@ -31,6 +31,7 @@ class UserAnswerSystem:
     self.numeratorValue = 0
     self.denominatorValue = 0
     self.numberFont = pg.font.SysFont('Arial', 64)
+    self.operation_font = pg.font.SysFont('Arial', 60)
     self.selectionIndex = -1 # 0-> numerator # 1-> denom
 
     # for user input
@@ -148,8 +149,8 @@ class UserAnswerSystem:
       self.blinkyXOffset2 = 60
 
       #for sprites
-      self.spriteXOffset = 130
-      self.spriteYOffset = 50
+      self.spriteXOffset = 120
+      self.spriteYOffset = 40
 
     self.hasCheckedAnswer = False # for making sure answer checked exactly one time
     self.hasCorrectAnswer = False
@@ -223,6 +224,15 @@ class UserAnswerSystem:
         draw_text('Your Visual Answer:', self.enterAnswerHere_font, (0,0,0), self.screen, int(self.WIDTH/2), 35)
       else:
         draw_text('Your Visual Answer:', self.enterAnswerHere_font, (0,0,0), self.screen, int(self.WIDTH/2) - 275, 50)
+
+    # drawing the addition and equals sign
+    if self.operation_type == self.ADD:
+      draw_text('+', self.operation_font, (0,0,0), self.screen, 400 , 386)
+
+      if self.stateManager.getCurrentState() == "Submitting Answer" or self.stateManager.getCurrentState() == "Finished":
+        draw_text('=', self.operation_font, (0,0,0), self.screen, 575 , 386)
+      else:
+        draw_text('=', self.operation_font, (0,0,0), self.screen, 690 , 386)
 
 
   def interpretInput(self,keyDown):

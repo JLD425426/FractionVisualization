@@ -98,20 +98,23 @@ class ProblemDisplay:
                 cpuAnswer.makeMixed()
                 self.leadcoAnswer = cpuAnswer.getLeadC()
                 # userAnswer.denominator = cpuAnswer.denominator
-            elif userAnswer.canReduce() == True and cpuAnswer.canReduce() == True:
+            elif userAnswer.canReduce() == True:
                 canreduce = True
+                # cpucanreduce = True
+            elif cpuAnswer.canReduce():
                 cpucanreduce = True
             else:
                 pass
                 # userAnswer.denominator = cpuAnswer.denominator
 
 
-            if canreduce == True or cpucanreduce == True: # user answer can be reduced so theres 7 total symbols
+            if canreduce == True: # user answer can be reduced so theres 7 total symbols
                 print("in 7 symbols part")
                 userAnswerReduced = Fraction(userAnswer.getNum(),userAnswer.getDenom())
                 userAnswerReduced.finalReduce()
                 cpuAnswerReduced = Fraction(cpuAnswer.getNum(),cpuAnswer.getDenom())
-                cpuAnswerReduced.finalReduce()
+                if cpuAnswerReduced.canReduce():
+                    cpuAnswerReduced.finalReduce()
                 # if user num and denom match known problem num and denom they got it right -> set isEqualSymbol to =
                 if userAnswerReduced.getNum() == cpuAnswerReduced.getNum() and userAnswerReduced.getDenom() == cpuAnswerReduced.getDenom():
                     isEqualSymbol = '='
@@ -161,7 +164,10 @@ class ProblemDisplay:
                    self.drawSprite(self.x, False,-50) # draw x because user wrng
             else: #canreduce = False so there will be 5 symbols
                 print("In 5 Symbols part")
-                if userAnswer.getNum() == self.numeratorAnswer and userAnswer.getDenom() == self.denominatorAnswer:
+                tempUserAnswer = Fraction(self.usernumerator, self.userdenominator)
+                if tempUserAnswer.canReduce():
+                    tempUserAnswer.finalReduce()
+                if userAnswer.getNum() == self.numeratorAnswer and userAnswer.getDenom() == self.denominatorAnswer or (self.usernumerator == 0 and self.numeratorAnswer == 0 or (tempUserAnswer.numerator == self.numeratorAnswer and tempUserAnswer.denominator == self.denominatorAnswer)):
                     isEqualSymbol = '='
                     self.hasRightAnswer = True
                 else:
