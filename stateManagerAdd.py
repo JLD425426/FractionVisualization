@@ -49,8 +49,8 @@ class StateManagerAdd:
         self.proceed_button = pygame.Rect(int((self.WIDTH/1.72)-150), int(self.HEIGHT/2+180), 300, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)
 
-        self.submitAnswerButtonX = int(self.WIDTH/2 - 100)
-        self.submitAnswerButtonY = int(self.HEIGHT - 60)
+        self.submitAnswerButtonX = int(self.WIDTH/2 - 100) + 100
+        self.submitAnswerButtonY = int(self.HEIGHT - 220)
         self.submitAnswerButton = pygame.Rect(self.submitAnswerButtonX, self.submitAnswerButtonY, 200, 50)
 
         # Need actual CPU answer to check if > 1
@@ -211,6 +211,24 @@ class StateManagerAdd:
                 if rect.color != colors.WHITE:
                     count += 1
         self.numShadedRightRects = count
+
+    def get_answerDenom(self):
+        numRects = 0
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 3 or rect.ownerID == 4:
+                numRects += 1
+        print ("Denominator: " + str(numRects))
+        return int(numRects/2)
+
+    def get_answerNumer(self):
+        numRects = 0
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 3 or rect.ownerID == 4:
+                if rect.colorHatch == colors.BLACK:
+                    numRects += 1
+        print ("Numerator: " + str(numRects))
+        return numRects
+
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):

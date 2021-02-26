@@ -16,6 +16,7 @@ class UserAnswerSystem:
     self.MULT = 1
     self.DIV = 2
     self.SUB = 3
+    self.ADD = 4
     self.operation_type = None
     if stateManager.operation_type == self.MULT:
       self.operation_type = self.MULT
@@ -23,6 +24,8 @@ class UserAnswerSystem:
       self.operation_type = self.DIV
     elif stateManager.operation_type == self.SUB:
       self.operation_type = self.SUB
+    elif stateManager.operation_type == self.ADD:
+      self.operation_type = self.ADD
 
     # for numerator and denom values
     self.numeratorValue = 0
@@ -90,6 +93,43 @@ class UserAnswerSystem:
       self.numberRectHeight = 75
       self.numeratorRectX = int(self.WIDTH/2) - int(self.numberRectWidth/2)
       self.numeratorRectY = self.HEIGHT - 225
+      self.numeratorRect = pg.Rect(self.numeratorRectX,self.numeratorRectY,self.numberRectWidth,self.numberRectHeight)
+
+      # for line dividing numer and denom
+      self.divideLineY = self.numeratorRectY + self.numberRectHeight + 5
+      self.divideLineStartX = self.numeratorRectX - 20
+      self.divideLineEndX = self.numeratorRectX + self.numberRectWidth + 20
+
+      # for denominator rect
+      self.denomRectX = self.numeratorRectX
+      self.denomRectY = self.numeratorRectY + 85
+      self.denomRect = pg.Rect(self.denomRectX,self.denomRectY,self.numberRectWidth,self.numberRectHeight)
+
+      #for blinkyline
+      self.blinkyYoffset = 70
+      self.blinkyXOffset1 = 15
+      self.blinkyXOffset2 = 60
+
+      #for sprites
+      self.spriteXOffset = 130
+      self.spriteYOffset = 50
+
+    #----------------------------------------------------
+    #---------------ADDITION BUTTON PLACEMENTS-----------
+    #----------------------------------------------------
+    elif self.operation_type == self.ADD:
+      # for "Enter Answer Here Text"
+      self.enterAnswerHere_font = pg.font.SysFont('Arial', 30)
+      self.startY = self.HEIGHT - 410
+      self.startX = int(self.WIDTH/2) + 100
+      self.feedbackTextX = int(self.WIDTH/2) + 95
+      self.feedbackTextY = self.HEIGHT - 200
+
+      # for numerator rect
+      self.numberRectWidth = 75
+      self.numberRectHeight = 75
+      self.numeratorRectX = int(self.WIDTH/2) - int(self.numberRectWidth/2) + 100
+      self.numeratorRectY = self.HEIGHT - 390
       self.numeratorRect = pg.Rect(self.numeratorRectX,self.numeratorRectY,self.numberRectWidth,self.numberRectHeight)
 
       # for line dividing numer and denom
