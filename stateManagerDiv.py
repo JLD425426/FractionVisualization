@@ -155,6 +155,7 @@ class StateManagerDiv:
                     self.rectCreated = 1
                     self.hasCreatedThirdSquare = True
                     self.auto_color_rect()
+                    self.altSetBorderPos()
             elif self.hasThreeSquares is False:
                 # If answer is <= 1, no extra work is needed
                 if self.answer > 1:
@@ -384,6 +385,14 @@ class StateManagerDiv:
     def setBorderPos(self):
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 2:
+                if rect.isShaded and rect.isShadedB is False:
+                    self.borderLeft = rect.xPosition - (rect.width/2)
+                    self.borderTop = rect.yPosition - (rect.height/2)
+                    return
+
+    def altSetBorderPos(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 3:
                 if rect.isShaded and rect.isShadedB is False:
                     self.borderLeft = rect.xPosition - (rect.width/2)
                     self.borderTop = rect.yPosition - (rect.height/2)
