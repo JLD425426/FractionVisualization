@@ -4,6 +4,7 @@ import colors
 import pygame
 from drawText import draw_text
 import numpy as np
+import math
 
 # Define dimensions for window
 WIDTH, HEIGHT = 1200, 700
@@ -52,6 +53,8 @@ class StateManagerDiv:
         # Need actual CPU answer to check if > 1
         self.cpuDenomAns = 0
         self.cpuNumerAns = 0
+        self.answer = 0
+        self.answerCeiling = 0
 
         # For third rectangle to check if done auto cutting
         self.rectCreated = 0
@@ -62,6 +65,17 @@ class StateManagerDiv:
 
         self.rectsData = None
         self.hasInvertedRectData = False
+
+        # For border to highlight current sections
+        self.borderSet = 0
+        self.borderTop = 0
+        self.borderLeft = 0
+        self.borderHeight = 100
+        self.borderWidth = 100
+
+        # Keeps track of the current shaded boundary and if it has been filled
+        self.boundaryFilled = False
+        self.numBoundaries = 0
 
         # for if answer is between 1 and 2
         self.between = False
@@ -114,10 +128,23 @@ class StateManagerDiv:
             self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
+            if self.borderSet == 0:
+                self.setBorderPos()
+                self.borderSet = 1
+            # Checks if current shaded section is fully filled
+            if self.currentFilled() is True:
+                self.boundaryFilled = True
+            else:
+                self.boundaryFilled = False
+            # Gets real answer and find its ceiling (for number of shaded sections)
+            self.answer = self.cpuNumerAns/self.cpuDenomAns
+            self.answerCeiling = math.ceil(self.answer)
             if self.hasThreeSquares == True:
-                if self.hasCreatedThirdSquare == False:
+                # If third rectangles hasn't been created and the first is filled, we create a new rectangle here
+                if self.hasCreatedThirdSquare == False and self.boundaryFilled is True:
                     testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,self.screen,self.drawablesController,True,self.mouse,self, 3)
                     cutter3 = testRectangle3.getCutter()
+                    # auto color and cut the new rectangle
                     vCuts = cutter2.verticalGuidelinesCount
                     hCuts = cutter2.horizontalGuidelinesCount
                     cutter3.autoCut(hCuts, vCuts)
@@ -128,14 +155,16 @@ class StateManagerDiv:
                     self.rectCreated = 1
                     self.hasCreatedThirdSquare = True
                     self.auto_color_rect()
-                    if self.cpuNumerAns/self.cpuDenomAns >= 2:
-                        self.thirdShade()
-            
-            if self.between is True:
-                if self.currentFilled() is True:
-                    if self.doubleShaded is False:
-                        self.secondShade()
-                        self.doubleShaded = True
+            elif self.hasThreeSquares is False:
+                # If answer is <= 1, no extra work is needed
+                if self.answer > 1:
+                    if self.currentFilled() is True:
+                        self.numBoundaries += 1
+                        # Checks if the needed number of boundaries have been shaded
+                        if self.numBoundaries < self.answerCeiling:
+                            # SHADE NEW SECTION HERE
+                            self.shadeNewSection(self.cpuDenomAns)
+                            self.setBorderPos()
 
 
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
@@ -227,6 +256,21 @@ class StateManagerDiv:
                             rect.changeColor(colors.WHITE)
                             rect.isShaded = False
                             rect.isShadedV = False
+    
+    def shadeNewSection(self, boundarySize):
+        i = 0
+        print(boundarySize)
+        shadeColor = colors.BLACK
+        for rect in self.drawablesController.rectangles:
+            if i < boundarySize:
+                if rect.ownerID == 2:
+                    if rect.isShaded is False:
+                        rect.color = shadeColor
+                        rect.isShaded = True
+                        i += 1
+                    else:
+                        shadeColor = rect.color
+
 
     # needed for horizontal shading. gets transpose of rectsData
     def invertRectData(self):
@@ -273,8 +317,8 @@ class StateManagerDiv:
                 threes.append(rect)
         for i in range(len(threes)):
             newColor = twos[i].color
-            if twos[i].color != colors.WHITE and twos[i].color != colors.GREY:
-                newColor = self.lighten(newColor)
+            # if twos[i].color != colors.WHITE and twos[i].color != colors.GREY:
+                #newColor = self.lighten(newColor)
             threes[i].color = newColor
             if threes[i].color != colors.WHITE:
                 threes[i].isShaded = True
@@ -336,6 +380,17 @@ class StateManagerDiv:
                     if rect.isShadedB is False:
                         return False
         return True
+
+    def setBorderPos(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 2:
+                if rect.isShaded and rect.isShadedB is False:
+                    self.borderLeft = rect.xPosition - (rect.width/2)
+                    self.borderTop = rect.yPosition - (rect.height/2)
+                    return
+
+    def getBorderPos(self):
+        return self.borderTop, self.borderLeft
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):

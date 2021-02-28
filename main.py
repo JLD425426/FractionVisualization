@@ -1,5 +1,6 @@
 import pygame
 import colors
+import math
 from drawText import draw_text
 from rectangle import Rectangle
 from pygame.locals import *
@@ -437,7 +438,12 @@ def main_prog():
     stateManager.cpuDenomAns = problemGenerator.problemDisplay.denominatorAnswer
     stateManager.cpuNumerAns = problemGenerator.problemDisplay.numeratorAnswer
     if program_OperationType == DIVISION:
-        if (problemGenerator.problemDisplay.numeratorAnswer/problemGenerator.problemDisplay.denominatorAnswer) > 2:
+        extraRect = False
+        answerCeiling = math.ceil(problemGenerator.problemDisplay.numeratorAnswer/problemGenerator.problemDisplay.denominatorAnswer)
+        fractionReciprocal = problemGenerator.problemDisplay.denominator2/problemGenerator.problemDisplay.numerator2
+        if fractionReciprocal < answerCeiling:
+            extraRect = True
+        if extraRect is True:
                 testRectangle = Rectangle((int)((WIDTH/4))-50,HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
                 cutter = testRectangle.getCutter() # need to get cutter here for draw call
                 testRectangle2 = Rectangle((int)((WIDTH/4)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
@@ -445,14 +451,6 @@ def main_prog():
                 stateManager.hasThreeSquares = True
                 #testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 3)
                 #cutter3 = testRectangle3.getCutter() # need to get cutter here for draw call
-
-        elif (problemGenerator.problemDisplay.numeratorAnswer/problemGenerator.problemDisplay.denominatorAnswer) > 1 and (problemGenerator.problemDisplay.numeratorAnswer/problemGenerator.problemDisplay.denominatorAnswer) <= 2:
-                testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
-                cutter = testRectangle.getCutter() # need to get cutter here for draw call
-                testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
-                cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
-                stateManager.between = True
-                
         else:
                 testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
                 cutter = testRectangle.getCutter() # need to get cutter here for draw call
@@ -537,7 +535,12 @@ def main_prog():
             colorPicker.update()
 
         userAnswerSystem.update(mouse.leftMouseReleasedThisFrame,keyDown)
-        
+
+        if program_OperationType == DIVISION:
+            borderTop, borderLeft = stateManager.getBorderPos()
+            borderHeight = testRectangle2.height
+            borderWidth = (testRectangle2.width/problemGenerator.problemDisplay.denominator2)*problemGenerator.problemDisplay.numerator2
+
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
         # Menu button and logic to go back to main screen and get new problem
@@ -580,7 +583,6 @@ def main_prog():
         else:
             state_message = ""
         draw_text(state_message, button_font, (0,0,0), screen, 160, 25)
-
 
         tempRectList = list()
         for bgS in drawablesController.bgSquares:
@@ -628,6 +630,12 @@ def main_prog():
             trashCan.draw()
         problemDisplay.draw()
         userAnswerSystem.draw()
+
+        # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION
+        if program_OperationType == DIVISION:
+            if stateManager.currentState == stateManager.MOVING:
+                pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 3)  # width = 3
+
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
         keyDown = None
