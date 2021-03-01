@@ -109,7 +109,6 @@ class ProblemDisplay:
 
 
             if canreduce == True: # user answer can be reduced so theres 7 total symbols
-                print("in 7 symbols part")
                 userAnswerReduced = Fraction(userAnswer.getNum(),userAnswer.getDenom())
                 userAnswerReduced.finalReduce()
                 cpuAnswerReduced = Fraction(cpuAnswer.getNum(),cpuAnswer.getDenom())
@@ -137,7 +136,6 @@ class ProblemDisplay:
                 else:
                     self.drawSprite(self.x,True,0) # draw x b/c user wrong
             elif ismixed == True or cpuismixed == True: # user answer is a mixed fraction so there will be 6 symbols
-                print("in 6 symbols part")
                 tempUserAnswer = Fraction(self.usernumerator, self.userdenominator)
                 tempCpuAnswer = Fraction(self.numeratorAnswer, self.denominatorAnswer)
                 if tempUserAnswer.canReduce():
@@ -163,7 +161,6 @@ class ProblemDisplay:
                 else:
                    self.drawSprite(self.x, False,-50) # draw x because user wrng
             else: #canreduce = False so there will be 5 symbols
-                print("In 5 Symbols part")
                 tempUserAnswer = Fraction(self.usernumerator, self.userdenominator)
                 if tempUserAnswer.canReduce():
                     tempUserAnswer.finalReduce()
