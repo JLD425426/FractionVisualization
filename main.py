@@ -634,7 +634,7 @@ def main_prog():
         # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION
         if program_OperationType == DIVISION:
             if stateManager.currentState == stateManager.MOVING:
-                pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 3)  # width = 3
+                pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)  # width = 4
 
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
