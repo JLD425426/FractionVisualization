@@ -537,7 +537,8 @@ def main_prog():
         userAnswerSystem.update(mouse.leftMouseReleasedThisFrame,keyDown)
 
         if program_OperationType == DIVISION:
-            borderTop, borderLeft = stateManager.getBorderPos()
+            numBoundaries = 0
+            borderTop, borderLeft, numBoundaries = stateManager.getBorderPos()
             borderHeight = testRectangle2.height
             borderWidth = (testRectangle2.width/problemGenerator.problemDisplay.denominator2)*problemGenerator.problemDisplay.numerator2
 
@@ -635,7 +636,10 @@ def main_prog():
         # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION
         if program_OperationType == DIVISION:
             if stateManager.currentState == stateManager.MOVING or stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
-                pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)  # width = 4
+                numBoundaries += 1
+                for i in range(numBoundaries):
+                    if i < stateManager.answerCeiling:
+                        pygame.draw.rect(screen, colors.YELLOW, (borderLeft-((i)*borderWidth), borderTop, borderWidth, borderHeight), 4)  # width = 4
 
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False

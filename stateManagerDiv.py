@@ -401,7 +401,7 @@ class StateManagerDiv:
                     return
 
     def getBorderPos(self):
-        return self.borderTop, self.borderLeft
+        return self.borderTop, self.borderLeft, self.numBoundaries
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):
