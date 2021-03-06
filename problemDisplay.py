@@ -33,7 +33,7 @@ class ProblemDisplay:
             self.operationSymbol = '-'
         elif (operationType == 3): 
             self.operation = "Division" 
-            self.operationSymbol = '/'
+            self.operationSymbol = '÷'
 
         self.hasRightAnswer = False # Draw sprites depending on right answer
 
