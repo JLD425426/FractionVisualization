@@ -46,6 +46,8 @@ class StateManagerMult:
         self.rectsData = None
         self.hasInvertedRectData = False
 
+        self.userAnswerSystemReadyForSubmission = False
+
     def getOperationType(self):
         return self.operation_type
 
@@ -94,7 +96,7 @@ class StateManagerMult:
                 # self.currentState = self.DONE
 
         # manager is in answer submission state, wait for user to press submit answer button to proceed
-        elif self.currentState == self.ANSWERSUBMISSION:
+        elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
             if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 # self.currentState = self.DONE
                 self.currentState = self.DONE

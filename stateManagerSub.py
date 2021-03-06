@@ -56,6 +56,8 @@ class StateManagerSub:
         self.vColor = colors.WHITE
         self.hColor = colors.WHITE
 
+        self.userAnswerSystemReadyForSubmission = False
+
     def getOperationType(self):
         return self.operation_type
 
@@ -119,7 +121,7 @@ class StateManagerSub:
         ##        if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
         ##            self.currentState = self.DONE
                 # manager is in answer submission state, wait for user to press submit answer button to proceed
-        elif self.currentState == self.ANSWERSUBMISSION:
+        elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
             if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 # self.currentState = self.DONE
                 self.currentState = self.DONE

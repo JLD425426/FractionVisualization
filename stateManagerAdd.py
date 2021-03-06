@@ -67,6 +67,8 @@ class StateManagerAdd:
         self.rectsData = None
         self.hasInvertedRectData = False
 
+        self.userAnswerSystemReadyForSubmission = False
+
     def getOperationType(self):
         return self.operation_type
         
@@ -120,7 +122,7 @@ class StateManagerAdd:
         elif self.currentState == self.MOVING:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.ANSWERSUBMISSION
-        elif self.currentState == self.ANSWERSUBMISSION:
+        elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
             if self.submitAnswerButton.collidepoint(self.mouse.mx,self.mouse.my) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
                 

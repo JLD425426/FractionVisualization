@@ -86,6 +86,8 @@ class StateManagerDiv:
         # for making sure third square gets generated once
         self.hasCreatedThirdSquare = False
 
+        self.userAnswerSystemReadyForSubmission = False
+
 
     
     def getOperationType(self):
@@ -179,7 +181,7 @@ class StateManagerDiv:
                 ##self.error_detect = True
                 
 
-        elif self.currentState == self.ANSWERSUBMISSION:
+        elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
             if self.submitAnswerButton.collidepoint(self.mouse.mx,self.mouse.my) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
 
