@@ -392,6 +392,12 @@ class StateManagerDiv:
                     self.borderTop = rect.yPosition - (rect.height/2)
                     return
 
+    def getSecondBorderPos(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 2:
+                return rect.xPosition-(rect.width/2), rect.yPosition-(rect.height/2) 
+                
+
     def altSetBorderPos(self):
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 3:
