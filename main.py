@@ -612,8 +612,7 @@ def main_prog():
             gl.draw()
         for cm in drawablesController.cutmarkers:
             cm.draw()
-        if mouse.whoisHeld != None:
-            mouse.whoisHeld.draw()
+        
         cutter.draw()
         if program_OperationType == DIVISION:
             cutter2.draw()
@@ -630,6 +629,8 @@ def main_prog():
             trashCan.draw()
         problemDisplay.draw()
         userAnswerSystem.draw()
+        if mouse.whoisHeld != None:
+            mouse.whoisHeld.draw()
 
         # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION
         if program_OperationType == DIVISION:
