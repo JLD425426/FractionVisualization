@@ -422,6 +422,7 @@ def main_prog():
         ##For 3 Squares, Use (int)(WIDTH/4), (int)((WIDTH/4)*2), etc.
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
+        positionSet = 0
 
     # init problemDisplay here, every operation will have
     problemDisplay = ProblemDisplay(screen,WIDTH,HEIGHT,stateManager,program_OperationType)
@@ -538,7 +539,9 @@ def main_prog():
 
         if program_OperationType == DIVISION:
             if stateManager.hasThreeSquares is True:
-                secondLeft, secondTop = stateManager.getSecondBorderPos()
+                if positionSet == 0:
+                    secondLeft, secondTop = stateManager.getSecondBorderPos()
+                    positionSet = 1
                 borderTop, borderLeft, numBoundaries = stateManager.getBorderPos()
                 borderHeight = testRectangle2.height
                 borderWidth = (testRectangle2.width/problemGenerator.problemDisplay.denominator2)*problemGenerator.problemDisplay.numerator2
