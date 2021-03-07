@@ -636,9 +636,6 @@ def main_prog():
             trashCan.draw()
         problemDisplay.draw()
         userAnswerSystem.draw()
-        if mouse.whoisHeld != None:
-            mouse.whoisHeld.draw()
-
         # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION
         if program_OperationType == DIVISION:
             if stateManager.hasThreeSquares is True:
@@ -652,6 +649,8 @@ def main_prog():
                     for i in range(numBoundaries):
                         if i < stateManager.answerCeiling:
                             pygame.draw.rect(screen, colors.YELLOW, (borderLeft-((i)*borderWidth), borderTop, borderWidth, borderHeight), 4)  # width = 4
+        if mouse.whoisHeld != None:
+            mouse.whoisHeld.draw()
 
         #-----------------------------DRAW END---------------------------------------
         mouse.leftMouseReleasedThisFrame = False
