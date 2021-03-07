@@ -26,16 +26,19 @@ class StateManagerAdd:
         self.CUTTINGVERTICALLY1 = 0     # Cutting left two boxes vertically
         self.SHADINGVERTICALLY = 1     # Shading left two boxes vertically
         self.CUTTINGHORIZONTALLY1 = 2   # Cutting left two boxes horizontally
-        self.CUTTINGVERTICALLY2 = 4     # Cutting right two boxes vertically
-        self.CUTTINGHORIZONTALLY2 = 5   # Cutting right two boxes horizontally
+        self.CUTTINGVERTICALLY2 = 4     # Cutting right box vertically
+        self.CUTTINGHORIZONTALLY2 = 5   # Cutting right box horizontally
         
 
 
         # Other states
         self.MOVING = 6
         self.GETTINGDENOMINATOR = 3
-        self.ANSWERSUBMISSION = 7
-        self.DONE = 8
+        self.CUTTINGVERTICALLY3 = 7     # Cutting 2nd right box vertically
+        self.CUTTINGHORIZONTALLY3 = 8   # Cutting 2nd right box horizontally
+        self.MOVING2 = 9
+        self.ANSWERSUBMISSION = 10
+        self.DONE = 11
 
         self.currentState = self.CUTTINGVERTICALLY1
 
@@ -66,6 +69,8 @@ class StateManagerAdd:
 
         self.rectsData = None
         self.hasInvertedRectData = False
+
+        self.movedBefore = False
 
         self.userAnswerSystemReadyForSubmission = False
 
@@ -102,24 +107,49 @@ class StateManagerAdd:
                     cutter1.setStateCutHorizontal()
                     cutter2.setStateCutHorizontal()
                 ##self.error_detect = True
-                # manager now cutting horizontally, let cutter do work
+                # manager now cutting horizontally, let cutter do work        
         elif self.currentState == self.CUTTINGHORIZONTALLY1:
             if cutter1.getState() == "Waiting" and cutter2.getState() == "Waiting":
                     cutter3.setStateCutVertical()
-                    cutter4.setStateCutVertical()
+                    ####cutter4.setStateCutVertical()
                     self.currentState = self.CUTTINGVERTICALLY2
-        elif self.currentState == self.CUTTINGVERTICALLY2:
-            if cutter3.getState() == "Waiting" and cutter4.getState() == "Waiting":
-                    self.currentState = self.CUTTINGHORIZONTALLY2
-                    cutter3.setStateCutHorizontal()
+        elif self.currentState == self.CUTTINGVERTICALLY2 and self.movedBefore == True:
+            if cutter4.getState() == "Waiting":
                     cutter4.setStateCutHorizontal()
-        elif self.currentState == self.CUTTINGHORIZONTALLY2:
-            if cutter3.getState() == "Waiting" and cutter4.getState() == "Waiting":
+                    self.currentState = self.CUTTINGHORIZONTALLY2
+                    ####cutter4.setStateCutHorizontal()
+        elif self.currentState == self.CUTTINGHORIZONTALLY2 and self.movedBefore == True:
+            if cutter4.getState() == "Waiting": ####and cutter4.getState() == "Waiting":
+                self.currentState = self.GETTINGDENOMINATOR        
+        elif self.currentState == self.CUTTINGVERTICALLY2 and self.movedBefore == False:
+            if cutter3.getState() == "Waiting":
+                    cutter3.setStateCutHorizontal()
+                    self.currentState = self.CUTTINGHORIZONTALLY2
+                    ####cutter4.setStateCutHorizontal()
+        elif self.currentState == self.CUTTINGHORIZONTALLY2 and self.movedBefore == False:
+            if cutter3.getState() == "Waiting": ####and cutter4.getState() == "Waiting":
                 self.currentState = self.GETTINGDENOMINATOR
         elif self.currentState == self.GETTINGDENOMINATOR:
             self.getDenominator()
             self.currentState = self.MOVING
-        elif self.currentState == self.MOVING:
+        elif self.currentState == self.MOVING and self.movedBefore == False:
+            ##IDEA: Create a method to check when both input rectangles have finished drag and drop, 
+            ##IDEA cont: THEN display the Answer submission button
+            
+            if self.is_filled(3) == True:
+                cutter4.setStateCutVertical()
+                self.currentState = self.CUTTINGVERTICALLY3
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.ANSWERSUBMISSION
+        elif self.currentState == self.CUTTINGVERTICALLY3:
+            self.movedBefore = True
+            if cutter4.getState() == "Waiting":
+                cutter4.setStateCutHorizontal()
+                self.currentState = self.CUTTINGHORIZONTALLY3
+        elif self.currentState == self.CUTTINGHORIZONTALLY3:
+            if cutter4.getState() == "Waiting":
+                self.currentState = self.MOVING
+        elif self.currentState == self.MOVING and self.movedBefore == True:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.ANSWERSUBMISSION
         elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
@@ -133,7 +163,7 @@ class StateManagerAdd:
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
-        elif self.currentState == self.MOVING:
+        elif self.currentState == self.MOVING or self.currentState == self.MOVING2:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.ANSWERSUBMISSION:
@@ -158,6 +188,12 @@ class StateManagerAdd:
             return "Finished"
         elif self.currentState == self.MOVING:
             return "Moving"
+        elif self.currentState == self.CUTTINGVERTICALLY3:
+            return "Cutting Vertically 3"
+        elif self.currentState == self.CUTTINGHORIZONTALLY3:
+            return "Cutting Horizontally 3"
+        elif self.currentState == self.MOVING and self.movedBefore == True:
+            return "Moving2"
         elif self.currentState == self.ANSWERSUBMISSION:
             return "Submitting Answer"
 
@@ -219,7 +255,7 @@ class StateManagerAdd:
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 3 or rect.ownerID == 4:
                 numRects += 1
-        return int(numRects/2)
+        return (int)(numRects/2)
 
     def get_answerNumer(self):
         numRects = 0
@@ -228,6 +264,20 @@ class StateManagerAdd:
                 if rect.colorHatch == colors.BLACK:
                     numRects += 1
         return numRects
+
+    def is_filled(self, Rectid):
+        numRectsTotal = 0
+        numRectsFilled = 0
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == Rectid:
+                numRectsTotal += 1
+                if rect.colorHatch == colors.BLACK:
+                    numRectsFilled += 1
+        if numRectsFilled == numRectsTotal and numRectsTotal != 0:
+            return True
+        return False
+        
+
 
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__

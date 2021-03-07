@@ -277,7 +277,7 @@ class UserAnswerSystem:
 
     # drawing the addition and equals sign
     if self.operation_type == self.ADD:
-      draw_text('+', self.operation_font, (0,0,0), self.screen, 400 , 386)
+      draw_text('+', self.operation_font, (0,0,0), self.screen, 200 , 386)
 
       if self.stateManager.getCurrentState() == "Submitting Answer" or self.stateManager.getCurrentState() == "Finished":
         draw_text('=', self.operation_font, (0,0,0), self.screen, 545 , 386)

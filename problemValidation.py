@@ -49,7 +49,7 @@ def isValidProblemAdd(n1,d1,n2,d2):
   if d1 == 1 or d2 == 1:
     return "denominator must be greater than 1"
   if n1 > d1 or n2 > d2:
-    return "For addition, each numerator must be larger than its denominator"
+    return "For addition, each numerator must be smaller than its denominator"
   f1 = Fraction(n1, d1)
   f2 = Fraction(n2, d2)
   nAns,dAns = f1.fAdd(f2.numerator,f2.denominator)

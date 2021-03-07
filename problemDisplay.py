@@ -56,6 +56,8 @@ class ProblemDisplay:
         self.yOffset = 0
         if self.operation == "Addition":
             self.yOffset = -50
+        if self.operation == "Multiplication":
+            self.yOffset = -10
 
     # called in draw function to easily draw each fraction
     def drawFraction(self,numerator,denominator,xPos):

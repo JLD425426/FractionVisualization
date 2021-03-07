@@ -387,13 +387,13 @@ def main_prog():
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
         # Create rectangles and their respective cutters
-        testRectangle = Rectangle(WIDTH/3,HEIGHT/3,270,270,screen,drawablesController,True,mouse,stateManager, 1)
+        testRectangle = Rectangle((int)(WIDTH/3),HEIGHT/3,270,270,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        testRectangle2 = Rectangle(WIDTH/3,HEIGHT-(HEIGHT/4.5),270,270,screen,drawablesController,True,mouse,stateManager, 2)
+        testRectangle2 = Rectangle((int)(WIDTH/3),HEIGHT-(HEIGHT/4.5)+15,270,270,screen,drawablesController,True,mouse,stateManager, 2)
         cutter2 = testRectangle2.getCutter()
-        testRectangle3 = Rectangle(WIDTH-(WIDTH/5.7),HEIGHT/3,270,270,screen,drawablesController,True,mouse,stateManager, 3)
+        testRectangle3 = Rectangle(WIDTH-(int)(WIDTH/5.7),HEIGHT/3,270,270,screen,drawablesController,True,mouse,stateManager, 3)
         cutter3 = testRectangle3.getCutter()
-        testRectangle4 = Rectangle(WIDTH-(WIDTH/5.7),HEIGHT-(HEIGHT/4.5),270,270,screen,drawablesController,True,mouse,stateManager, 4)
+        testRectangle4 = Rectangle(WIDTH-(int)(WIDTH/5.7),HEIGHT-(HEIGHT/4.5)+15,270,270,screen,drawablesController,True,mouse,stateManager, 4)
         cutter4 = testRectangle4.getCutter()
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
@@ -678,7 +678,7 @@ def createUserProblem():
     elif program_OperationType == SUBTRACTION:
         operationSymbol = "-"
     elif program_OperationType == DIVISION:
-        operationSymbol = "/"
+        operationSymbol = chr(247)
     elif program_OperationType == ADDITION:
         operationSymbol = "+"
 
@@ -807,7 +807,7 @@ def createUserProblem():
                     operationSymbol = "-"
                 elif program_OperationType == SUBTRACTION:
                     program_OperationType = DIVISION
-                    operationSymbol = "/"
+                    operationSymbol = chr(247)
                 elif program_OperationType == DIVISION:
                     operationSymbol = "+"
                     program_OperationType = ADDITION
