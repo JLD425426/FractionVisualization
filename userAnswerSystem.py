@@ -236,7 +236,11 @@ class UserAnswerSystem:
         draw_text(str(self.numeratorValue),self.numberFont,colors.BLACK,self.screen,self.numeratorRectX + int(self.numberRectWidth/2),self.numeratorRectY + int(self.numberRectHeight/2)) #draw numerator value
       if self.denominatorValue != None:
         draw_text(str(self.denominatorValue),self.numberFont,colors.BLACK,self.screen,self.denomRectX + int(self.numberRectWidth/2),self.denomRectY + int(self.numberRectHeight/2)) #draw denominator value
-      pg.draw.line(self.screen,(0,0,0), [self.divideLineStartX, self.divideLineY], [self.divideLineEndX,self.divideLineY], 5) # draw dividing line
+      if self.numeratorValue == None and self.denominatorValue == None and self.stateManager.getCurrentState() == "Finished":
+        pass
+      else:
+        pg.draw.line(self.screen,(0,0,0), [self.divideLineStartX, self.divideLineY], [self.divideLineEndX,self.divideLineY], 5) # draw dividing line
+
 
       # special cases for addition and div ---> draw whole rect
       if self.operation_type == self.ADD or self.operation_type == self.DIV:
@@ -277,7 +281,7 @@ class UserAnswerSystem:
 
     # drawing the addition and equals sign
     if self.operation_type == self.ADD:
-      draw_text('+', self.operation_font, (0,0,0), self.screen, 400 , 386)
+      draw_text('+', self.operation_font, (0,0,0), self.screen, 200 , 386)
 
       if self.stateManager.getCurrentState() == "Submitting Answer" or self.stateManager.getCurrentState() == "Finished":
         draw_text('=', self.operation_font, (0,0,0), self.screen, 545 , 386)
