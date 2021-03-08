@@ -72,6 +72,15 @@ class StateManagerAdd:
 
         self.movedBefore = False
 
+        # For border to highlight current sections
+        self.border1Top = 0
+        self.border1Left = 0
+        self.border2Top = 0
+        self.border2Left = 0
+
+        # For checking if gold border is needed for rect 4
+        self.twoWholes = False
+
         self.userAnswerSystemReadyForSubmission = False
 
     def getOperationType(self):
@@ -131,6 +140,8 @@ class StateManagerAdd:
                 self.currentState = self.GETTINGDENOMINATOR
         elif self.currentState == self.GETTINGDENOMINATOR:
             self.getDenominator()
+            self.setBorder1Pos()
+            self.setBorder2Pos()
             self.currentState = self.MOVING
         elif self.currentState == self.MOVING and self.movedBefore == False:
             ##IDEA: Create a method to check when both input rectangles have finished drag and drop, 
@@ -138,6 +149,7 @@ class StateManagerAdd:
             
             if self.is_filled(3) == True:
                 cutter4.setStateCutVertical()
+                self.twoWholes = True
                 self.currentState = self.CUTTINGVERTICALLY3
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.ANSWERSUBMISSION
@@ -277,6 +289,19 @@ class StateManagerAdd:
             return True
         return False
         
+    def setBorder1Pos(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 3:
+                self.border1Left = rect.xPosition - (rect.width/2)
+                self.border1Top = rect.yPosition - (rect.height/2)
+                return
+    
+    def setBorder2Pos(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 4:
+                self.border2Left = rect.xPosition - (rect.width/2)
+                self.border2Top = rect.yPosition - (rect.height/2)
+                return
 
 
 

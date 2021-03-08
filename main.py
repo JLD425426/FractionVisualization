@@ -550,6 +550,11 @@ def main_prog():
                 borderTop, borderLeft, numBoundaries = stateManager.getBorderPos()
                 borderHeight = testRectangle2.height
                 borderWidth = (testRectangle2.width/problemGenerator.problemDisplay.denominator2)*problemGenerator.problemDisplay.numerator2
+        elif program_OperationType == ADDITION:
+            border1Top, border1Left = stateManager.border1Top, stateManager.border1Left
+            borderHeight, borderWidth = testRectangle3.height, testRectangle3.width
+            if stateManager.twoWholes is True:
+                border2Top, border2Left = stateManager.border2Top, stateManager.border2Left
 
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
@@ -656,6 +661,12 @@ def main_prog():
                     for i in range(numBoundaries):
                         if i < stateManager.answerCeiling:
                             pygame.draw.rect(screen, colors.YELLOW, (borderLeft-((i)*borderWidth), borderTop, borderWidth, borderHeight), 4)  # width = 4
+        elif program_OperationType == ADDITION:
+            if stateManager.currentState == stateManager.MOVING or stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3 or stateManager.currentState == stateManager.CUTTINGVERTICALLY3:
+                pygame.draw.rect(screen, colors.YELLOW, (border1Left, border1Top, borderWidth, borderHeight), 4)
+                if stateManager.twoWholes is True:
+                    pygame.draw.rect(screen, colors.YELLOW, (border2Left, border2Top, borderWidth, borderHeight), 4)
+            
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()
 
