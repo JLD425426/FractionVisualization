@@ -463,19 +463,76 @@ class Rectangle:
             isShadedLeftToRight = self.isShadedV # adapter variable
             isShadedRightToLeft = self.isShadedH # adapter variable
             if self.isShadedB == True:
-                pg.draw.line(self.screen, self.colorHatch, [self.topRightX,self.topLeftY], [self.topRightX - 30, self.topLeftY + 30], 4)
-                pg.draw.line(self.screen, self.colorHatch, [self.topLeftX,self.topLeftY], [self.topLeftX + 30, self.topLeftY + 30], 4)
+                #SHADE TOP-BOTTOM 
+                currentY = self.topLeftY
+                while (currentY < self.bottomRightY):
+                    newX, newY = self.getLineLengthLeftToRight(self.topLeftX,currentY)
+                    pg.draw.line(self.screen, self.colorHatch, [self.topLeftX,currentY], [newX, newY], 6)
+                    currentY += 25
+                #SHADE LEFT-RIGHT
+                currentX = self.topLeftX
+                while (currentX < self.bottomRightX):
+                    newX, newY = self.getLineLengthLeftToRight(currentX,self.topLeftY)
+                    pg.draw.line(self.screen, self.colorHatch, [currentX,self.topLeftY], [newX, newY], 6)
+                    currentX += 25
+                #SHADE TOP-BOTTOM 
+                currentY = self.topLeftY
+                while (currentY < self.bottomRightY):
+                    newX, newY = self.getLineLengthRightToLeft(self.bottomRightX,currentY)
+                    pg.draw.line(self.screen, self.colorHatch, [self.bottomRightX,currentY], [newX, newY], 6)
+                    currentY += 25
+                #SHADE LEFT-RIGHT
+                currentX = self.bottomRightX
+                while (currentX > self.topLeftX):
+                    newX, newY = self.getLineLengthRightToLeft(currentX,self.topLeftY)
+                    pg.draw.line(self.screen, self.colorHatch, [currentX,self.topLeftY], [newX, newY], 6)
+                    currentX -= 25
+                
+            #SHADING LEFT TO RIGHT
             elif isShadedLeftToRight == True:
-                newX, newY = self.getLineLengthLeftToRight(self.topLeftX,self.topLeftY)
-                pg.draw.line(self.screen, self.colorHatch, [self.topLeftX,self.topLeftY], [newX, newY], 4)
+                #SHADE TOP-BOTTOM 
+                currentY = self.topLeftY
+                while (currentY < self.bottomRightY):
+                    newX, newY = self.getLineLengthLeftToRight(self.topLeftX,currentY)
+                    pg.draw.line(self.screen, self.colorHatch, [self.topLeftX,currentY], [newX, newY], 6)
+                    currentY += 25
+                #SHADE LEFT-RIGHT
+                currentX = self.topLeftX
+                while (currentX < self.bottomRightX):
+                    newX, newY = self.getLineLengthLeftToRight(currentX,self.topLeftY)
+                    pg.draw.line(self.screen, self.colorHatch, [currentX,self.topLeftY], [newX, newY], 6)
+                    currentX += 25
+            #SHADING RIGHT TO LEFT
             elif isShadedRightToLeft == True:
-                pg.draw.line(self.screen, self.colorHatch, [self.topRightX,self.topLeftY], [self.topRightX - 30, self.topLeftY + 30], 4)
+                #SHADE TOP-BOTTOM 
+                currentY = self.topLeftY
+                while (currentY < self.bottomRightY):
+                    newX, newY = self.getLineLengthRightToLeft(self.bottomRightX,currentY)
+                    pg.draw.line(self.screen, self.colorHatch, [self.bottomRightX,currentY], [newX, newY], 6)
+                    currentY += 25
+                #SHADE LEFT-RIGHT
+                currentX = self.bottomRightX
+                while (currentX > self.topLeftX):
+                    newX, newY = self.getLineLengthRightToLeft(currentX,self.topLeftY)
+                    pg.draw.line(self.screen, self.colorHatch, [currentX,self.topLeftY], [newX, newY], 6)
+                    currentX -= 25
+                
+
+                # pg.draw.line(self.screen, self.colorHatch, [self.topRightX,self.topLeftY], [self.topRightX - 30, self.topLeftY + 30], 4)
 
     def getLineLengthLeftToRight(self,xStart, yStart):
         x = xStart
         y = yStart
         while (x < self.bottomRightX and y < self.bottomRightY):
             x += 1
+            y += 1
+        return x,y
+
+    def getLineLengthRightToLeft(self,xStart,yStart):
+        x = xStart
+        y = yStart
+        while (x > self.topLeftX and y < self.bottomRightY):
+            x -= 1
             y += 1
         return x,y
 
