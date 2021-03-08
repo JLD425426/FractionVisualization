@@ -555,6 +555,9 @@ def main_prog():
             borderHeight, borderWidth = testRectangle3.height, testRectangle3.width
             if stateManager.twoWholes is True:
                 border2Top, border2Left = stateManager.border2Top, stateManager.border2Left
+        elif program_OperationType == MULTIPLICATION:
+            borderTop, borderLeft = stateManager.borderTop, stateManager.borderLeft
+            borderHeight, borderWidth = testRectangle.height, testRectangle.width
 
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
@@ -666,6 +669,9 @@ def main_prog():
                 pygame.draw.rect(screen, colors.YELLOW, (border1Left, border1Top, borderWidth, borderHeight), 4)
                 if stateManager.twoWholes is True:
                     pygame.draw.rect(screen, colors.YELLOW, (border2Left, border2Top, borderWidth, borderHeight), 4)
+        elif program_OperationType == MULTIPLICATION:
+            if stateManager.currentState == stateManager.ANSWERSUBMISSION:
+                pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)
             
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()

@@ -34,6 +34,9 @@ class StateManagerMult:
         self.mouse = None
         self.colorPicker = None
 
+        self.borderLeft = 0
+        self.borderTop = 0
+
         self.screen = screen
         self.WIDTH = 1200
         self.HEIGHT = 700
@@ -55,6 +58,7 @@ class StateManagerMult:
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
             if cutter.getState() == "Waiting":
+                self.setBorderPos()
                 self.currentState = self.SHADINGVERTICALLY
 
         # manager is now shading vertically, now can shade current rects
@@ -206,6 +210,13 @@ class StateManagerMult:
             if rect.isShadedB == True:
                 numerator += 1
         return numerator
+
+    def setBorderPos(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 1:
+                self.borderLeft = rect.xPosition - (rect.width/2)
+                self.borderTop = rect.yPosition - (rect.height/2)
+                return
     
 
 
