@@ -597,27 +597,31 @@ def main_prog():
         tempRectList = list()
         for bgS in drawablesController.bgSquares:
             bgS.draw()
-        for rect in drawablesController.rectangles:
-            #
-            #move to rectangle class
-            if rect.ownerID == 2:
+        if program_OperationType == MULTIPLICATION:
+            for rect in drawablesController.rectangles:
                 rect.draw()
-                if rect.isShadedV == True and rect.isShadedH != True:
-                    rect.drawVLines(rect.colorHatch)
-                if rect.isShadedH == True and rect.isShadedV != True:
-                    rect.drawHLines(rect.colorHatch)
-                if rect.isShadedB:
-                    rect.drawBLines(rect.colorHatch)
-            else:
-                tempRectList.append(rect)
-        for trect in tempRectList:
-            trect.draw()
-            if trect.isShadedV == True and trect.isShadedH != True:
-                trect.drawVLines(trect.colorHatch)
-            if trect.isShadedH == True and trect.isShadedV != True:
-                trect.drawHLines(trect.colorHatch)
-            if trect.isShadedB:
-                trect.drawBLines(trect.colorHatch)
+        if program_OperationType != MULTIPLICATION:
+            for rect in drawablesController.rectangles:
+                #
+                #move to rectangle class
+                if rect.ownerID == 2:
+                    rect.draw()
+                    if rect.isShadedV == True and rect.isShadedH != True:
+                        rect.drawVLines(rect.colorHatch)
+                    if rect.isShadedH == True and rect.isShadedV != True:
+                        rect.drawHLines(rect.colorHatch)
+                    if rect.isShadedB:
+                        rect.drawBLines(rect.colorHatch)
+                else:
+                    tempRectList.append(rect)
+            for trect in tempRectList:
+                trect.draw()
+                if trect.isShadedV == True and trect.isShadedH != True:
+                    trect.drawVLines(trect.colorHatch)
+                if trect.isShadedH == True and trect.isShadedV != True:
+                    trect.drawHLines(trect.colorHatch)
+                if trect.isShadedB:
+                    trect.drawBLines(trect.colorHatch)
         for gl in drawablesController.guidelines:
             gl.draw()
         for cm in drawablesController.cutmarkers:

@@ -42,6 +42,7 @@ class Rectangle:
         self.topLeftY = int(self.yPosition - self.height / 2)
         self.bottomRightX = int(self.xPosition + self.width / 2)
         self.bottomRightY = int(self.yPosition + self.height / 2)
+        self.topRightX = self.topLeftX + self.width
 
         # boolean var to decide if rectangle should be subdivided when all cutmarkers removed
         self.isOriginalSquare = isOriginalSquare
@@ -457,7 +458,26 @@ class Rectangle:
             elif self.isShadedB == True:
                 self.drawHLinesSub(self.hColor)
                 self.drawVLinesSub(self.vColor)
-        
+
+        elif self.stateManager.operation_type == 1: # multiplication
+            isShadedLeftToRight = self.isShadedV # adapter variable
+            isShadedRightToLeft = self.isShadedH # adapter variable
+            if self.isShadedB == True:
+                pg.draw.line(self.screen, self.colorHatch, [self.topRightX,self.topLeftY], [self.topRightX - 30, self.topLeftY + 30], 4)
+                pg.draw.line(self.screen, self.colorHatch, [self.topLeftX,self.topLeftY], [self.topLeftX + 30, self.topLeftY + 30], 4)
+            elif isShadedLeftToRight == True:
+                newX, newY = self.getLineLengthLeftToRight(self.topLeftX,self.topLeftY)
+                pg.draw.line(self.screen, self.colorHatch, [self.topLeftX,self.topLeftY], [newX, newY], 4)
+            elif isShadedRightToLeft == True:
+                pg.draw.line(self.screen, self.colorHatch, [self.topRightX,self.topLeftY], [self.topRightX - 30, self.topLeftY + 30], 4)
+
+    def getLineLengthLeftToRight(self,xStart, yStart):
+        x = xStart
+        y = yStart
+        while (x < self.bottomRightX and y < self.bottomRightY):
+            x += 1
+            y += 1
+        return x,y
 
 
     def getCutter(self):
