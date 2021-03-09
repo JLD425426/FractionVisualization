@@ -61,15 +61,16 @@ class StateManagerSub:
     def getOperationType(self):
         return self.operation_type
 
-    def update(self, cutter):
+    def update(self, cutter, cutter2):
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
-            if cutter.getState() == "Waiting":
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
                 self.currentState = self.SHADINGVERTICALLY
 
         # manager is now shading vertically, now can shade current rects
         elif self.currentState == self.SHADINGVERTICALLY:
             self.shadeVertical()
+            self.shadeVertical2()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 #if there is nothing shaded, display a quick window telling the user to shade vertically, 
                 #if there are shaded rectangles, continue as normal
@@ -80,11 +81,10 @@ class StateManagerSub:
                         sCount += 1
                 if sCount != 0:
                     ##self.error_detect = False
-                    self.currentState = self.CUTTINGHORIZONTALLY 
+                    self.currentState = self.CUTTINGHORIZONTALLY
                     cutter.setStateCutHorizontal()
-                ##else:
-                    ##self.error_detect = True
-                
+                    cutter2.setStateCutHorizontal()
+                ##self.error_detect = True
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
@@ -185,17 +185,46 @@ class StateManagerSub:
     def shadeVertical(self):
         if self.mouse.leftMouseReleasedThisFrame == True:
             for rect in self.drawablesController.rectangles:
-                if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
-                    if rect.isShadedV == False:
-                        rect.isShadedV = True
-                        rect.vColor = self.colorPicker.myColor
-                        for r in self.drawablesController.rectangles:
-                            if r.isShadedV == True:
-                                r.vColor = self.colorPicker.myColor
-                                self.vColor = self.colorPicker.myColor
-                    elif rect.isShadedV == True:
-                        rect.isShadedV = False
-    # needed for horiozntal shading. gets transpose of rectsData
+                if rect.ownerID == 1:
+                    if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
+                        if rect.isShaded == False:
+                            #rect.drawLines(self.colorPicker.myColor, 0)
+                            #0 = Vertical, set an internal rect variable to 1
+                            #   #rect.changeColor(self.colorPicker.myColor)
+                            rect.changeColor(self.colorPicker.myColor)
+                            rect.isShadedV = True
+                            rect.isShaded = True
+                            #change all colors of shaded rects in corresponding square to new color
+                            for _r in self.drawablesController.rectangles:
+                                if _r.ownerID == 1 and _r.isShadedV == True:
+                                    _r.changeColor(self.colorPicker.myColor)
+                        elif rect.isShaded == True:
+                            #   #rect.changeColor(colors.WHITE)
+                            rect.changeColor(colors.WHITE)
+                            rect.isShaded = False
+                            rect.isShadedV = False
+
+    def shadeVertical2(self):
+        if self.mouse.leftMouseReleasedThisFrame == True:
+            for rect in self.drawablesController.rectangles:
+                if rect.ownerID == 2:
+                    if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
+                        if rect.isShaded == False:
+                            #rect.drawLines(self.colorPicker.myColor, 0)
+                            #0 = Vertical, set an internal rect variable to 1
+                            #   #rect.changeColor(self.colorPicker.myColor)
+                            rect.changeColor(self.colorPicker.myColor)
+                            rect.isShadedV = True
+                            rect.isShaded = True
+                            #change all colors of shaded rects in corresponding square to new color
+                            for _r in self.drawablesController.rectangles:
+                                if _r.ownerID == 2 and _r.isShadedV == True:
+                                    _r.changeColor(self.colorPicker.myColor)
+                        elif rect.isShaded == True:
+                            #   #rect.changeColor(colors.WHITE)
+                            rect.changeColor(colors.WHITE)
+                            rect.isShaded = False
+                            rect.isShadedV = False
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
 

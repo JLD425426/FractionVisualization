@@ -403,8 +403,10 @@ def main_prog():
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
-        testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
+        testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
         cutter = testRectangle.getCutter() # need to get cutter here for draw call
+        testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
+        cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
 
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         trashCan = TrashCan(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
@@ -522,7 +524,7 @@ def main_prog():
             else:
                 stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
         elif program_OperationType == SUBTRACTION:
-            stateManager.update(testRectangle.myCutter)
+            stateManager.update(testRectangle.myCutter, testRectangle2.myCutter)
             if TrashCan != None:
                 trashCan.update()
         elif program_OperationType == ADDITION:
@@ -614,10 +616,10 @@ def main_prog():
                 #move to rectangle class
                 if rect.ownerID == 2:
                     rect.draw()
-                    if rect.isShadedV == True and rect.isShadedH != True:
-                        rect.drawVLines(rect.colorHatch)
-                    if rect.isShadedH == True and rect.isShadedV != True:
-                        rect.drawHLines(rect.colorHatch)
+                    #if rect.isShadedV == True and rect.isShadedH != True:
+                        #rect.drawVLines(rect.colorHatch)
+                    #if rect.isShadedH == True and rect.isShadedV != True:
+                        #rect.drawHLines(rect.colorHatch)
                     if rect.isShadedB:
                         rect.drawBLines(rect.colorHatch)
                 else:
@@ -636,7 +638,7 @@ def main_prog():
             cm.draw()
         
         cutter.draw()
-        if program_OperationType == DIVISION:
+        if program_OperationType == DIVISION or program_OperationType == SUBTRACTION:
             cutter2.draw()
             if stateManager.cpuNumerAns > stateManager.cpuDenomAns:
                 pass

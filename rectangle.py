@@ -450,16 +450,16 @@ class Rectangle:
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
         
-        if self.stateManager.operation_type == 3: # for subtraction
-            if self.isShadedH == True:
-                self.drawHLinesSub(self.hColor)
-            elif self.isShadedV == True:
-                self.drawVLinesSub(self.vColor)
-            elif self.isShadedB == True:
-                self.drawHLinesSub(self.hColor)
-                self.drawVLinesSub(self.vColor)
+        #if self.stateManager.operation_type == 3: # for subtraction
+            #if self.isShadedH == True:
+                #self.drawHLinesSub(self.hColor)
+            #elif self.isShadedV == True:
+                #self.drawVLinesSub(self.vColor)
+            #elif self.isShadedB == True:
+                #self.drawHLinesSub(self.hColor)
+                #self.drawVLinesSub(self.vColor)
 
-        elif self.stateManager.operation_type == 1: # multiplication
+        if self.stateManager.operation_type == 1: # multiplication
             isShadedLeftToRight = self.isShadedV # adapter variable
             isShadedRightToLeft = self.isShadedH # adapter variable
             if self.isShadedB == True:
