@@ -262,9 +262,9 @@ class Rectangle:
 
                     ##Changing color here does not display as the WHite rectangle is drawing over top
 
-                    self.changeColorHatch(colors.BLACK)
-                    if self.color != colors.WHITE or self.color != ogColor:
-                        self.color = ogColor
+                    # self.changeColorHatch(colors.BLACK)
+                    # if self.color != colors.WHITE or self.color != ogColor:
+                    #     self.color = ogColor
                     #self.stateManager.invertRectData()
                     #self.isShadedH = True
                     #self.isShadedB = True
@@ -285,9 +285,9 @@ class Rectangle:
 
                     ##Changing color here does not display as the WHite rectangle is drawing over top
                     
-                    self.changeColorHatch(colors.BLACK)
-                    if self.color != colors.WHITE or self.color != ogColor:
-                        self.color = ogColor
+                    # self.changeColorHatch(colors.BLACK)
+                    # if self.color != colors.WHITE or self.color != ogColor:
+                    #     self.color = ogColor
                     #self.stateManager.invertRectData()
                     #self.isShadedH = True
                     #self.isShadedB = True

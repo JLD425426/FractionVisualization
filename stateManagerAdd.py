@@ -273,7 +273,7 @@ class StateManagerAdd:
         numRects = 0
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 3 or rect.ownerID == 4:
-                if rect.colorHatch == colors.BLACK:
+                if rect.color != colors.WHITE:
                     numRects += 1
         return numRects
 
@@ -283,7 +283,7 @@ class StateManagerAdd:
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == Rectid:
                 numRectsTotal += 1
-                if rect.colorHatch == colors.BLACK:
+                if rect.color != colors.WHITE:
                     numRectsFilled += 1
         if numRectsFilled == numRectsTotal and numRectsTotal != 0:
             return True
