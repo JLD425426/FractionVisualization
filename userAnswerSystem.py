@@ -43,9 +43,9 @@ class UserAnswerSystem:
     self.blinkClock = 0      
 
     #-----------------------------------------------------
-    #---------------MULTX/SUB BUTTON PLACEMENTS-----------
+    #---------------MULTX BUTTON PLACEMENTS-----------
     #-----------------------------------------------------
-    if self.operation_type == self.MULT or self.operation_type == self.SUB:
+    if self.operation_type == self.MULT:
       # for "Enter Answer Here Text"
       self.enterAnswerHere_font = pg.font.SysFont('Arial', 36)
       self.startY = int(self.HEIGHT / 2) - 150
@@ -78,6 +78,43 @@ class UserAnswerSystem:
       #for sprites
       self.spriteXOffset = 150
       self.spriteYOffset = 80
+
+    #-----------------------------------------------------
+    #---------------Sub BUTTON PLACEMENTS-----------
+    #-----------------------------------------------------
+    elif self.operation_type == self.SUB:
+      # for "Enter Answer Here Text"
+      self.enterAnswerHere_font = pg.font.SysFont('Arial', 30)
+      self.startY = self.HEIGHT - 150
+      self.startX = int(self.WIDTH/2) - 175
+      self.feedbackTextX = int(self.WIDTH/2)
+      self.feedbackTextY = self.HEIGHT - 30
+
+      # for numerator rect
+      self.numberRectWidth = 75
+      self.numberRectHeight = 75
+      self.numeratorRectX = int(self.WIDTH/2) - int(self.numberRectWidth/2)
+      self.numeratorRectY = self.HEIGHT - 225
+      self.numeratorRect = pg.Rect(self.numeratorRectX,self.numeratorRectY,self.numberRectWidth,self.numberRectHeight)
+
+      # for line dividing numer and denom
+      self.divideLineY = self.numeratorRectY + self.numberRectHeight + 5
+      self.divideLineStartX = self.numeratorRectX - 20
+      self.divideLineEndX = self.numeratorRectX + self.numberRectWidth + 20
+
+      # for denominator rect
+      self.denomRectX = self.numeratorRectX
+      self.denomRectY = self.numeratorRectY + 85
+      self.denomRect = pg.Rect(self.denomRectX,self.denomRectY,self.numberRectWidth,self.numberRectHeight)
+
+      #for blinkyline
+      self.blinkyYoffset = 70
+      self.blinkyXOffset1 = 15
+      self.blinkyXOffset2 = 60
+
+      #for sprites
+      self.spriteXOffset = 130
+      self.spriteYOffset = 50
     
     #----------------------------------------------------
     #---------------DIVISION BUTTON PLACEMENTS-----------

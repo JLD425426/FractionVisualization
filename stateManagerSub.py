@@ -47,8 +47,8 @@ class StateManagerSub:
         ##self.timer = 0
         ##self.error_detect = False
 
-        self.submitAnswerButtonX = int(self.WIDTH -310)
-        self.submitAnswerButtonY = int(self.HEIGHT/2 + 110)
+        self.submitAnswerButtonX = int(self.WIDTH/2 - 100)
+        self.submitAnswerButtonY = int(self.HEIGHT - 60)
         self.submitAnswerButton = pygame.Rect(self.submitAnswerButtonX, self.submitAnswerButtonY, 200, 50)
 
         self.rectsData = None
