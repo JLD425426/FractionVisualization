@@ -37,12 +37,13 @@ class Rectangle:
         #mouse var needed to pass to cutting
         self.mouse = mouse
 
-        # these 4 member variables may be useful for rectangle collisions
+        # these member variables may be useful for rectangle collisions
         self.topLeftX = int(self.xPosition - self.width / 2)
         self.topLeftY = int(self.yPosition - self.height / 2)
         self.bottomRightX = int(self.xPosition + self.width / 2)
         self.bottomRightY = int(self.yPosition + self.height / 2)
         self.topRightX = self.topLeftX + self.width
+        self.bottomLeftX = self.bottomRightX - self.width
 
         # boolean var to decide if rectangle should be subdivided when all cutmarkers removed
         self.isOriginalSquare = isOriginalSquare
@@ -68,6 +69,7 @@ class Rectangle:
         self.hColor = None # just for subtr right now
 
         self.isTrash = False
+        self.isMarked = False
 
         # draw outer guidelines and bg square only if rectangle is original square
         if self.isOriginalSquare == True:
@@ -459,6 +461,10 @@ class Rectangle:
                 #self.drawHLinesSub(self.hColor)
                 #self.drawVLinesSub(self.vColor)
 
+        if self.stateManager.operation_type == 2: # subtraction
+            if self.isMarked == True:
+                self.drawMark()
+
         if self.stateManager.operation_type == 1: # multiplication
             isShadedLeftToRight = self.isShadedV # adapter variable
             isShadedRightToLeft = self.isShadedH # adapter variable
@@ -644,6 +650,30 @@ class Rectangle:
 
     def changeColorHatch(self, color):
         self.colorHatch = color
+
+    def setMark(self, mark):
+        self.isMarked = mark
+
+    def getMark(self):
+        return self.isMarked
+
+
+
+    def drawMark(self):
+        #Left part of 'X'
+        Offset = 5
+        LtopXstart = self.topLeftX + Offset
+        LtopYstart = self.topLeftY + Offset
+        LbotXend = self.bottomRightX - Offset
+        LbotYend = self.bottomRightY - Offset
+        pg.draw.line(self.screen, colors.BLACK, [LtopXstart,LtopYstart], [LbotXend, LbotYend], 4)
+
+        #Right part of 'X'
+        RtopXstart = self.topRightX - Offset
+        RtopYstart = self.topLeftY + Offset
+        RbotXend = self.bottomLeftX + Offset
+        RbotYend = self.bottomRightY - Offset
+        pg.draw.line(self.screen, colors.BLACK, [RtopXstart,RtopYstart], [RbotXend, RbotYend], 4)
 
     def drawVLines(self, color):
         if color != colors.WHITE:

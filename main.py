@@ -610,7 +610,12 @@ def main_prog():
         if program_OperationType == MULTIPLICATION:
             for rect in drawablesController.rectangles:
                 rect.draw()
-        if program_OperationType != MULTIPLICATION:
+        if program_OperationType == SUBTRACTION:
+            for rect in drawablesController.rectangles:
+                rect.draw()
+                if rect.isMarked == True:
+                    rect.drawMark()
+        if program_OperationType != MULTIPLICATION and program_OperationType != SUBTRACTION:
             for rect in drawablesController.rectangles:
                 #
                 #move to rectangle class
@@ -649,8 +654,8 @@ def main_prog():
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()
-        if trashCan != None:
-            trashCan.draw()
+        #if trashCan != None:
+        #    trashCan.draw()
         problemDisplay.draw()
         userAnswerSystem.draw()
         # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION

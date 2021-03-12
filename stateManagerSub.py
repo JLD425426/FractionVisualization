@@ -22,7 +22,8 @@ class StateManagerSub:
         self.CUTTINGVERTICALLY = 0
         self.SHADINGVERTICALLY = 1
         self.CUTTINGHORIZONTALLY = 2
-        self.SHADINGHORIZONTALLY = 3
+        self.SHADINGHORIZONTALLY = 9 #Throwaway value for now
+        self.MARKING = 3
 
         self.DONE = 4
         self.MOVING = 5 # for debuging
@@ -88,8 +89,10 @@ class StateManagerSub:
 
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
-            if cutter.getState() == "Waiting":
-                self.currentState = self.SHADINGHORIZONTALLY
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                #self.currentState = self.SHADINGHORIZONTALLY
+                
+                self.currentState = self.MARKING
 
         # manager now shading horizontally
         elif self.currentState == self.SHADINGHORIZONTALLY:
@@ -106,7 +109,26 @@ class StateManagerSub:
                     ##self.error_detect = False
                     self.currentState = self.MOVING
                 ##self.error_detect = True
-                
+
+        elif self.currentState == self.MARKING:
+            self.markRects()
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                mCount = 0 
+                tCount = 0
+                #if the amount of marked rectangles is less than the number of colored rectangles on the right rectangle
+                #"Block" the user's button press
+                for rect in self.drawablesController.rectangles:
+                    if rect.ownerID == 2 and rect.color != colors.WHITE:
+                        tCount += 1
+                        if rect.isMarked == True:
+                            mCount += 1
+                if mCount == tCount:
+                    self.get_answerNumer()
+                    self.get_answerDenom()
+                    self.currentState = self.ANSWERSUBMISSION
+                        
+
+
 
         elif self.currentState == self.MOVING:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
@@ -139,8 +161,11 @@ class StateManagerSub:
 
         elif self.currentState == self.SHADINGHORIZONTALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Proceed to moving', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            draw_text('Proceed to marking', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.MOVING:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.MARKING:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.ANSWERSUBMISSION:
@@ -173,6 +198,8 @@ class StateManagerSub:
             return "Cutting Horizontally"
         elif self.currentState == self.SHADINGHORIZONTALLY:
             return "Shading Horizontally"
+        elif self.currentState == self.MARKING:
+            return "Marking"
         elif self.currentState == self.MOVING:
             return "Moving"
         elif self.currentState == self.DONE:
@@ -181,6 +208,28 @@ class StateManagerSub:
             return "Submitting Answer"
         ##elif self.currentState == self.THROWINGAWAY:
         ##    return "Throwing Away"
+
+    def markRects(self):
+        if self.mouse.leftMouseReleasedThisFrame == True:
+            for rect in self.drawablesController.rectangles:
+                if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True and rect.isShaded == True:
+                    if rect.ownerID == 1:
+                        if rect.getMark() == False:
+                        #now find a shaded rectangle in the other rectangle and mark it at the same time, once we mark one rectangle we stop
+                            for _r in self.drawablesController.rectangles:
+                                if _r.ownerID == 2 and _r.isShaded == True and _r.getMark() == False:
+                                    _r.setMark(True)
+                                    rect.setMark(True)
+                                    break
+                    elif rect.ownerID == 2:
+                        if rect.getMark() == False:
+                            for _r in self.drawablesController.rectangles:
+                                if _r.ownerID == 1 and _r.isShaded == True and _r.getMark() == False:
+                                    _r.setMark(True)
+                                    rect.setMark(True)
+                                    break
+
+
 
     def shadeVertical(self):
         if self.mouse.leftMouseReleasedThisFrame == True:
@@ -266,13 +315,16 @@ class StateManagerSub:
     def get_answerDenom(self):
         denominator = 0
         for rect in self.drawablesController.rectangles:
-            denominator += 1
+            if rect.ownerID == 1:
+                denominator += 1
         return denominator
 
     def get_answerNumer(self):
         numerator = 0
         for rect in self.drawablesController.rectangles:
-            if rect.isTrash == False and (rect.isShadedV == True or rect.isShadedB == True):
+            ##if rect.isTrash == False and (rect.isShadedV == True or rect.isShadedB == True):
+            ##    numerator += 1
+            if rect.ownerID == 1 and rect.isMarked == False and rect.isShaded == True:
                 numerator += 1
         return numerator
 
