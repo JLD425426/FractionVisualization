@@ -83,7 +83,7 @@ class ProblemDisplay:
             if (self.stateManager.getCurrentState() == "Shading Horizontally"):
                 self.userdenominator = self.stateManager.get_answerDenom()
         elif (self.stateManager.getCurrentState() == "Finished"):
-            if self.stateManager.operation_type == 2 or self.stateManager.operation_type == 4: # division or addition
+            if self.stateManager.operation_type == 2 or self.stateManager.operation_type == 4 or self.stateManager.operation_type == 3: # division or addition
                 self.userdenominator = self.stateManager.get_answerDenom()
             self.usernumerator = self.stateManager.get_answerNumer()
             userAnswer = Fraction(self.usernumerator, self.userdenominator)
