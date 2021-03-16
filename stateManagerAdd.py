@@ -1,3 +1,4 @@
+from fractionHandler import Fraction
 from cutterFraction import CutterFraction
 from rectangle import Rectangle
 import colors
@@ -263,19 +264,44 @@ class StateManagerAdd:
         self.numShadedRightRects = count
 
     def get_answerDenom(self):
-        numRects = 0
+        numRectsShadedThird = 0
+        numRectsShadedFourth = 0
+        totalRectsThird = 0
+        totalRectsFourth = 0
         for rect in self.drawablesController.rectangles:
-            if rect.ownerID == 3 or rect.ownerID == 4:
-                numRects += 1
-        return (int)(numRects/2)
+            if rect.ownerID == 3:
+                totalRectsThird += 1
+                if rect.color != colors.WHITE:
+                    numRectsShadedThird += 1
+            if rect.ownerID == 4:
+                totalRectsFourth += 1
+                if rect.color != colors.WHITE:
+                    numRectsShadedFourth += 1
+        
+        f1 = Fraction(numRectsShadedThird,totalRectsThird)
+        f2 = Fraction(numRectsShadedFourth,totalRectsFourth)
+        sumN, sumD = f1.fAdd(f2.numerator,f2.denominator)
+        return sumD
 
     def get_answerNumer(self):
-        numRects = 0
+        numRectsShadedThird = 0
+        numRectsShadedFourth = 0
+        totalRectsThird = 0
+        totalRectsFourth = 0
         for rect in self.drawablesController.rectangles:
-            if rect.ownerID == 3 or rect.ownerID == 4:
+            if rect.ownerID == 3:
+                totalRectsThird += 1
                 if rect.color != colors.WHITE:
-                    numRects += 1
-        return numRects
+                    numRectsShadedThird += 1
+            if rect.ownerID == 4:
+                totalRectsFourth += 1
+                if rect.color != colors.WHITE:
+                    numRectsShadedFourth += 1
+        
+        f1 = Fraction(numRectsShadedThird,totalRectsThird)
+        f2 = Fraction(numRectsShadedFourth,totalRectsFourth)
+        sumN, sumD = f1.fAdd(f2.numerator,f2.denominator)
+        return sumN
 
     def is_filled(self, Rectid):
         numRectsTotal = 0

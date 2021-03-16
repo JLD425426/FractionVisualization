@@ -270,7 +270,10 @@ class Rectangle:
                     #self.stateManager.invertRectData()
                     #self.isShadedH = True
                     #self.isShadedB = True
-                    self.ownerID = 3
+                    if self.stateManager.movedBefore == False:
+                        self.ownerID = 3
+                    else:
+                        self.ownerID = 4
                     ##Can we change this?
                     if replaced:
                         self.drawablesController.pointColliders.remove(replaced.myPointCollider)
@@ -293,7 +296,10 @@ class Rectangle:
                     #self.stateManager.invertRectData()
                     #self.isShadedH = True
                     #self.isShadedB = True
-                    self.ownerID = 3
+                    if self.stateManager.movedBefore == False:
+                        self.ownerID = 3
+                    else:
+                        self.ownerID = 4
                     ##Can we change this?
                     if replaced:
                         self.drawablesController.pointColliders.remove(replaced.myPointCollider)
