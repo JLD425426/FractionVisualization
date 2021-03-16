@@ -54,6 +54,11 @@ class StateManagerSub:
         self.rectsData = None
         self.hasInvertedRectData = False
 
+        # For border to highlight current section
+        self.borderSet = 0
+        self.borderTop = 0
+        self.borderLeft = 0
+
         self.vColor = colors.WHITE
         self.hColor = colors.WHITE
 
@@ -66,6 +71,7 @@ class StateManagerSub:
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
             if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                self.setBorderPos()
                 self.currentState = self.SHADINGVERTICALLY
 
         # manager is now shading vertically, now can shade current rects
@@ -328,7 +334,12 @@ class StateManagerSub:
                 numerator += 1
         return numerator
 
-
+    def setBorderPos(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 1:
+                self.borderLeft = rect.xPosition - (rect.width/2)
+                self.borderTop = rect.yPosition - (rect.height/2)
+                return
 
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
