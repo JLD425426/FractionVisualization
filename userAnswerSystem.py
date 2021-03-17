@@ -1,3 +1,4 @@
+from pygame import draw
 import colors
 import pygame as pg
 from drawText import draw_text
@@ -33,6 +34,8 @@ class UserAnswerSystem:
     self.wholeValue = None
     self.numberFont = pg.font.SysFont('Arial', 64)
     self.operation_font = pg.font.SysFont('Arial', 60)
+    self.guideFont = pg.font.SysFont('Arial',22)
+    self.guideFontSmall = pg.font.SysFont('Arial',16)
     self.selectionIndex = -1 # 0-> numerator # 1-> denom
 
     # for user input
@@ -289,7 +292,10 @@ class UserAnswerSystem:
 
     # only draw blinky blink if if answer is in process of submitting answer, not in finished state, no div
     if (self.stateManager.getCurrentState() == "Submitting Answer"):
-      draw_text('Enter Answer Here:', self.enterAnswerHere_font, (0,0,0), self.screen, self.startX, self.startY)
+      if self.operation_type == self.ADD or self.operation_type == self.DIV:
+        pass
+      else:
+        draw_text('Enter Answer Here:', self.enterAnswerHere_font, (0,0,0), self.screen, self.startX, self.startY)
       if self.selectionIndex == 0 and self.blinkClock >= 30: # numerator selected
         pg.draw.line(self.screen,(0,0,0), [self.numeratorRectX + self.blinkyXOffset1, self.numeratorRectY + self.blinkyYoffset], [self.numeratorRectX + self.blinkyXOffset2,self.numeratorRectY + self.blinkyYoffset], 5)
       elif self.selectionIndex == 1 and self.blinkClock >= 30: #denom selected
@@ -324,6 +330,18 @@ class UserAnswerSystem:
         draw_text('=', self.operation_font, (0,0,0), self.screen, 545 , 386)
       else:
         draw_text('=', self.operation_font, (0,0,0), self.screen, 690 , 386)
+
+    # draw mixed fraction input guide text
+    if self.operation_type == self.ADD:
+      if self.stateManager.getCurrentState() == "Submitting Answer":
+        draw_text('Enter Answer Here as Mixed Fraction', self.guideFont, (0,0,0), self.screen, self.startX, self.startY-20)
+        draw_text('If answer < 1, leave leftmost box as blank or 0', self.guideFontSmall, (0,0,0), self.screen, self.startX, self.startY + 3)
+
+    if self.operation_type == self.DIV:
+      if self.stateManager.getCurrentState() == "Submitting Answer":
+        draw_text('Enter Answer Here as Mixed Fraction:', self.guideFont, (0,0,0), self.screen, self.startX-35, self.startY-20)
+        draw_text('If answer < 1, leave leftmost box as blank or 0', self.guideFontSmall, (0,0,0), self.screen, self.startX-35, self.startY + 3)
+
 
 
   def interpretInput(self,keyDown):
