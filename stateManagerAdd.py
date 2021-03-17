@@ -148,7 +148,7 @@ class StateManagerAdd:
             ##IDEA: Create a method to check when both input rectangles have finished drag and drop, 
             ##IDEA cont: THEN display the Answer submission button
             
-            if self.is_filled(3) == True:
+            if self.is_filled(3) == True and self.shadedRectsRemaining() is True:
                 cutter4.setStateCutVertical()
                 self.twoWholes = True
                 self.currentState = self.CUTTINGVERTICALLY3
@@ -329,7 +329,12 @@ class StateManagerAdd:
                 self.border2Top = rect.yPosition - (rect.height/2)
                 return
 
-
+    def shadedRectsRemaining(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == 1 or rect.ownerID == 2:
+                if rect.isShaded:
+                    return True
+        return False
 
     #Setter functions required b/c state manager instantiated 1st, cannot pass these vars into __init__
     def setDrawablesController(self, dC):
