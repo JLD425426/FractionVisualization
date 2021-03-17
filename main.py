@@ -585,6 +585,8 @@ def main_prog():
         newProblem_button = pygame.Rect(WIDTH - 370, 0 , 130, 50)
         if newProblem_button.collidepoint((mouse.mx, mouse.my)):
             if click:
+                if problemGenerator.program_problemCreationType == problemGenerator.USERPROBLEM:
+                    createUserProblem()
                 problemGenerator.needsNewProblem = True
                 main_prog()
                 isProgramRunning = False
@@ -810,6 +812,7 @@ def createUserProblem():
                 if validationResult == True: #the problem is good so start main loop
                     problemGenerator.setProblemCreationType(USERPROBLEM)
                     problemGenerator.fractionValues = fractionValues
+                    problemGenerator.getProblemUserGen()
                     main_prog()
                     isProgramRunning = False
                     break
