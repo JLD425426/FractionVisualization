@@ -12,6 +12,7 @@ from stateManagerMult import StateManagerMult
 from stateManagerDiv import StateManagerDiv
 from stateManagerSub import StateManagerSub
 from stateManagerAdd import StateManagerAdd
+from stateManagerMultUser import StateManagerMultUser
 from fractionHandler import Fraction
 from colorpicker import ColorPicker
 from problemDisplay import ProblemDisplay
@@ -374,7 +375,8 @@ def main_prog():
 
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
-        stateManager = StateManagerMult(program_CuttingType,screen)
+        statesTab = StatesTab(screen,WIDTH,HEIGHT,program_OperationType)
+        stateManager = StateManagerMultUser(program_CuttingType,screen,statesTab)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
         testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
@@ -383,7 +385,6 @@ def main_prog():
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
 
-        statesTab = StatesTab(screen,WIDTH,HEIGHT,program_OperationType)
 
     elif program_OperationType == ADDITION:
         stateManager = StateManagerAdd(program_CuttingType,screen)
