@@ -1,6 +1,6 @@
 from cutterFraction import CutterFraction
 import colors
-import pygame 
+import pygame
 from drawText import draw_text
 import numpy as np
 
@@ -111,11 +111,6 @@ class StateManagerMultUser:
         #             self.currentState = self.ANSWERSUBMISSION
         #         # self.currentState = self.DONE
 
-        # # manager is in answer submission state, wait for user to press submit answer button to proceed
-        # elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
-        #     if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-        #         # self.currentState = self.DONE
-        #         self.currentState = self.DONE
 
 
     def draw(self):
