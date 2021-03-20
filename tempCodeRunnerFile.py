@@ -1,1 +1,6 @@
-message_font_s = pygame.font.SysFont('Arial', 30)
+        if menu_button.collidepoint((mouse.mx, mouse.my)):
+            if click:
+                problemGenerator.needsNewProblem = True
+                main_menu()
+                isProgramRunning = False
+                break

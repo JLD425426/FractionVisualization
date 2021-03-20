@@ -19,6 +19,7 @@ from problemGenerator import ProblemGenerator
 from trashCan import TrashCan
 from problemValidation import isValidProblem
 from userAnswerSystem import UserAnswerSystem
+from statesTab import StatesTab
 
 pygame.init()
 
@@ -369,6 +370,7 @@ def main_prog():
     drawablesController = DrawablesController()
     colorPicker = None
     trashCan = None
+    statesTab = None
 
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
@@ -380,6 +382,8 @@ def main_prog():
 
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
+
+        statesTab = StatesTab(screen,WIDTH,HEIGHT,program_OperationType)
 
     elif program_OperationType == ADDITION:
         stateManager = StateManagerAdd(program_CuttingType,screen)
@@ -564,6 +568,9 @@ def main_prog():
             borderTop, borderLeft = stateManager.borderTop, stateManager.borderLeft
             borderHeight, borderWidth = testRectangle.height, testRectangle.width
 
+        if statesTab != None:
+            statesTab.update(mouse.mx,mouse.my,mouse.leftMouseReleasedThisFrame)
+
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
         # Menu button and logic to go back to main screen and get new problem
@@ -687,7 +694,10 @@ def main_prog():
         elif program_OperationType == SUBTRACTION:
             if stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
                 pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)
-            
+        
+        if statesTab != None:
+            statesTab.draw( )
+
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()
 
