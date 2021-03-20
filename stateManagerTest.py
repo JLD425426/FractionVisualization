@@ -4,7 +4,7 @@ import pygame
 from drawText import draw_text
 import numpy as np
 
-class StateManagerMultUser:
+class StateManagerTest:
     def __init__(self,cuttingType,screen,statesTab):
 
         self.MULT = 1
@@ -68,50 +68,6 @@ class StateManagerMultUser:
           self.currentState = self.DONE
           self.statesTab.isStateManagerDone = True
       
-
-        # # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
-        # if self.currentState == self.CUTTINGVERTICALLY:
-        #     if cutter.getState() == "Waiting":
-        #         self.currentState = self.SHADINGVERTICALLY
-
-        # # manager is now shading vertically, now can shade current rects
-        # elif self.currentState == self.SHADINGVERTICALLY:
-        #     self.shadeVertical()
-        #     if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-        #         #if there is nothing shaded, display a quick window telling the user to shade vertically, 
-        #         #if there are shaded rectangles, continue as normal
-        #         #Display that halts the state continuation will appear for 4 Seconds
-        #         sCount = 0
-        #         for rect in self.drawablesController.rectangles:
-        #             if rect.isShadedV == True:
-        #                 sCount += 1
-        #         if sCount != 0:
-        #             ##self.error_detect = False
-        #             self.currentState = self.CUTTINGHORIZONTALLY 
-        #             cutter.setStateCutHorizontal()
-        #         ##self.error_detect = True
-
-        # # manager now cutting horizontally, let cutter do work
-        # elif self.currentState == self.CUTTINGHORIZONTALLY:
-        #     if cutter.getState() == "Waiting":
-        #         self.currentState = self.SHADINGHORIZONTALLY
-
-        # # manager now shading horizontally
-        # elif self.currentState == self.SHADINGHORIZONTALLY:
-        #     if self.hasInvertedRectData == False:
-        #         self.invertRectData()   #use tab for this
-        #         self.hasInvertedRectData = True #use tab for this
-        #     self.shadeHorizontal()
-        #     if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-        #         sCount = 0
-        #         for rect in self.drawablesController.rectangles:
-        #             if rect.isShadedH == True:
-        #                 sCount += 1
-        #         if sCount != 0:
-        #             ##self.error_detect = False
-        #             self.currentState = self.ANSWERSUBMISSION
-        #         # self.currentState = self.DONE
-
 
 
     def draw(self):
