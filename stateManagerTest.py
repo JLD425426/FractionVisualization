@@ -59,14 +59,27 @@ class StateManagerTest:
         return self.operation_type
 
     def update(self, cutter):
-      self.setBorderPos()
-      if self.currentState != self.DONE:
-        self.getStateFromStatesTab()
+        self.setBorderPos()
+        if self.currentState != self.DONE:
+            self.getStateFromStatesTab()
+    
+        if self.currentState == self.CUTTINGHORIZONTALLY:
+            if cutter.horizontalDone != 1:
+                cutter.setStateCutHorizontal()
 
-      if self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
-        if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-          self.currentState = self.DONE
-          self.statesTab.isStateManagerDone = True
+        if self.currentState == self.CUTTINGVERTICALLY:
+            if cutter.verticalDone != 1:
+                cutter.setStateCutVertical()
+        
+
+        self.setBorderPos()
+        if self.currentState != self.DONE:
+            self.getStateFromStatesTab()
+
+        if self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
+            if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.DONE
+                self.statesTab.isStateManagerDone = True
       
 
 
