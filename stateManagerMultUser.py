@@ -27,6 +27,7 @@ class StateManagerMultUser:
         self.SHADINGVERTICALLY = 1
         self.CUTTINGHORIZONTALLY = 2
         self.SHADINGHORIZONTALLY = 3
+        self.FINALIZECUTS = 8
 
         self.DONE = 4
         self.MOVING = 5 # for debuging
@@ -59,6 +60,16 @@ class StateManagerMultUser:
         return self.operation_type
 
     def update(self, cutter):
+
+      if self.currentState == self.CUTTINGHORIZONTALLY:
+        if cutter.horizontalDone != 1:
+            cutter.setStateCutHorizontal()
+
+      if self.currentState == self.CUTTINGVERTICALLY:
+        if cutter.verticalDone != 1:
+            cutter.setStateCutVertical()
+        
+
       self.setBorderPos()
       if self.currentState != self.DONE:
         self.getStateFromStatesTab()
@@ -141,6 +152,8 @@ class StateManagerMultUser:
             return "Moving"
         elif self.currentState == self.ANSWERSUBMISSION:
             return "Submitting Answer"
+        elif self.currentState == self.FINALIZECUTS:
+            return "Finalizing Cuts"
         elif self.currentState == None:
           return "Waiting"
 
