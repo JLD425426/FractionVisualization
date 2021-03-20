@@ -58,6 +58,7 @@ class StateManagerMultUser:
         return self.operation_type
 
     def update(self, cutter):
+      self.setBorderPos()
       if self.currentState != self.DONE:
         self.getStateFromStatesTab()
 
@@ -70,7 +71,6 @@ class StateManagerMultUser:
         # # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         # if self.currentState == self.CUTTINGVERTICALLY:
         #     if cutter.getState() == "Waiting":
-        #         self.setBorderPos()
         #         self.currentState = self.SHADINGVERTICALLY
 
         # # manager is now shading vertically, now can shade current rects
