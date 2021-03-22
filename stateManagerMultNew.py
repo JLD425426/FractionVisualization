@@ -4,7 +4,7 @@ import pygame
 from drawText import draw_text
 import numpy as np
 
-class StateManagerMultUser:
+class StateManagerMult:
     def __init__(self,cuttingType,screen,statesTab):
 
         self.MULT = 1

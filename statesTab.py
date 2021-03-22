@@ -13,7 +13,6 @@ class StatesTab:
     self.ADDITION = 1
     self.SUBTRACTION = 2
     self.DIVISION = 3
-    self.TEST = 4
 
     self.xStart = 8
     self.yStart = 64
@@ -23,7 +22,7 @@ class StatesTab:
     
     #Create the list of selection boxes that each represent 1 state, SelectionBox class at end of file
     self.selectionBoxes = list()
-    if self.operation == self.TEST:
+    if self.operation == self.MULTIPLICATION:
       yy = self.yStart
       self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin

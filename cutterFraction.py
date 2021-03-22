@@ -26,16 +26,16 @@ class CutterFraction:
         self.isShowingHorizontalGuidelines = False
         self.horizontalGuidelinesCount = 0
 
-        # For state manager that can jump between states
-        self.verticalDone = 0
-        self.horizontalDone = 0
-
         #SET UP FRACTION CUTS
         self.maxDivisions = 6 # This is how many possible divisions rect can be cut by
         self.dstForCutInit = 5 # how far away mouse can be to pick up cut, requires fine tuning
 
         #init vertical cuts
         self.verticalCuts = list()
+        for x in range(2,self.maxDivisions+1):
+            xPos = int((self.myRect.width * (1/x)) + self.myRect.topLeftX)
+            numberCuts = x
+            self.verticalCuts.append(FractionCut(xPos,self.myRect.topLeftY,numberCuts,str(numberCuts),self.myRect))
         #init horizontal cuts
         # most of horizontal cut init done in function initHorizontalCuts called when leaving
         # CUTTINGVERTICAL state b/c we dont want to show till then
@@ -60,7 +60,6 @@ class CutterFraction:
         self.state = self.WAITING
 
     def setStateCutVertical(self):
-        self.initVerticalCuts()
         self.state = self.CUTTINGVERTICAL
 
     def setStateCutHorizontal(self):
@@ -72,100 +71,50 @@ class CutterFraction:
         pass
 
     def update(self, mouse):
-        if self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
-            # ENTRY STATE: VERTICAL CUTTING
-            if self.state == self.CUTTINGVERTICAL:
-                if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
-                    for fc in self.verticalCuts:
-                        if abs(fc.xPos - self.mouse.mx) < self.dstForCutInit:
-                            self.isShowingVerticalGuidelines = True
-                            self.verticalGuidelinesCount = fc.numberCuts
-                            # if mouse released and mouse.x close to fraction cut x, call cleanup/divide routines, change state
-                            if self.mouse.leftMouseReleasedThisFrame == True: 
-                                self.divideVertical()
-                                self.isShowingVerticalGuidelines = False
-                                self.cleanupCuts(self.verticalCuts)
-                                # self.initHorizontalCuts()
-                                # self.state = self.CUTTINGHORIZONTAL
-                                self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
-                                self.myRect.cutSquareVertical()
-                                self.state = self.WAITING 
-                                if self.horizontalDone == 1:
-                                    self.state = self.FINALCUT
-                                self.verticalDone = 1
-            # 2ND STATE: HORIZONTAL CUTTING
-            elif self.state == self.CUTTINGHORIZONTAL:
-                if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
-                    for fc in self.horizontalCuts:
-                        if abs(fc.yPos - self.mouse.my) < self.dstForCutInit:
-                            self.isShowingHorizontalGuidelines = True
-                            self.horizontalGuidelinesCount = fc.numberCuts
-                            # if mouse release and mouse.y close to fraction cut y, call cleanup/divide routine, enter final state
-                            if self.mouse.leftMouseReleasedThisFrame == True:
-                                self.divideHorizontal()
-                                self.isShowingHorizontalGuidelines = False
-                                self.cleanupCuts(self.horizontalCuts)
-                                self.state = self.WAITING
-                                if self.verticalDone == 1:
-                                    self.state = self.FINALCUT
-                                self.horizontalDone = 1
-                                
-            # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
-            elif self.state == self.FINALCUT:
-                #not sure why these next 2 lines have to be flipped but they do need to be to work properly
-                self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
-                self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
-                self.isReadyForSubdivide = True
-                self.state = self.WAITING
-            elif self.state == self.WAITING:
-                #do nothing waiting for next instruction
-                pass
-
-        else:   # IF ANY OTHER STATE BUT MULT
-            # ENTRY STATE: VERTICAL CUTTING
-            if self.state == self.CUTTINGVERTICAL:
-                if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
-                    for fc in self.verticalCuts:
-                        if abs(fc.xPos - self.mouse.mx) < self.dstForCutInit:
-                            self.isShowingVerticalGuidelines = True
-                            self.verticalGuidelinesCount = fc.numberCuts
-                            # if mouse released and mouse.x close to fraction cut x, call cleanup/divide routines, change state
-                            if self.mouse.leftMouseReleasedThisFrame == True: 
-                                self.divideVertical()
-                                self.isShowingVerticalGuidelines = False
-                                self.cleanupCuts(self.verticalCuts)
-                                # self.initHorizontalCuts()
-                                # self.state = self.CUTTINGHORIZONTAL
-                                self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
-                                self.myRect.cutSquareVertical()
-                                self.state = self.WAITING         
-                else:
-                    self.isShowingVerticalGuidelines = False
-            # 2ND STATE: HORIZONTAL CUTTING
-            elif self.state == self.CUTTINGHORIZONTAL:
-                if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
-                    for fc in self.horizontalCuts:
-                        if abs(fc.yPos - self.mouse.my) < self.dstForCutInit:
-                            self.isShowingHorizontalGuidelines = True
-                            self.horizontalGuidelinesCount = fc.numberCuts
-                            # if mouse release and mouse.y close to fraction cut y, call cleanup/divide routine, enter final state
-                            if self.mouse.leftMouseReleasedThisFrame == True:
-                                self.divideHorizontal()
-                                self.isShowingHorizontalGuidelines = False
-                                self.cleanupCuts(self.horizontalCuts)
-                                self.state = self.FINALCUT
-                else:
-                    self.isShowingHorizontalGuidelines = False
-            # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
-            elif self.state == self.FINALCUT:
-                #not sure why these next 2 lines have to be flipped but they do need to be to work properly
-                self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
-                self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
-                self.isReadyForSubdivide = True
-                self.state = self.WAITING
-            elif self.state == self.WAITING:
-                #do nothing waiting for next instruction
-                pass
+        # ENTRY STATE: VERTICAL CUTTING
+        if self.state == self.CUTTINGVERTICAL:
+            if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
+                for fc in self.verticalCuts:
+                    if abs(fc.xPos - self.mouse.mx) < self.dstForCutInit:
+                        self.isShowingVerticalGuidelines = True
+                        self.verticalGuidelinesCount = fc.numberCuts
+                        # if mouse released and mouse.x close to fraction cut x, call cleanup/divide routines, change state
+                        if self.mouse.leftMouseReleasedThisFrame == True: 
+                            self.divideVertical()
+                            self.isShowingVerticalGuidelines = False
+                            self.cleanupCuts(self.verticalCuts)
+                            # self.initHorizontalCuts()
+                            # self.state = self.CUTTINGHORIZONTAL
+                            self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+                            self.myRect.cutSquareVertical()
+                            self.state = self.WAITING         
+            else:
+                self.isShowingVerticalGuidelines = False
+        # 2ND STATE: HORIZONTAL CUTTING
+        elif self.state == self.CUTTINGHORIZONTAL:
+            if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
+                for fc in self.horizontalCuts:
+                    if abs(fc.yPos - self.mouse.my) < self.dstForCutInit:
+                        self.isShowingHorizontalGuidelines = True
+                        self.horizontalGuidelinesCount = fc.numberCuts
+                        # if mouse release and mouse.y close to fraction cut y, call cleanup/divide routine, enter final state
+                        if self.mouse.leftMouseReleasedThisFrame == True:
+                            self.divideHorizontal()
+                            self.isShowingHorizontalGuidelines = False
+                            self.cleanupCuts(self.horizontalCuts)
+                            self.state = self.FINALCUT
+            else:
+                self.isShowingHorizontalGuidelines = False
+        # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
+        elif self.state == self.FINALCUT:
+            #not sure why these next 2 lines have to be flipped but they do need to be to work properly
+            self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
+            self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+            self.isReadyForSubdivide = True
+            self.state = self.WAITING
+        elif self.state == self.WAITING:
+            #do nothing waiting for next instruction
+            pass
 
     def draw(self):
         # DISPLAY TEMPORARY VERTICAL BLUE GUIDELINES IF MOUSE X CLOSE TO FRACTION CUT X AND Draw text
@@ -244,12 +193,6 @@ class CutterFraction:
             for cm in self.myRect.drawablesController.cutmarkers:
                 if cut == cm:
                     self.myRect.drawablesController.cutmarkers.remove(cut)
-
-    def initVerticalCuts(self):
-        for x in range(2,self.maxDivisions+1):
-            xPos = int((self.myRect.width * (1/x)) + self.myRect.topLeftX)
-            numberCuts = x
-            self.verticalCuts.append(FractionCut(xPos,self.myRect.topLeftY,numberCuts,str(numberCuts),self.myRect))
 
     def initHorizontalCuts(self):
         #init horizontal cuts
