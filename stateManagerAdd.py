@@ -16,6 +16,7 @@ class StateManagerAdd:
         self.DIV = 2
         self.SUB = 3
         self.ADD = 4
+        self.TEST = 5
         self.operation_type = self.ADD
         #define cutting types
         self.FRACTIONCUTTING = 0

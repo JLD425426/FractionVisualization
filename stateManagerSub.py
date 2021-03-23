@@ -10,6 +10,8 @@ class StateManagerSub:
         self.MULT = 1
         self.DIV = 2
         self.SUB = 3
+        self.ADD = 4
+        self.TEST = 5
         self.operation_type = self.SUB
 
         #define cutting types

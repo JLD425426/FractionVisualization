@@ -406,8 +406,7 @@ def main_prog():
 
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
-        statesTab = StatesTab(screen,WIDTH,HEIGHT,program_OperationType)
-        stateManager = StateManagerMultUser(program_CuttingType,screen,statesTab)
+        stateManager = StateManagerMult(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
         testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)

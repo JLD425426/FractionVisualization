@@ -34,13 +34,14 @@ class CutterFraction:
         self.maxDivisions = 6 # This is how many possible divisions rect can be cut by
         self.dstForCutInit = 5 # how far away mouse can be to pick up cut, requires fine tuning
 
+
         #init vertical cuts
         self.verticalCuts = list()
         #init horizontal cuts
         # most of horizontal cut init done in function initHorizontalCuts called when leaving
         # CUTTINGVERTICAL state b/c we dont want to show till then
         self.horizontalCuts = list()
-
+        self.setStateCutVertical()
         #For drawing font
         self.message_font = pg.font.SysFont('Arial', 32)
         self.message_fontL = pg.font.SysFont('Arial', 42)
@@ -72,7 +73,7 @@ class CutterFraction:
         pass
 
     def update(self, mouse):
-        if self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
+        if self.myRect.stateManager.operation_type == self.myRect.stateManager.TEST:
             # ENTRY STATE: VERTICAL CUTTING
             if self.state == self.CUTTINGVERTICAL:
                 if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
