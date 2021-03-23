@@ -26,13 +26,13 @@ class CutterFraction:
         self.isShowingHorizontalGuidelines = False
         self.horizontalGuidelinesCount = 0
 
-        # For state manager that can jump between states
-        self.verticalDone = 0
-        self.horizontalDone = 0
-
         #SET UP FRACTION CUTS
         self.maxDivisions = 6 # This is how many possible divisions rect can be cut by
         self.dstForCutInit = 5 # how far away mouse can be to pick up cut, requires fine tuning
+
+        # For state manager that can jump between states
+        self.verticalDone = 0
+        self.horizontalDone = 0
 
 
         #init vertical cuts
@@ -246,18 +246,18 @@ class CutterFraction:
                 if cut == cm:
                     self.myRect.drawablesController.cutmarkers.remove(cut)
 
-    def initVerticalCuts(self):
-        for x in range(2,self.maxDivisions+1):
-            xPos = int((self.myRect.width * (1/x)) + self.myRect.topLeftX)
-            numberCuts = x
-            self.verticalCuts.append(FractionCut(xPos,self.myRect.topLeftY,numberCuts,str(numberCuts),self.myRect))
-
     def initHorizontalCuts(self):
         #init horizontal cuts
         for x in range(2, self.maxDivisions+1):
             yPos = int((self.myRect.height * (1/x)) + self.myRect.topLeftY)
             numberCuts = x
             self.horizontalCuts.append(FractionCut(self.myRect.topLeftX,yPos,numberCuts,str(numberCuts),self.myRect))
+        
+    def initVerticalCuts(self):
+        for x in range(2,self.maxDivisions+1):
+            xPos = int((self.myRect.width * (1/x)) + self.myRect.topLeftX)
+            numberCuts = x
+            self.verticalCuts.append(FractionCut(xPos,self.myRect.topLeftY,numberCuts,str(numberCuts),self.myRect))
 
 
 class BoundingBox:
