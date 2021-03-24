@@ -73,7 +73,7 @@ class CutterFraction:
         pass
 
     def update(self, mouse):
-        if self.myRect.stateManager.operation_type == self.myRect.stateManager.TEST:
+        if self.myRect.stateManager.operation_type == self.myRect.stateManager.TEST or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
             # ENTRY STATE: VERTICAL CUTTING
             if self.state == self.CUTTINGVERTICAL:
                 if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):

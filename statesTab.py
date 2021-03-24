@@ -32,6 +32,15 @@ class StatesTab:
       self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
       self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+    elif self.operation == self.MULTIPLICATION:
+      yy = self.yStart
+      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
+      yy += self.selectionBoxHeight + self.selectionBoxMargin
+      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutHorizontal.png',"Cut Horizontally","Cutting Horizontally"))
+      yy += self.selectionBoxHeight + self.selectionBoxMargin
+      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading"))
+      yy += self.selectionBoxHeight + self.selectionBoxMargin
+      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
 
     # These next few lines are for setting up guidetext if user hovers over icon for long enough so as to clarify what
     # button does

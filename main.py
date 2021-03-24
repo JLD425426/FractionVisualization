@@ -9,7 +9,6 @@ from drawablesController import DrawablesController
 from mouseHolder import MouseHandler
 from stateManager import manager
 from stateManagerMult import StateManagerMult
-from stateManagerMultUser import StateManagerMultUser
 from stateManagerTest import StateManagerTest
 from stateManagerDiv import StateManagerDiv
 from stateManagerSub import StateManagerSub
@@ -22,6 +21,7 @@ from trashCan import TrashCan
 from problemValidation import isValidProblem
 from userAnswerSystem import UserAnswerSystem
 from statesTab import StatesTab
+from stateManagerMultNew import StateManagerMultNew
 
 pygame.init()
 
@@ -404,7 +404,8 @@ def main_prog():
 
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
-        stateManager = StateManagerMult(program_CuttingType,screen)
+        statesTab = StatesTab(screen,WIDTH,HEIGHT,MULTIPLICATION)
+        stateManager = StateManagerMultNew(program_CuttingType,screen,statesTab)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
         testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
@@ -431,7 +432,7 @@ def main_prog():
         stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == SUBTRACTION:
-        stateManager = StateManagerSub(program_CuttingType,screen)
+        stateManager = StateManagerSubNew(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
