@@ -307,7 +307,6 @@ class StateManagerMultNew:
 
     def get_answerDenom(self):
         denominator = 0
-        print(str(len(self.drawablesController.rectangles)))
         for rect in self.drawablesController.rectangles:
             denominator += 1
         return denominator

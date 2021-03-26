@@ -596,7 +596,6 @@ class Rectangle:
             # self.drawablesController.pointColliders.append(pc)
             if r != None:
                 r.myPointCollider = pc
-        print(str(len(self.drawablesController.rectangles)))
     #----------WARNING----------------
     #----anticipated pointcollider bugs here----
     def finalCut(self):
