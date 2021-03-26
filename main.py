@@ -22,6 +22,7 @@ from problemValidation import isValidProblem
 from userAnswerSystem import UserAnswerSystem
 from statesTab import StatesTab
 from stateManagerMultNew import StateManagerMultNew
+from statesTabMult import StatesTabMult
 
 pygame.init()
 
@@ -404,7 +405,7 @@ def main_prog():
 
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
-        statesTab = StatesTab(screen,WIDTH,HEIGHT,MULTIPLICATION)
+        statesTab = StatesTabMult(screen,WIDTH,HEIGHT,MULTIPLICATION)
         stateManager = StateManagerMultNew(program_CuttingType,screen,statesTab)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
