@@ -59,20 +59,25 @@ class StateManagerMultNew:
 
         self.userAnswerSystemReadyForSubmission = False
 
+        self.hasCutHorizontally = False
+        self.hasCutVertically = False
+
     def getOperationType(self):
         return self.operation_type
 
     def update(self, cutter):
 
-        # get state from states tab every frame
-        if self.currentState != self.DONE:
-            self.getStateFromStatesTab()
-
         if self.currentState == self.CUTTINGHORIZONTALLY:
             if cutter.horizontalDone != 1:
                 cutter.setStateCutHorizontal()
             else:
-                print("done cutting horizontally")
+                pass
+                self.statesTab.selectionBoxGroupListIndex = 3
+                # print("done cutting vertically")
+                self.currentState = self.WAITING
+                self.statesTab.clearSelected()
+                self.hasCutHorizontally = True
+                return
 
         if self.currentState == self.CUTTINGVERTICALLY:
             if cutter.verticalDone != 1:
@@ -81,7 +86,44 @@ class StateManagerMultNew:
                 self.statesTab.selectionBoxGroupListIndex = 1
                 # print("done cutting vertically")
                 self.currentState = self.WAITING
-        
+                self.hasCutVertically = True
+
+        if self.currentState == self.SHADINGHORIZONTALLY:
+            if self.hasInvertedRectData == False:
+                self.invertRectData()   #use tab for this
+                self.hasInvertedRectData = True #use tab for this
+            self.shadeHorizontal()
+
+            if self.hasCutVertically == False:
+                if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                    sCount = 0
+                    for rect in self.drawablesController.rectangles:
+                        if rect.isShadedH == True:
+                            sCount += 1
+                    if sCount != 0:
+                        self.statesTab.selectionBoxGroupListIndex = 4
+                        self.currentState = self.WAITING
+                        self.statesTab.clearSelected()
+                        return
+
+
+
+        # manager is now shading vertically, now can shade current rects
+        if self.currentState == self.SHADINGVERTICALLY:
+            self.shadeVertical()
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                #if there is nothing shaded, display a quick window telling the user to shade vertically, 
+                #if there are shaded rectangles, continue as normal
+                #Display that halts the state continuation will appear for 4 Seconds
+                sCount = 0
+                for rect in self.drawablesController.rectangles:
+                    if rect.isShadedV == True:
+                        sCount += 1
+                if sCount != 0:
+                    self.statesTab.selectionBoxGroupListIndex = 2
+                    self.currentState = self.WAITING
+                    self.statesTab.clearSelected()
+                    return
 
         self.setBorderPos()
 
@@ -89,29 +131,16 @@ class StateManagerMultNew:
             if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.DONE
                 self.statesTab.isStateManagerDone = True
-      
+
+        # get state from states tab every frame
+        if self.currentState != self.DONE:
+            self.getStateFromStatesTab()
+
 
         # # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         # if self.currentState == self.CUTTINGVERTICALLY:
         #     if cutter.getState() == "Waiting":
         #         self.currentState = self.SHADINGVERTICALLY
-
-        # # manager is now shading vertically, now can shade current rects
-        # elif self.currentState == self.SHADINGVERTICALLY:
-        #     self.shadeVertical()
-        #     if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-        #         #if there is nothing shaded, display a quick window telling the user to shade vertically, 
-        #         #if there are shaded rectangles, continue as normal
-        #         #Display that halts the state continuation will appear for 4 Seconds
-        #         sCount = 0
-        #         for rect in self.drawablesController.rectangles:
-        #             if rect.isShadedV == True:
-        #                 sCount += 1
-        #         if sCount != 0:
-        #             ##self.error_detect = False
-        #             self.currentState = self.CUTTINGHORIZONTALLY 
-        #             cutter.setStateCutHorizontal()
-        #         ##self.error_detect = True
 
         # # manager now cutting horizontally, let cutter do work
         # elif self.currentState == self.CUTTINGHORIZONTALLY:
@@ -140,9 +169,9 @@ class StateManagerMultNew:
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
-        elif self.currentState == self.SHADINGHORIZONTALLY:
+        elif self.currentState == self.SHADINGHORIZONTALLY and self.hasCutHorizontally == False:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            draw_text('Proceed to cutting vertically', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.ANSWERSUBMISSION:
             pygame.draw.rect(self.screen, (8, 41, 255), self.submitAnswerButton)
             draw_text('Submit Answer', self.button_font, (0,0,0), self.screen, self.submitAnswerButtonX + 100, self.submitAnswerButtonY + 25)

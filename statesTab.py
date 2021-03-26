@@ -30,6 +30,9 @@ class StatesTab:
     #Create the list of selection boxes that each represent 1 state, SelectionBox class at end of file
     self.selectionBoxes0 = list()
     self.selectionBoxes1 = list()
+    self.selectionBoxes2 = list()
+    self.selectionBoxes3 = list()
+    self.selectionBoxes4 = list()
 
     if self.operation == self.TEST:
       yy = self.yStart
@@ -41,7 +44,7 @@ class StatesTab:
       yy += self.selectionBoxHeight + self.selectionBoxMargin
       self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
       # finally append to master list
-      self.selectionBoxesGroupList.append(self.selectionBoxes0)
+      self.selectionBoxesGroupList.append(self.selectionBoxes0) # DONT FORGET TO APPEND LIST TO LIST OF LISTS
 
     #MULTIPLICATION CASE
     elif self.operation == self.MULTIPLICATION:
@@ -57,7 +60,7 @@ class StatesTab:
       yy += self.selectionBoxHeight + self.selectionBoxMargin
       self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
 
-      self.selectionBoxesGroupList.append(self.selectionBoxes0)
+      self.selectionBoxesGroupList.append(self.selectionBoxes0) # DONT FORGET TO APPEND LIST TO LIST OF LISTS
     
       #CREATE LIST OF SELECTIONBOXES1 FOR MULTX
       self.xStart = 790
@@ -67,7 +70,38 @@ class StatesTab:
       yy += self.selectionBoxHeight + self.selectionBoxMargin
       self.selectionBoxes1.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
 
-      self.selectionBoxesGroupList.append(self.selectionBoxes1)
+      self.selectionBoxesGroupList.append(self.selectionBoxes1) # DONT FORGET TO APPEND LIST TO LIST OF LISTS
+
+      #CREATE LIST OF SELECTIONBOXES2 FOR MULTX
+      self.xStart = 790
+      self.yStart = 256
+      yy = self.yStart
+      self.selectionBoxes2.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutHorizontal.png',"Cut Horizontally","Cutting Horizontally"))
+      yy += self.selectionBoxHeight + self.selectionBoxMargin
+      self.selectionBoxes2.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+
+      self.selectionBoxesGroupList.append(self.selectionBoxes2) # DONT FORGET TO APPEND LIST TO LIST OF LISTS
+
+      #CREATE LIST OF SELECTIONBOXES3 FOR MULTX
+      self.xStart = 790
+      self.yStart = 256
+      yy = self.yStart
+      self.selectionBoxes3.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading Horizontally"))
+      yy += self.selectionBoxHeight + self.selectionBoxMargin
+      self.selectionBoxes3.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+
+      self.selectionBoxesGroupList.append(self.selectionBoxes3) # DONT FORGET TO APPEND LIST TO LIST OF LISTS
+
+      
+      #CREATE LIST OF SELECTIONBOXES4 FOR MULTX, User coming from shading horizontally, still needs to cut vertically
+      self.xStart = 790
+      self.yStart = 256
+      yy = self.yStart
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
+      yy += self.selectionBoxHeight + self.selectionBoxMargin
+      self.selectionBoxes4.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+
+      self.selectionBoxesGroupList.append(self.selectionBoxes4) # DONT FORGET TO APPEND LIST TO LIST OF LISTS
 
 
 
@@ -117,6 +151,12 @@ class StatesTab:
           self.sBselected = None
           self.guideTimer = 0
           self.buttonClarifyText = ""
+
+  def clearSelected(self):
+    for sbG in self.selectionBoxesGroupList:
+      for sb in sbG:
+        sb.isSelected = False
+        self.state = "Waiting"
 
   def draw(self):
     
