@@ -66,6 +66,8 @@ class StateManagerSub:
 
         self.userAnswerSystemReadyForSubmission = False
 
+        self.statesTab = None
+
     def getOperationType(self):
         return self.operation_type
 

@@ -90,6 +90,8 @@ class StateManagerDiv:
 
         self.userAnswerSystemReadyForSubmission = False
 
+        self.statesTab = None
+
 
     
     def getOperationType(self):

@@ -611,7 +611,7 @@ def main_prog():
         elif program_OperationType == SUBTRACTION:
             borderTop, borderLeft = stateManager.borderTop, stateManager.borderLeft
             borderHeight, borderWidth = testRectangle.height, testRectangle.width
-        if statesTab != None:
+        if stateManager.statesTab != None:
             statesTab.update(mouse.mx,mouse.my,mouse.leftMouseReleasedThisFrame)
 
         # ---------UPDATE END----------------------------------
@@ -829,8 +829,9 @@ def main_prog():
             if stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
                 pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)
             
-        if statesTab != None:
+        if stateManager.statesTab != None:
             statesTab.draw()
+
 
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()

@@ -3,6 +3,7 @@ import colors
 import pygame
 from drawText import draw_text
 import numpy as np
+from statesTab import StatesTab
 
 class StateManagerMultNew:
     def __init__(self,cuttingType,screen,statesTab):
@@ -29,12 +30,13 @@ class StateManagerMultNew:
         self.CUTTINGHORIZONTALLY = 2
         self.SHADINGHORIZONTALLY = 3
         self.FINALIZECUTS = 8
+        self.WAITING = 9
 
         self.DONE = 4
         self.MOVING = 5 # for debuging
         self.ANSWERSUBMISSION = 6
 
-        self.currentState = None
+        self.currentState = self.WAITING 
 
         self.drawablesController = None
         self.mouse = None
@@ -62,23 +64,31 @@ class StateManagerMultNew:
 
     def update(self, cutter):
 
-      if self.currentState == self.CUTTINGHORIZONTALLY:
-        if cutter.horizontalDone != 1:
-            cutter.setStateCutHorizontal()
+        # get state from states tab every frame
+        if self.currentState != self.DONE:
+            self.getStateFromStatesTab()
 
-      if self.currentState == self.CUTTINGVERTICALLY:
-        if cutter.verticalDone != 1:
-            cutter.setStateCutVertical()
+        if self.currentState == self.CUTTINGHORIZONTALLY:
+            if cutter.horizontalDone != 1:
+                cutter.setStateCutHorizontal()
+            else:
+                print("done cutting horizontally")
+
+        if self.currentState == self.CUTTINGVERTICALLY:
+            if cutter.verticalDone != 1:
+                cutter.setStateCutVertical()
+            else:
+                self.statesTab.selectionBoxGroupListIndex = 1
+                # print("done cutting vertically")
+                self.currentState = self.WAITING
         
 
-      self.setBorderPos()
-      if self.currentState != self.DONE:
-        self.getStateFromStatesTab()
+        self.setBorderPos()
 
-      if self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
-        if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-          self.currentState = self.DONE
-          self.statesTab.isStateManagerDone = True
+        if self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
+            if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.DONE
+                self.statesTab.isStateManagerDone = True
       
 
         # # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
@@ -155,7 +165,7 @@ class StateManagerMultNew:
             return "Submitting Answer"
         elif self.currentState == self.FINALIZECUTS:
             return "Finalizing Cuts"
-        elif self.currentState == None:
+        elif self.currentState == None or self.currentState == self.WAITING:
           return "Waiting"
 
     def getStateFromStatesTab(self):
@@ -165,6 +175,10 @@ class StateManagerMultNew:
         self.currentState = self.CUTTINGHORIZONTALLY
       elif self.statesTab.state == "Shading":
         self.currentState = self.SHADINGVERTICALLY
+      elif self.statesTab.state == "Shading Vertically":
+          self.currentState = self.SHADINGVERTICALLY
+      elif self.statesTab.state == "Shading Horizontally":
+          self.currentState = self.SHADINGHORIZONTALLY
       elif self.statesTab.state == "Submitting Answer":
         self.currentState = self.ANSWERSUBMISSION
       

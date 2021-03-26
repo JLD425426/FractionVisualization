@@ -19,6 +19,7 @@ class CutterFraction:
         self.FINALCUT = 3
         self.state = self.CUTTINGVERTICAL
 
+
         # CutterFraction will set myRect's numberHorizontalRects and numberVerticalRects based on 
         # verticalGuidelinesCount and horizontalGuidelninesCunt
         self.isShowingVerticalGuidelines = False
@@ -42,6 +43,11 @@ class CutterFraction:
         # CUTTINGVERTICAL state b/c we dont want to show till then
         self.horizontalCuts = list()
         self.setStateCutVertical()
+
+        # if operation is multx then start cutter out as waiting instead of vertical cutting
+        if self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
+            self.setStateWaiting()
+
         #For drawing font
         self.message_font = pg.font.SysFont('Arial', 32)
         self.message_fontL = pg.font.SysFont('Arial', 42)
@@ -170,7 +176,7 @@ class CutterFraction:
 
     def draw(self):
         # DISPLAY TEMPORARY VERTICAL BLUE GUIDELINES IF MOUSE X CLOSE TO FRACTION CUT X AND Draw text
-        if self.isShowingVerticalGuidelines == True:
+        if self.isShowingVerticalGuidelines == True and (self.myRect.stateManager.getCurrentState() == "Cutting Vertically" or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 1"  or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 2" or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 3"):
             #draw_text("YOOO",self.message_font,colors.BLACK,self.myRect.screen,200,200)
             xLength = self.myRect.width
             xSpacing = xLength / self.verticalGuidelinesCount
@@ -188,7 +194,7 @@ class CutterFraction:
                 draw_text(str(self.verticalGuidelinesCount),self.message_fontS,colors.BLACK,self.myRect.screen,xPosition + xOffset,self.myRect.topLeftY + yOffset)
             
         # DISPLAY TEMPORARY HORIZONTAL BLUE GUIDELINES IF MOUSE Y CLOSE TO FRACTION CUT Y and draw txt
-        if self.isShowingHorizontalGuidelines == True:
+        if self.isShowingHorizontalGuidelines == True and (self.myRect.stateManager.getCurrentState() == "Cutting Horizontally" or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 1"  or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 2" or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 3"):
             yLength = self.myRect.height
             ySpacing = yLength / self.horizontalGuidelinesCount
             for i in range(1, self.horizontalGuidelinesCount):

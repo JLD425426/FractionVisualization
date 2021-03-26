@@ -20,27 +20,56 @@ class StatesTab:
     self.selectionBoxWidth = 64
     self.selectionBoxHeight = 64
     self.selectionBoxMargin = 4
+
+    # THIS IS VARIABLE USED TO HANDLE MULTIPLE DIFFERENT STATE TAB UNITS FOR 1 OPERATION,
+    # id = 0 -> first state tab, id = 1 -> second state tab, ect...
+    self.selectionBoxGroupListIndex = 0
     
+    #List of list of selection boxes
+    self.selectionBoxesGroupList = list()
     #Create the list of selection boxes that each represent 1 state, SelectionBox class at end of file
-    self.selectionBoxes = list()
+    self.selectionBoxes0 = list()
+    self.selectionBoxes1 = list()
+
     if self.operation == self.TEST:
       yy = self.yStart
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutHorizontal.png',"Cut Horizontally","Cutting Horizontally"))
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutHorizontal.png',"Cut Horizontally","Cutting Horizontally"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading"))
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+      # finally append to master list
+      self.selectionBoxesGroupList.append(self.selectionBoxes0)
+
+    #MULTIPLICATION CASE
     elif self.operation == self.MULTIPLICATION:
+      #CREATE LIST OF SELECTION BOXES0 FOR MULTX
+      self.xStart = 790
+      self.yStart = 256
       yy = self.yStart
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutHorizontal.png',"Cut Horizontally","Cutting Horizontally"))
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutHorizontal.png',"Cut Horizontally","Cutting Horizontally"))
+      # yy += self.selectionBoxHeight + self.selectionBoxMargin
+      # self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading"))
+      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+
+      self.selectionBoxesGroupList.append(self.selectionBoxes0)
+    
+      #CREATE LIST OF SELECTIONBOXES1 FOR MULTX
+      self.xStart = 790
+      self.yStart = 256
+      yy = self.yStart
+      self.selectionBoxes1.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/palleteIcon.png',"Shade Rectangles","Shading Vertically"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
-      self.selectionBoxes.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+      self.selectionBoxes1.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
+
+      self.selectionBoxesGroupList.append(self.selectionBoxes1)
+
+
 
     # These next few lines are for setting up guidetext if user hovers over icon for long enough so as to clarify what
     # button does
@@ -60,7 +89,8 @@ class StatesTab:
   def update(self,mouseX,mouseY,leftMouseReleasedThisFrame):
     if self.isStateManagerDone == False:
       #Manager user input on selection boxes, get what state they are in
-      for sB in self.selectionBoxes:
+      currentList = self.selectionBoxesGroupList[self.selectionBoxGroupListIndex]
+      for sB in currentList:
         xx = sB.xx
         yy = sB.yy
         sB_button = pg.Rect(xx, yy, self.selectionBoxWidth, self.selectionBoxHeight)
@@ -79,7 +109,7 @@ class StatesTab:
           if leftMouseReleasedThisFrame:
               self.state = sB.state
               sB.isSelected = True
-              for otherB in self.selectionBoxes:
+              for otherB in currentList:
                 if otherB != sB:
                   otherB.isSelected = False
         elif self.sBselected == sB:
@@ -89,8 +119,10 @@ class StatesTab:
           self.buttonClarifyText = ""
 
   def draw(self):
+    
     if self.isStateManagerDone == False:
-      for sB in self.selectionBoxes:
+      currentList = self.selectionBoxesGroupList[self.selectionBoxGroupListIndex]
+      for sB in currentList:
         sB.draw()
       if self.buttonClarifyText != "":
         draw_textLeftToRight(self.buttonClarifyText, pg.font.SysFont('Arial', 24), (0,0,0), self.screen, self.buttonClarifyTextX, self.buttonClarifyTextY + 20)
