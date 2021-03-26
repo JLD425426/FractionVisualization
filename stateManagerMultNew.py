@@ -61,6 +61,7 @@ class StateManagerMultNew:
 
         self.hasCutHorizontally = False
         self.hasCutVertically = False
+        self.hasCutVerticallyFirst = False
 
     def getOperationType(self):
         return self.operation_type
@@ -71,7 +72,6 @@ class StateManagerMultNew:
             if cutter.horizontalDone != 1:
                 cutter.setStateCutHorizontal()
             else:
-                pass
                 self.statesTab.selectionBoxGroupListIndex = 3
                 # print("done cutting vertically")
                 self.currentState = self.WAITING
@@ -83,16 +83,23 @@ class StateManagerMultNew:
             if cutter.verticalDone != 1:
                 cutter.setStateCutVertical()
             else:
+                if self.hasCutHorizontally == False:
+                    self.hasCutVerticallyFirst = True
                 self.statesTab.selectionBoxGroupListIndex = 1
                 # print("done cutting vertically")
                 self.currentState = self.WAITING
+                self.statesTab.clearSelected()
                 self.hasCutVertically = True
+                return
 
         if self.currentState == self.SHADINGHORIZONTALLY:
             if self.hasInvertedRectData == False:
                 self.invertRectData()   #use tab for this
                 self.hasInvertedRectData = True #use tab for this
-            self.shadeHorizontal()
+            if self.hasCutVertically == True: # user already cut vertically so use regular shading function
+                self.shadeHorizontal()
+            else:
+                self.shadeHorizontalNew() # user has only cut horizontally, shade normally
 
             if self.hasCutVertically == False:
                 if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
@@ -110,20 +117,24 @@ class StateManagerMultNew:
 
         # manager is now shading vertically, now can shade current rects
         if self.currentState == self.SHADINGVERTICALLY:
-            self.shadeVertical()
-            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                #if there is nothing shaded, display a quick window telling the user to shade vertically, 
-                #if there are shaded rectangles, continue as normal
-                #Display that halts the state continuation will appear for 4 Seconds
-                sCount = 0
-                for rect in self.drawablesController.rectangles:
-                    if rect.isShadedV == True:
-                        sCount += 1
-                if sCount != 0:
-                    self.statesTab.selectionBoxGroupListIndex = 2
-                    self.currentState = self.WAITING
-                    self.statesTab.clearSelected()
-                    return
+            if self.hasCutHorizontally == False: # user hasnt cut horizontally yet so regular shade function
+                self.shadeVertical()
+            else:
+                self.shadeVerticalNew() # user has cut horizontally so use new funct
+            if self.hasCutHorizontally == False:
+                if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                    #if there is nothing shaded, display a quick window telling the user to shade vertically, 
+                    #if there are shaded rectangles, continue as normal
+                    #Display that halts the state continuation will appear for 4 Seconds
+                    sCount = 0
+                    for rect in self.drawablesController.rectangles:
+                        if rect.isShadedV == True:
+                            sCount += 1
+                    if sCount != 0:
+                        self.statesTab.selectionBoxGroupListIndex = 2
+                        self.currentState = self.WAITING
+                        self.statesTab.clearSelected()
+                        return
 
         self.setBorderPos()
 
@@ -137,39 +148,11 @@ class StateManagerMultNew:
             self.getStateFromStatesTab()
 
 
-        # # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
-        # if self.currentState == self.CUTTINGVERTICALLY:
-        #     if cutter.getState() == "Waiting":
-        #         self.currentState = self.SHADINGVERTICALLY
-
-        # # manager now cutting horizontally, let cutter do work
-        # elif self.currentState == self.CUTTINGHORIZONTALLY:
-        #     if cutter.getState() == "Waiting":
-        #         self.currentState = self.SHADINGHORIZONTALLY
-
-        # # manager now shading horizontally
-        # elif self.currentState == self.SHADINGHORIZONTALLY:
-        #     if self.hasInvertedRectData == False:
-        #         self.invertRectData()   #use tab for this
-        #         self.hasInvertedRectData = True #use tab for this
-        #     self.shadeHorizontal()
-        #     if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-        #         sCount = 0
-        #         for rect in self.drawablesController.rectangles:
-        #             if rect.isShadedH == True:
-        #                 sCount += 1
-        #         if sCount != 0:
-        #             ##self.error_detect = False
-        #             self.currentState = self.ANSWERSUBMISSION
-        #         # self.currentState = self.DONE
-
-
-
     def draw(self):
-        if self.currentState == self.SHADINGVERTICALLY:
+        if self.currentState == self.SHADINGVERTICALLY and self.hasCutHorizontally == False:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
-        elif self.currentState == self.SHADINGHORIZONTALLY and self.hasCutHorizontally == False:
+        elif self.currentState == self.SHADINGHORIZONTALLY and self.hasCutVertically == False:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting vertically', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.ANSWERSUBMISSION:
@@ -233,6 +216,24 @@ class StateManagerMultNew:
     def invertRectData(self):
         self.rectsData = np.array(self.rectsData).T.tolist()
 
+    def shadeHorizontalNew(self):
+        if self.mouse.leftMouseReleasedThisFrame == True:
+            for rect in self.drawablesController.rectangles:
+                if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
+                    if rect.isShaded == False:
+                        #rect.drawLines(self.colorPicker.myColor, 0)
+                        #0 = Vertical, set an internal rect variable to 1
+                        #   #rect.changeColor(self.colorPicker.myColor)
+                        rect.changeColorHatch(self.colorPicker.myColor)
+                        rect.isShadedH = True
+                        rect.isShaded = True
+                    elif rect.isShaded == True:
+                        #   #rect.changeColor(colors.WHITE)
+                        #rect.changeColorHatch(self.colorPicker.myColor)
+                        rect.changeColorHatch(colors.WHITE)
+                        rect.isShadedH = False
+                        rect.isShaded = False
+
     # loop through all drawablesController rectangles. If its colliding with mouse and mouse released then
     # loop through each rectangle in eac row of rects data. If any rectangle in that row is selected, changle all colors
     # of rects in that row
@@ -264,6 +265,34 @@ class StateManagerMultNew:
                                     r1.isShadedH = True
                                     r1.changeColorHatch(self.colorPicker.myColor)
                                     ##r1.changeColor(self.colorPicker.myColor)
+    def shadeVerticalNew(self):
+        for rect in self.drawablesController.rectangles:
+            if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True and self.mouse.leftMouseReleasedThisFrame:
+                for row in self.rectsData:
+                    for r in row:
+                        if r == rect:
+                            self.colorPicker.enabled = False
+                            for r1 in row:
+                                if r1.isShadedB == True or r1.isShadedV == True: # its already been shaded by user, let them go back
+                                    if r1.isShadedB == True:
+                                        r1.isShadedB = False
+                                        r1.changeColorHatch(self.colorPicker.verticalColor)
+                                    elif r1.isShadedV == True:
+                                        r1.isShadedV = False
+                                        r1.changeColorHatch(colors.WHITE)
+
+                                elif r1.colorHatch == self.colorPicker.verticalColor:
+                                    #r1.isShadedH = True
+                                    r1.isShadedB = True
+                                    r1.changeColorHatch(self.colorPicker.getBlendedColor())
+                                    #rect.drawVLines(self.colorPicker.myColor)
+                                    #1 = Horizontal, set an internal rect variable to 2
+                                    #if two then (?)
+                                    ##r1.changeColor(self.colorPicker.getBlendedColor())
+                                elif r1.colorHatch == colors.WHITE:
+                                    r1.isShadedV = True
+                                    r1.changeColorHatch(self.colorPicker.myColor)
+                                    ##r1.changeColor(self.colorPicker.myColor)
 
     def get_answer(self):
         numerator = 0
@@ -278,6 +307,7 @@ class StateManagerMultNew:
 
     def get_answerDenom(self):
         denominator = 0
+        print(str(len(self.drawablesController.rectangles)))
         for rect in self.drawablesController.rectangles:
             denominator += 1
         return denominator

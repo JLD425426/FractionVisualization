@@ -97,7 +97,7 @@ class StatesTabMult:
       self.xStart = 790
       self.yStart = 256
       yy = self.yStart
-      self.selectionBoxes0.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
+      self.selectionBoxes4.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/cutVertical.png',"Cut Vertically","Cutting Vertically"))
       yy += self.selectionBoxHeight + self.selectionBoxMargin
       self.selectionBoxes4.append(SelectionBox(self.xStart,yy,self.selectionBoxWidth,self.selectionBoxHeight,screen,'assets/submitAnswerIcon.png',"Submit Answer","Submitting Answer"))
 

@@ -100,6 +100,7 @@ class CutterFraction:
                                 if self.horizontalDone == 1:
                                     self.state = self.FINALCUT
                                 self.verticalDone = 1
+                                return
             # 2ND STATE: HORIZONTAL CUTTING
             elif self.state == self.CUTTINGHORIZONTAL:
                 if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
@@ -112,10 +113,15 @@ class CutterFraction:
                                 self.divideHorizontal()
                                 self.isShowingHorizontalGuidelines = False
                                 self.cleanupCuts(self.horizontalCuts)
+
+                                self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
+                                self.myRect.cutSquareHorizontal()
+
                                 self.state = self.WAITING
                                 if self.verticalDone == 1:
                                     self.state = self.FINALCUT
                                 self.horizontalDone = 1
+                                return
                                 
             # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
             elif self.state == self.FINALCUT:

@@ -577,8 +577,26 @@ class Rectangle:
                 r.myPointCollider = pc
 
     def cutSquareHorizontal(self):
-        pass
-        
+        xLength = self.width 
+        yLength = self.height / self.numberVerticalRects
+        xOffset = xLength / 2
+        yOffset = yLength / 2
+        for i in range(0,self.numberVerticalRects):
+            r = None
+            if self.willBeDivided == True:
+                if self.ownerID == 1:
+                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 1)
+                if self.ownerID == 2:
+                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 2)
+                if self.ownerID == 3:
+                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 3)
+                if self.ownerID == 4:
+                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 4)
+            pc = PointCollider(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, False)
+            # self.drawablesController.pointColliders.append(pc)
+            if r != None:
+                r.myPointCollider = pc
+        print(str(len(self.drawablesController.rectangles)))
     #----------WARNING----------------
     #----anticipated pointcollider bugs here----
     def finalCut(self):
@@ -619,12 +637,20 @@ class Rectangle:
                         rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
                         if self.drawablesController.pointColliders.count(rC.myPointCollider) > 0:
                             self.drawablesController.pointColliders.remove(rC.myPointCollider)
-                        if rC.isShaded == True or rC.isShadedV == True:
-                            r.isShaded = True
-                            r.isShadedV = True
-                            r.changeColorHatch(rC.colorHatch)
-                            r.changeColor(rC.color)
-                            r.vColor = rC.vColor
+                        if self.stateManager.operation_type != self.stateManager.MULT: #for shading everything but multx
+                            if rC.isShaded == True or rC.isShadedV == True:
+                                r.isShaded = True
+                                r.isShadedV = True
+                                r.changeColorHatch(rC.colorHatch)
+                                r.changeColor(rC.color)
+                                r.vColor = rC.vColor
+                        else: # FOR multiplication
+                            if rC.isShadedV == True:
+                                r.isShadedV = True
+                                r.changeColorHatch(rC.colorHatch)
+                            elif rC.isShadedH == True:
+                                r.isShadedH = True
+                                r.changeColorHatch(rC.colorHatch)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, True)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:
