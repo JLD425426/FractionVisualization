@@ -13,10 +13,11 @@ class CutterFraction:
         self.isReadyForSubdivide = False
 
         #Cutter state mgmt
-        self.CUTTINGVERTICAL = 0
-        self.CUTTINGHORIZONTAL = 1
-        self.WAITING = 2
-        self.FINALCUT = 3
+        self.CUTTINGVERTICAL = 1
+        self.CUTTINGHORIZONTAL = 2
+        self.WAITING = 0
+        self.FINALCUT = 4
+        self.DONE = 3
         self.state = self.CUTTINGVERTICAL
 
 
@@ -45,7 +46,7 @@ class CutterFraction:
         self.setStateCutVertical()
 
         # if operation is multx then start cutter out as waiting instead of vertical cutting
-        if self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
+        if self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT or self.myRect.stateManager.operation_type == self.myRect.stateManager.SUB:
             self.setStateWaiting()
 
         #For drawing font
@@ -79,7 +80,7 @@ class CutterFraction:
         pass
 
     def update(self, mouse):
-        if self.myRect.stateManager.operation_type == self.myRect.stateManager.TEST or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
+        if self.myRect.stateManager.operation_type == self.myRect.stateManager.TEST or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT or self.myRect.stateManager.operation_type == self.myRect.stateManager.SUB:
             # ENTRY STATE: VERTICAL CUTTING
             if self.state == self.CUTTINGVERTICAL:
                 if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):

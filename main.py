@@ -12,6 +12,7 @@ from stateManagerMult import StateManagerMult
 from stateManagerTest import StateManagerTest
 from stateManagerDiv import StateManagerDiv
 from stateManagerSub import StateManagerSub
+from stateManagerSubNewCuts import StateManagerSubNewCuts
 from stateManagerAdd import StateManagerAdd
 from fractionHandler import Fraction
 from colorpicker import ColorPicker
@@ -433,7 +434,14 @@ def main_prog():
         stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == SUBTRACTION:
-        stateManager = StateManagerSub(program_CuttingType,screen)
+        ##Old:
+        ##stateManager
+        ##stateManager = StateManagerSub(program_CuttingType,screen)
+        
+        ##statesTab = StatesTab(screen,WIDTH,HEIGHT,program_OperationType)
+        stateManager = StateManagerSubNewCuts(program_CuttingType,screen)
+        
+        
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
