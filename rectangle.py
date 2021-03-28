@@ -636,7 +636,7 @@ class Rectangle:
                         rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
                         if self.drawablesController.pointColliders.count(rC.myPointCollider) > 0:
                             self.drawablesController.pointColliders.remove(rC.myPointCollider)
-                        if self.stateManager.operation_type != self.stateManager.MULT or self.stateManager.operation_type != self.stateManager.SUB: #for shading everything but multx
+                        if self.stateManager.operation_type != self.stateManager.MULT and self.stateManager.operation_type != self.stateManager.SUB: #for shading everything but multx
                             if rC.isShaded == True or rC.isShadedV == True:
                                 r.isShaded = True
                                 r.isShadedV = True
