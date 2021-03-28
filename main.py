@@ -435,11 +435,12 @@ def main_prog():
 
     elif program_OperationType == SUBTRACTION:
         ##Old:
-        ##stateManager
-        ##stateManager = StateManagerSub(program_CuttingType,screen)
+        #stateManager = StateManagerSub(program_CuttingType,screen)
         
-        ##statesTab = StatesTab(screen,WIDTH,HEIGHT,program_OperationType)
-        stateManager = StateManagerSubNewCuts(program_CuttingType,screen)
+        
+        ##statesTab = StatesTabMult(screen,WIDTH,HEIGHT,SUBTRACTION)
+        statesTab = None
+        stateManager = StateManagerSubNewCuts(program_CuttingType,screen,statesTab)
         
         
         stateManager.setMouse(mouse) # link state manager and mouse
@@ -738,7 +739,8 @@ def main_prog():
                     draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3, (HEIGHT/2)+(testRectangle.height/2))
                     draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2, (HEIGHT/2)+(testRectangle.height/2))
         elif program_OperationType == SUBTRACTION:
-            if stateManager.currentState == stateManager.CUTTINGVERTICALLY or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY:
+            
+            if stateManager.currentState == stateManager.CUTTINGFIRST or stateManager.currentState == stateManager.CUTTINGSECOND:
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3, (HEIGHT/2)+(testRectangle.height/2)-5)
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)

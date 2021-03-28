@@ -636,20 +636,27 @@ class Rectangle:
                         rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
                         if self.drawablesController.pointColliders.count(rC.myPointCollider) > 0:
                             self.drawablesController.pointColliders.remove(rC.myPointCollider)
-                        if self.stateManager.operation_type != self.stateManager.MULT: #for shading everything but multx
+                        if self.stateManager.operation_type != self.stateManager.MULT or self.stateManager.operation_type != self.stateManager.SUB: #for shading everything but multx
                             if rC.isShaded == True or rC.isShadedV == True:
                                 r.isShaded = True
                                 r.isShadedV = True
                                 r.changeColorHatch(rC.colorHatch)
                                 r.changeColor(rC.color)
                                 r.vColor = rC.vColor
-                        else: # FOR multiplication
+                        elif self.stateManager.operation_type == self.stateManager.MULT: # FOR multiplication
                             if rC.isShadedV == True:
                                 r.isShadedV = True
                                 r.changeColorHatch(rC.colorHatch)
                             elif rC.isShadedH == True:
                                 r.isShadedH = True
                                 r.changeColorHatch(rC.colorHatch)
+                        elif self.stateManager.operation_type == self.stateManager.SUB:
+                            if rC.isShadedV == True or rC.isShaded == True:
+                                r.isShadedV = True
+                                r.changeColor(rC.color)
+                            elif rC.isShadedH == True:
+                                r.isShadedH = True
+                                r.changeColor(rC.color)
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, True)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:

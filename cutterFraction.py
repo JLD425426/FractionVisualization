@@ -36,6 +36,9 @@ class CutterFraction:
         self.verticalDone = 0
         self.horizontalDone = 0
 
+        # For subtraction to guarantee a cutter does not cut more than twice
+        self.cutsMade = 0
+
 
         #init vertical cuts
         self.verticalCuts = list()
@@ -61,11 +64,16 @@ class CutterFraction:
             return "Cutting Horizontal"
         elif self.state == self.WAITING:
             return "Waiting"
+        elif self.state == self.DONE:
+            return "Done"
         elif self.state == self.FINALCUT:
             return "Final Cut"
 
     def setStateWaiting(self):
         self.state = self.WAITING
+
+    def setStateDone(self):
+        self.state = self.DONE
 
     def setStateCutVertical(self):
         self.initVerticalCuts()
@@ -80,7 +88,7 @@ class CutterFraction:
         pass
 
     def update(self, mouse):
-        if self.myRect.stateManager.operation_type == self.myRect.stateManager.TEST or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT or self.myRect.stateManager.operation_type == self.myRect.stateManager.SUB:
+        if self.myRect.stateManager.operation_type == self.myRect.stateManager.TEST or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
             # ENTRY STATE: VERTICAL CUTTING
             if self.state == self.CUTTINGVERTICAL:
                 if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
@@ -123,7 +131,63 @@ class CutterFraction:
                                     self.state = self.FINALCUT
                                 self.horizontalDone = 1
                                 return
-                                
+
+            # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
+            elif self.state == self.FINALCUT:
+                #not sure why these next 2 lines have to be flipped but they do need to be to work properly
+                self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
+                self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+                self.isReadyForSubdivide = True
+                self.state = self.WAITING
+            elif self.state == self.WAITING:
+                #do nothing waiting for next instruction
+                pass
+        
+        if self.myRect.stateManager.operation_type == self.myRect.stateManager.SUB:
+            if self.state == self.CUTTINGVERTICAL:
+                if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
+                    for fc in self.verticalCuts:
+                        if abs(fc.xPos - self.mouse.mx) < self.dstForCutInit:
+                            self.isShowingVerticalGuidelines = True
+                            self.verticalGuidelinesCount = fc.numberCuts
+                            # if mouse released and mouse.x close to fraction cut x, call cleanup/divide routines, change state
+                            if self.mouse.leftMouseReleasedThisFrame == True: 
+                                self.divideVertical()
+                                self.isShowingVerticalGuidelines = False
+                                self.cleanupCuts(self.verticalCuts)
+                                # self.initHorizontalCuts()
+                                # self.state = self.CUTTINGHORIZONTAL
+                                self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+                                self.myRect.cutSquareVertical()
+                                self.state = self.DONE
+                                if self.cutsMade == 2:
+                                    self.state = self.FINALCUT
+                                else:
+                                    self.cutsMade += 1        
+                                return
+            # 2ND STATE: HORIZONTAL CUTTING
+            elif self.state == self.CUTTINGHORIZONTAL:
+                if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
+                    for fc in self.horizontalCuts:
+                        if abs(fc.yPos - self.mouse.my) < self.dstForCutInit:
+                            self.isShowingHorizontalGuidelines = True
+                            self.horizontalGuidelinesCount = fc.numberCuts
+                            # if mouse release and mouse.y close to fraction cut y, call cleanup/divide routine, enter final state
+                            if self.mouse.leftMouseReleasedThisFrame == True:
+                                self.divideHorizontal()
+                                self.isShowingHorizontalGuidelines = False
+                                self.cleanupCuts(self.horizontalCuts)
+
+                                self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
+                                self.myRect.cutSquareHorizontal()
+
+                                self.state = self.DONE
+                                if self.cutsMade == 2:
+                                    self.state = self.FINALCUT
+                                else:
+                                    self.cutsMade += 1 
+                                return
+
             # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
             elif self.state == self.FINALCUT:
                 #not sure why these next 2 lines have to be flipped but they do need to be to work properly
@@ -183,7 +247,7 @@ class CutterFraction:
 
     def draw(self):
         # DISPLAY TEMPORARY VERTICAL BLUE GUIDELINES IF MOUSE X CLOSE TO FRACTION CUT X AND Draw text
-        if self.isShowingVerticalGuidelines == True and (self.myRect.stateManager.getCurrentState() == "Cutting Vertically" or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 1"  or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 2" or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 3"):
+        if self.isShowingVerticalGuidelines == True and (self.myRect.stateManager.getCurrentState() == "Cutting Vertically" or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 1"  or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 2" or self.myRect.stateManager.getCurrentState() == "Cutting Vertically 3" or self.myRect.stateManager.getCurrentState() == "Cutting Round 1" or self.myRect.stateManager.getCurrentState() == "Cutting Round 2"):
             #draw_text("YOOO",self.message_font,colors.BLACK,self.myRect.screen,200,200)
             xLength = self.myRect.width
             xSpacing = xLength / self.verticalGuidelinesCount
@@ -201,7 +265,7 @@ class CutterFraction:
                 draw_text(str(self.verticalGuidelinesCount),self.message_fontS,colors.BLACK,self.myRect.screen,xPosition + xOffset,self.myRect.topLeftY + yOffset)
             
         # DISPLAY TEMPORARY HORIZONTAL BLUE GUIDELINES IF MOUSE Y CLOSE TO FRACTION CUT Y and draw txt
-        if self.isShowingHorizontalGuidelines == True and (self.myRect.stateManager.getCurrentState() == "Cutting Horizontally" or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 1"  or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 2" or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 3"):
+        if self.isShowingHorizontalGuidelines == True and (self.myRect.stateManager.getCurrentState() == "Cutting Horizontally" or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 1"  or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 2" or self.myRect.stateManager.getCurrentState() == "Cutting Horizontally 3" or self.myRect.stateManager.getCurrentState() == "Cutting Round 1" or self.myRect.stateManager.getCurrentState() == "Cutting Round 2"):
             yLength = self.myRect.height
             ySpacing = yLength / self.horizontalGuidelinesCount
             for i in range(1, self.horizontalGuidelinesCount):
