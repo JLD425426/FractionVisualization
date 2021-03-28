@@ -41,7 +41,7 @@ class ColorPicker:
     def update(self):
         if self.enabled == True: #only execute if color picker is enabled
             # shading vertically1
-            if self.stateManager.operation_type != self.stateManager.MULT:
+            if self.stateManager.operation_type != self.stateManager.MULT and self.stateManager.operation_type != self.stateManager.SUB:
                 if self.stateManager.getCurrentState() == "Shading Vertically":
                     self.checkForColorChange()
                     self.betweenShadingAlarm = True
@@ -56,6 +56,12 @@ class ColorPicker:
                 # shading horizontally
                 if self.stateManager.getCurrentState() == "Shading Horizontally":
                     self.checkForColorChange()
+
+            if self.stateManager.operation_type == self.stateManager.SUB:
+                if self.stateManager.getCurrentState() == "Shading":
+                    self.checkForColorChange()
+                    self.betweenShadingAlarm = True
+                    
             else: # For multx
                 if self.stateManager.hasCutVerticallyFirst == True:
                     if self.stateManager.getCurrentState() == "Shading Vertically":
@@ -95,7 +101,7 @@ class ColorPicker:
     def draw(self):
 
         if self.enabled == True: # only draw if enabled
-            if self.stateManager.getCurrentState() == "Shading Horizontally" or self.stateManager.getCurrentState() == "Shading Vertically":
+            if self.stateManager.getCurrentState() == "Shading Horizontally" or self.stateManager.getCurrentState() == "Shading Vertically" or self.stateManager.getCurrentState() == "Shading":
                 self.screen.blit(self.brushTip,(10,self.SCREENHEIGHT-225)) # draw brushtip
 
                 self.screen.blit(self.palette,(10,self.SCREENHEIGHT-225)) # draw palette base

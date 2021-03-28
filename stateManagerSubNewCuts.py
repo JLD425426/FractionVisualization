@@ -55,6 +55,9 @@ class StateManagerSubNewCuts:
         self.selectionBoxWidth = 64
         self.selectionBoxHeight = 64
 
+        #TODO: Add hover and selected buttons to the options
+        #TODO: Figure out cut bug
+
         self.vButton1x = (int)(self.WIDTH/8)
         self.vButton1y = self.HEIGHT/2 - 160
         self.vButton1 = pygame.Rect(self.vButton1x, self.vButton1y, self.selectionBoxWidth, self.selectionBoxHeight)
@@ -294,8 +297,8 @@ class StateManagerSubNewCuts:
             return "Marking"
         #elif self.currentState == self.MOVING:
         #    return "Moving"
-        #elif self.currentState == self.DONE:
-        #    return "Finished"
+        elif self.currentState == self.DONE:
+           return "Finished"
         elif self.currentState == self.ANSWERSUBMISSION:
             return "Submitting Answer"
         ##elif self.currentState == self.THROWINGAWAY:

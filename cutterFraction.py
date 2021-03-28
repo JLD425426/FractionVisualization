@@ -70,6 +70,8 @@ class CutterFraction:
             return "Done"
         elif self.state == self.FINALCUT:
             return "Final Cut"
+        elif self.currentState == self.ANSWERSUBMISSION:
+            return "Submitting Answer"
 
     def setStateWaiting(self):
         self.state = self.WAITING
