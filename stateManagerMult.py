@@ -29,6 +29,7 @@ class StateManagerMult:
         self.DONE = 4
         self.MOVING = 5 # for debuging
         self.ANSWERSUBMISSION = 6
+        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY
 

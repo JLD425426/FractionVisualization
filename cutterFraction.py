@@ -39,6 +39,8 @@ class CutterFraction:
         # For subtraction to guarantee a cutter does not cut more than twice
         self.cutsMade = 0
 
+        self.verticalCutList = list()
+        self.horizontalCutList = list()
 
         #init vertical cuts
         self.verticalCuts = list()
@@ -199,7 +201,7 @@ class CutterFraction:
                 #do nothing waiting for next instruction
                 pass
 
-        else:   # IF ANY OTHER STATE BUT MULT
+        else:   # IF ANY OTHER OPERATION BUT MULT
             # ENTRY STATE: VERTICAL CUTTING
             if self.state == self.CUTTINGVERTICAL:
                 if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
@@ -307,6 +309,7 @@ class CutterFraction:
         for i in range(1,self.verticalGuidelinesCount):
             xPosition = int(xSpacing * i + self.myRect.topLeftX)
             gl = GuideLine(xPosition,self.myRect.topLeftY,"vertical",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+            self.verticalCutList.append(gl)
 
     # divide OG rectangle with permenant black horizontal guidelines
     def divideHorizontal(self):

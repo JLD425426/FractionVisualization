@@ -31,6 +31,7 @@ class StateManagerSub:
         self.MOVING = 5 # for debuging
         self.ANSWERSUBMISSION = 7
         ##self.THROWINGAWAY = 6
+        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY
 

@@ -674,15 +674,18 @@ def main_prog():
             if stateManager.hasThreeSquares:
                 undoCut_button = pygame.Rect(WIDTH/5 - 55, HEIGHT/2 + testRectangle.height/2 - 30 , 130, 50)
                 undoCut_button2 = pygame.Rect(WIDTH/2-65, HEIGHT/2 + testRectangle.height/2 - 30 , 130, 50)
-                if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                    if click:
-                        print("BUTTON WORKS")
             else:
                 undoCut_button = pygame.Rect(WIDTH/3 - 60, HEIGHT/2 + testRectangle.height/2 - 30 , 130, 50)
                 undoCut_button2 = pygame.Rect(WIDTH/3*2 - 65, (HEIGHT/2 + testRectangle.height/2)-30, 130, 50)
-                if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                    if click:
+            if undoCut_button.collidepoint((mouse.mx, mouse.my)):
+                if click:
                         print("BUTTON WORKS")
+                        stateManager.undoCutsVert(1, cutter)
+            if undoCut_button2.collidepoint((mouse.mx, mouse.my)):
+                if click:
+                        print("BUTTON WORKS")
+                        stateManager.undoCutsVert(2, cutter2)
+    
         elif program_OperationType == SUBTRACTION:
             undoCut_button = pygame.Rect(WIDTH/3 - 65, (HEIGHT/2 + testRectangle.height/2)-30 , 130, 50)
             undoCut_button2 = pygame.Rect(WIDTH/3*2 - 65, (HEIGHT/2 + testRectangle.height/2)-30, 130, 50)
@@ -711,24 +714,20 @@ def main_prog():
 
         # ALL LOGIC FOR DRAWING UNDO BUTTONS HERE
         if program_OperationType == ADDITION:
-            if (stateManager.currentState == stateManager.CUTTINGVERTICALLY1 or
-                stateManager.currentState == stateManager.CUTTINGHORIZONTALLY1 or
-                stateManager.currentState == stateManager.CUTTINGVERTICALLY2 or
-                stateManager.currentState == stateManager.CUTTINGHORIZONTALLY2 or
-                stateManager.currentState == stateManager.CUTTINGVERTICALLY3 or
-                stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3):
-                # Draw here
+            if stateManager.currentState == stateManager.CUTTINGVERTICALLY1 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY1:
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button3)
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button4)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3 - testRectangle.width/1.5-20, (HEIGHT/3)+25)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3 - testRectangle.width/1.5-20, (HEIGHT/3)*2+125)
+            elif stateManager.currentState == stateManager.CUTTINGVERTICALLY2 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY2:
+                pygame.draw.rect(screen, (8, 41, 255), undoCut_button4)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)+25)
+            elif stateManager.currentState == stateManager.CUTTINGVERTICALLY3 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3:
+                pygame.draw.rect(screen, (8, 41, 255), undoCut_button3)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)*2+125)
 
         elif program_OperationType == DIVISION:
-            if stateManager.currentState == stateManager.CUTTINGVERTICALLY or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY:
+            if stateManager.currentState == stateManager.CHECKCUTS:
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
 

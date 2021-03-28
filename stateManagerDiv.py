@@ -1,4 +1,5 @@
 from cutterFraction import CutterFraction
+from guideline import GuideLine
 from rectangle import Rectangle
 import colors
 import pygame
@@ -35,6 +36,7 @@ class StateManagerDiv:
         self.MOVING = 5
         self.GETTINGDENOMINATOR = 6
         self.ANSWERSUBMISSION = 7
+        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -101,8 +103,13 @@ class StateManagerDiv:
     def update(self, cutter, cutter2):
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
-                if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                    self.currentState = self.SHADINGVERTICALLY
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                self.currentState = self.CHECKCUTS
+
+        if self.currentState == self.CHECKCUTS:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                self.currentState = self.SHADINGVERTICALLY
+            pass
 
         # manager is now shading vertically, now can shade current rects
         elif self.currentState == self.SHADINGVERTICALLY:
@@ -191,6 +198,9 @@ class StateManagerDiv:
 
 
     def draw(self):
+        if self.currentState == self.CHECKCUTS:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            draw_text('Proceed to shading vertically', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
@@ -213,6 +223,8 @@ class StateManagerDiv:
             return "Shading Horizontally"
         elif self.currentState == self.GETTINGDENOMINATOR:
             return "Calculating/Loading"
+        elif self.currentState == self.CHECKCUTS:
+            return "Checking Cuts"
         elif self.currentState == self.DONE:
             return "Finished"
         elif self.currentState == self.MOVING:
@@ -387,6 +399,21 @@ class StateManagerDiv:
                     if rect.isShadedB is False:
                         return False
         return True
+
+    def undoCutsVert(self, rectID, cutter):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == rectID:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.verticalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        cutter.verticalCuts.clear()
+        # cutter.isShowingVerticalGuidelines = True
+        cutter.setStateCutVertical()
+        self.currentState = self.CUTTINGVERTICALLY
+        
 
     def setBorderPos(self):
         for rect in self.drawablesController.rectangles:
