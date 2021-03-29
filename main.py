@@ -670,12 +670,16 @@ def main_prog():
                 undoCut_button2 = pygame.Rect(WIDTH/3*2 - 65, (HEIGHT/2 + testRectangle.height/2)-30, 130, 50)
             if undoCut_button.collidepoint((mouse.mx, mouse.my)):
                 if click:
-                        print("BUTTON WORKS")
-                        stateManager.undoCutsVert(1, cutter)
+                        if stateManager.lastCuts == 0:
+                            stateManager.undoCutsVert(1, cutter)
+                        else:
+                            stateManager.undoCutsHoriz(1, cutter)
             if undoCut_button2.collidepoint((mouse.mx, mouse.my)):
                 if click:
-                        print("BUTTON WORKS")
-                        stateManager.undoCutsVert(2, cutter2)
+                        if stateManager.lastCuts == 0:
+                            stateManager.undoCutsVert(2, cutter2)
+                        else:
+                            stateManager.undoCutsHoriz(2, cutter2)
     
         elif program_OperationType == SUBTRACTION:
             undoCut_button = pygame.Rect(WIDTH/3 - 65, (HEIGHT/2 + testRectangle.height/2)-30 , 130, 50)
