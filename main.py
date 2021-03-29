@@ -12,6 +12,7 @@ from stateManagerMult import StateManagerMult
 from stateManagerTest import StateManagerTest
 from stateManagerDiv import StateManagerDiv
 from stateManagerSub import StateManagerSub
+from stateManagerSubNewCuts import StateManagerSubNewCuts
 from stateManagerAdd import StateManagerAdd
 from fractionHandler import Fraction
 from colorpicker import ColorPicker
@@ -433,7 +434,15 @@ def main_prog():
         stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == SUBTRACTION:
-        stateManager = StateManagerSub(program_CuttingType,screen)
+        ##Old:
+        #stateManager = StateManagerSub(program_CuttingType,screen)
+        
+        
+        ##statesTab = StatesTabMult(screen,WIDTH,HEIGHT,SUBTRACTION)
+        statesTab = None
+        stateManager = StateManagerSubNewCuts(program_CuttingType,screen,statesTab)
+        
+        
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
@@ -733,7 +742,8 @@ def main_prog():
                     draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3, (HEIGHT/2)+(testRectangle.height/2))
                     draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2, (HEIGHT/2)+(testRectangle.height/2))
         elif program_OperationType == SUBTRACTION:
-            if stateManager.currentState == stateManager.CUTTINGVERTICALLY or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY:
+            
+            if stateManager.currentState == stateManager.CUTTINGFIRST or stateManager.currentState == stateManager.CUTTINGSECOND:
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3, (HEIGHT/2)+(testRectangle.height/2)-5)
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
