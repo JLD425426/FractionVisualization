@@ -81,6 +81,9 @@ class StateManagerDiv:
         self.boundaryFilled = False
         self.numBoundaries = 0
 
+        # Will be 0 if vertical and 1 if horizontal
+        self.lastCuts = -1
+
         # for if answer is between 1 and 2
         self.between = False
         # Checks if double shading has been done in the same rect
@@ -104,6 +107,7 @@ class StateManagerDiv:
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
             if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                self.lastCuts = 0
                 self.currentState = self.CHECKCUTS
 
         if self.currentState == self.CHECKCUTS:
@@ -134,7 +138,8 @@ class StateManagerDiv:
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
             if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                    self.currentState = self.GETTINGDENOMINATOR
+                self.lastCuts = 1
+                self.currentState = self.GETTINGDENOMINATOR
 
         elif self.currentState == self.GETTINGDENOMINATOR:
             self.getDenominator()
@@ -413,6 +418,9 @@ class StateManagerDiv:
         # cutter.isShowingVerticalGuidelines = True
         cutter.setStateCutVertical()
         self.currentState = self.CUTTINGVERTICALLY
+
+    def undoCutsHoriz(self, rectID, cutter):
+        pass
         
 
     def setBorderPos(self):
