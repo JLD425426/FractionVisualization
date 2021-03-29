@@ -57,7 +57,7 @@ class ColorPicker:
                 if self.stateManager.getCurrentState() == "Shading Horizontally":
                     self.checkForColorChange()
 
-            if self.stateManager.operation_type == self.stateManager.SUB:
+            elif self.stateManager.operation_type == self.stateManager.SUB:
                 if self.stateManager.getCurrentState() == "Shading":
                     self.checkForColorChange()
                     self.betweenShadingAlarm = True
