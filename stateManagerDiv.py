@@ -450,10 +450,10 @@ class StateManagerDiv:
             for rect in self.rectsHolder2:
                 if rect.isOriginalSquare is False:
                     self.drawablesController.rectangles.append(rect)
-        cutter.horizontalCuts.clear()
+        #cutter.horizontalCuts.clear()
         cutter.setStateCutHorizontal()
-        cutter.isReadyForSubdivide = False
-        self.currentState == self.CUTTINGHORIZONTALLY
+        cutter.isShowingHorizontalGuidelines = True
+        self.currentState = self.CUTTINGHORIZONTALLY
         
 
     def setBorderPos(self):
