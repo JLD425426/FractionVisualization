@@ -39,6 +39,7 @@ class CutterFraction:
         # For subtraction to guarantee a cutter does not cut more than twice
         self.cutsMade = 0
 
+        # For undoing cuts
         self.verticalCutList = list()
         self.horizontalCutList = list()
 
@@ -203,7 +204,7 @@ class CutterFraction:
                 #do nothing waiting for next instruction
                 pass
 
-        else:   # IF ANY OTHER OPERATION BUT MULT
+        else:   # IF ANY OTHER OPERATION 
             # ENTRY STATE: VERTICAL CUTTING
             if self.state == self.CUTTINGVERTICAL:
                 if self.myBoundingBox.isPointColliding(self.mouse.mx,self.mouse.my):
@@ -320,6 +321,7 @@ class CutterFraction:
         for i in range(1,self.horizontalGuidelinesCount):
             yPosition = int(ySpacing * i + self.myRect.topLeftY)
             gl = GuideLine(self.myRect.topLeftX,yPosition,"horizontal",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+            self.horizontalCutList.append(gl)
 
     #loop through either self.horizontalCuts or self.verticalCuts and remove them from drawablesController list
     def cleanupCuts(self, li):
