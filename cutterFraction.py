@@ -221,7 +221,10 @@ class CutterFraction:
                                 # self.state = self.CUTTINGHORIZONTAL
                                 self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
                                 self.myRect.cutSquareVertical()
-                                self.state = self.WAITING         
+                                if self.myRect.stateManager.operation_type == self.myRect.stateManager.DIV:
+                                    self.state = self.WAITING
+                                else:
+                                    self.state = self.FINALCUT
                 else:
                     self.isShowingVerticalGuidelines = False
             # 2ND STATE: HORIZONTAL CUTTING
@@ -236,7 +239,8 @@ class CutterFraction:
                                 self.divideHorizontal()
                                 self.isShowingHorizontalGuidelines = False
                                 self.cleanupCuts(self.horizontalCuts)
-                                self.state = self.FINALCUT
+                                self.state = self.WAITING
+                                #self.state = self.FINALCUT
                 else:
                     self.isShowingHorizontalGuidelines = False
             # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE

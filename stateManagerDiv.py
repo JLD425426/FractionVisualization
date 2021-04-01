@@ -114,11 +114,13 @@ class StateManagerDiv:
                 self.lastCuts = 0
                 self.currentState = self.CHECKCUTS
 
-        if self.currentState == self.CHECKCUTS:
+        elif self.currentState == self.CHECKCUTS:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 if self.lastCuts == 0:
                     self.currentState = self.SHADINGVERTICALLY
                 elif self.lastCuts == 1:
+                    cutter.state = cutter.FINALCUT
+                    cutter2.state = cutter2.FINALCUT
                     self.currentState = self.GETTINGDENOMINATOR
 
         # manager is now shading vertically, now can shade current rects
@@ -153,8 +155,10 @@ class StateManagerDiv:
                 self.currentState = self.CHECKCUTS
 
         elif self.currentState == self.GETTINGDENOMINATOR:
-            self.getDenominator()
-            self.currentState = self.MOVING
+            # The FINAL CUTTING must be done before the denominator is calculated!
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                self.getDenominator()
+                self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
             if self.borderSet == 0:
@@ -450,9 +454,9 @@ class StateManagerDiv:
             for rect in self.rectsHolder2:
                 if rect.isOriginalSquare is False:
                     self.drawablesController.rectangles.append(rect)
-        #cutter.horizontalCuts.clear()
+        cutter.horizontalCuts.clear()
         cutter.setStateCutHorizontal()
-        cutter.isShowingHorizontalGuidelines = True
+        # cutter.isShowingHorizontalGuidelines = True
         self.currentState = self.CUTTINGHORIZONTALLY
         
 
