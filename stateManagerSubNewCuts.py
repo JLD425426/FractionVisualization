@@ -86,10 +86,13 @@ class StateManagerSubNewCuts:
         #Icons 
         self.iconCutVertical = pygame.image.load('assets/cutVertical.png')
         self.iconCutHorizontal = pygame.image.load('assets/cutHorizontal.png')
+        self.iconDone = pygame.image.load('assets/checkMarkIcon.png')
 
         #Vars for button states
         self.cuttingFirstCutter1ButtonSelected = None
         self.cuttingFirstCutter2ButtonSelected = None
+        self.cuttingSecondCutter1ButtonSelected = None
+        self.cuttingSecondCutter2ButtonSelected = None
 
         #for button clarification stuff
         self.hoveredButton = None
@@ -123,7 +126,6 @@ class StateManagerSubNewCuts:
         return self.operation_type
 
     def update(self, cutter, cutter2):
-        print(str(self.hoverTimer))
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGFIRST:
 
@@ -168,6 +170,8 @@ class StateManagerSubNewCuts:
                 self.hoveredButton = None
                 self.hoverTimer = 0
             if cutter.getState() == "Done" and cutter2.getState() == "Done":
+                self.hoverTimer = 0
+                self.hoveredButton = None
                 self.setBorderPos()
                 self.currentState = self.SHADINGVERTICALLY
 
@@ -193,21 +197,67 @@ class StateManagerSubNewCuts:
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGSECOND:
             #Rect 1 buttons
-            if self.vButton1.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame and cutter.getState() == "Waiting":
-                cutter.setStateCutVertical()
-            if self.hButton1.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame and cutter.getState() == "Waiting":
-                cutter.setStateCutHorizontal()    
-            if self.dButton1.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame and cutter.getState() == "Waiting":
-                cutter.cutsMade += 1
-                cutter.setStateDone()
+            if self.vButton1.collidepoint((self.mouse.mx, self.mouse.my)):
+                self.hoveredButton = "vButton1"
+                self.hoverTimer += 1
+                if self.mouse.leftMouseReleasedThisFrame and cutter.getState() == "Waiting":
+                    cutter.setStateCutVertical()
+                    self.cuttingSecondCutter1ButtonSelected = "vertical cutting"
+            elif self.hoveredButton == "vButton1":
+                self.hoveredButton = None
+                self.hoverTimer = 0
+
+            if self.hButton1.collidepoint((self.mouse.mx, self.mouse.my)):
+                self.hoveredButton = "hButton1"
+                self.hoverTimer += 1
+                if self.mouse.leftMouseReleasedThisFrame and cutter.getState() == "Waiting":
+                    cutter.setStateCutHorizontal() 
+                    self.cuttingSecondCutter1ButtonSelected = "horizontal cutting"   
+            elif self.hoveredButton == "hButton1":
+                self.hoveredButton = None
+                self.hoverTimer = 0
+
+            if self.dButton1.collidepoint((self.mouse.mx, self.mouse.my)):
+                self.hoveredButton = "dButton1"
+                self.hoverTimer += 1
+                if self.mouse.leftMouseReleasedThisFrame and cutter.getState() == "Waiting":
+                    self.cuttingSecondCutter1ButtonSelected = "done cutting"
+                    cutter.cutsMade += 1
+                    cutter.setStateDone()
+            elif self.hoveredButton == "dButton1":
+                self.hoveredButton = None
+                self.hoverTimer = 0
             #Rect 2 buttons    
-            if self.vButton2.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame and cutter2.getState() == "Waiting":
-                cutter2.setStateCutVertical()   
-            if self.hButton2.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame and cutter2.getState() == "Waiting":
-                cutter2.setStateCutHorizontal()
-            if self.dButton2.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame and cutter2.getState() == "Waiting":
-                cutter2.cutsMade += 1
-                cutter2.setStateDone()
+            if self.vButton2.collidepoint((self.mouse.mx, self.mouse.my)):
+                self.hoveredButton = "vButton2"
+                self.hoverTimer += 1
+                if self.mouse.leftMouseReleasedThisFrame and cutter2.getState() == "Waiting":
+                    cutter2.setStateCutVertical()   
+                    self.cuttingSecondCutter2ButtonSelected = "vertical cutting"
+            elif self.hoveredButton == "vButton2":
+                self.hoveredButton = None
+                self.hoverTimer = 0
+
+            if self.hButton2.collidepoint((self.mouse.mx, self.mouse.my)):
+                self.hoveredButton = "hButton2"
+                self.hoverTimer += 1
+                if self.mouse.leftMouseReleasedThisFrame and cutter2.getState() == "Waiting":
+                    cutter2.setStateCutHorizontal()
+                    self.cuttingSecondCutter2ButtonSelected = "horizontal cutting"
+            elif self.hoveredButton == "hButton2":
+                self.hoveredButton = None
+                self.hoverTimer = 0
+
+            if self.dButton2.collidepoint((self.mouse.mx, self.mouse.my)):
+                self.hoveredButton = "dButton2"
+                self.hoverTimer += 1
+                if self.mouse.leftMouseReleasedThisFrame and cutter2.getState() == "Waiting":
+                    self.cuttingSecondCutter2ButtonSelected = "done cutting"
+                    cutter2.cutsMade += 1
+                    cutter2.setStateDone()
+            elif self.hoveredButton == "dButton2":
+                self.hoveredButton = None
+                self.hoverTimer += 1
 
             if cutter.getState() == "Done" and cutter2.getState() == "Done":
                 #self.currentState = self.SHADINGHORIZONTALLY
@@ -318,13 +368,57 @@ class StateManagerSubNewCuts:
 
         if self.currentState == self.CUTTINGSECOND:
             #Rect 1
-            pygame.draw.rect(self.screen, (8, 41, 255), self.vButton1)
-            pygame.draw.rect(self.screen, (8, 41, 255), self.hButton1)
-            pygame.draw.rect(self.screen, (8, 41, 255), self.dButton1)
+            if self.cuttingSecondCutter1ButtonSelected == "vertical cutting":
+                pygame.draw.rect(self.screen, colors.STATESTABSELECTED, self.vButton1)
+            else:
+                pygame.draw.rect(self.screen, colors.STATESTABUNSELECTED, self.vButton1)
+            self.screen.blit(self.iconCutVertical,(self.vButton1x + 8,self.vButton1y + 8))
+            
+            if self.cuttingSecondCutter1ButtonSelected == "horizontal cutting":
+                pygame.draw.rect(self.screen, colors.STATESTABSELECTED, self.hButton1)
+            else:
+                pygame.draw.rect(self.screen, colors.STATESTABUNSELECTED, self.hButton1)
+            self.screen.blit(self.iconCutHorizontal,(self.hButton1x + 8,self.hButton1y + 8))
+
+            if self.cuttingSecondCutter1ButtonSelected == "done cutting":
+                pygame.draw.rect(self.screen, colors.STATESTABSELECTED, self.dButton1)
+            else:
+                pygame.draw.rect(self.screen, colors.STATESTABUNSELECTED, self.dButton1)
+            self.screen.blit(self.iconDone,(self.dButton1x + 8,self.dButton1y + 8))
+
             #REct 2
-            pygame.draw.rect(self.screen, (8, 41, 255), self.vButton2)
-            pygame.draw.rect(self.screen, (8, 41, 255), self.hButton2)
-            pygame.draw.rect(self.screen, (8, 41, 255), self.dButton2)
+            if self.cuttingSecondCutter2ButtonSelected == "vertical cutting":
+                pygame.draw.rect(self.screen, colors.STATESTABSELECTED, self.vButton2)
+            else:
+                pygame.draw.rect(self.screen, colors.STATESTABUNSELECTED, self.vButton2)
+            self.screen.blit(self.iconCutVertical,(self.vButton2x + 8,self.vButton2y + 8))
+
+            if self.cuttingSecondCutter2ButtonSelected == "horizontal cutting":
+                pygame.draw.rect(self.screen, colors.STATESTABSELECTED, self.hButton2)
+            else:
+                pygame.draw.rect(self.screen, colors.STATESTABUNSELECTED, self.hButton2)
+            self.screen.blit(self.iconCutHorizontal,(self.hButton2x + 8,self.hButton2y + 8))
+
+            if self.cuttingSecondCutter2ButtonSelected == "done cutting":
+                pygame.draw.rect(self.screen, colors.STATESTABSELECTED, self.dButton2)
+            else:
+                pygame.draw.rect(self.screen, colors.STATESTABUNSELECTED, self.dButton2)
+            self.screen.blit(self.iconDone,(self.dButton2x + 8,self.dButton2y + 8))
+
+            #clarification button text
+            if self.hoverTimer > 30: #1 sec passed since hover
+                if self.hoveredButton == "vButton1":
+                    draw_textLeftToRight("Vertical Cutting", pygame.font.SysFont('Arial', 24), (0,0,0), self.screen, self.vButton1x + 70, self.vButton1y + 20)
+                elif self.hoveredButton == "hButton1":
+                    draw_textLeftToRight("Horizontal Cutting", pygame.font.SysFont('Arial', 24), (0,0,0), self.screen, self.hButton1x + 70, self.hButton1y + 20)
+                elif self.hoveredButton == "dButton1":
+                    draw_textLeftToRight("Done Cutting", pygame.font.SysFont('Arial', 24), (0,0,0), self.screen, self.dButton1x + 70, self.dButton1y + 20)
+                elif self.hoveredButton == "vButton2":
+                    draw_textLeftToRight("Vertical Cutting", pygame.font.SysFont('Arial', 24), (0,0,0), self.screen, self.vButton2x + 70, self.vButton2y + 20)
+                elif self.hoveredButton == "hButton2":
+                    draw_textLeftToRight("Horizontal Cutting", pygame.font.SysFont('Arial', 24), (0,0,0), self.screen, self.hButton2x + 70, self.hButton2y + 20)
+                elif self.hoveredButton == "dButton2":
+                    draw_textLeftToRight("Done Cutting", pygame.font.SysFont('Arial', 24), (0,0,0), self.screen, self.dButton2x + 70, self.dButton2y + 20)
 
         elif self.currentState == self.SHADINGHORIZONTALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
@@ -480,7 +574,7 @@ class StateManagerSubNewCuts:
     def get_answerDenom(self):
         denominator = 0
         for rect in self.drawablesController.rectangles:
-            if rect.ownerID == 1:
+            if rect.ownerID == 1 and rect.isOriginalSquare == False:
                 denominator += 1
         return denominator
 
