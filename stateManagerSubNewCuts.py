@@ -257,7 +257,7 @@ class StateManagerSubNewCuts:
                     cutter2.setStateDone()
             elif self.hoveredButton == "dButton2":
                 self.hoveredButton = None
-                self.hoverTimer += 1
+                self.hoverTimer = 0
 
             if cutter.getState() == "Done" and cutter2.getState() == "Done":
                 #self.currentState = self.SHADINGHORIZONTALLY
