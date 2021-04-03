@@ -696,12 +696,14 @@ def main_prog():
             if undoCut_button.collidepoint((mouse.mx, mouse.my)):
                 if click:
                     print("BUTTON WORKS")
-        else:
-            if stateManager.currentState == stateManager.CUTTINGVERTICALLY or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY:
-                undoCut_button = pygame.Rect(WIDTH/2 - 65, HEIGHT/2 + testRectangle.height/2 , 130, 50)
-                if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                    if click:
-                        print("BUTTON WORKS")
+        elif program_OperationType == MULTIPLICATION:
+            undoCut_button = pygame.Rect(WIDTH/4, HEIGHT/2, 130, 50)
+            if undoCut_button.collidepoint((mouse.mx, mouse.my)):
+                if click:
+                    if stateManager.lastCuts == 0:
+                        stateManager.undoCutsVert(cutter)
+                    else:
+                        stateManager.undoCutsHoriz(cutter)
 
         
         # drawing here
@@ -749,9 +751,9 @@ def main_prog():
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2, (HEIGHT/2)+(testRectangle.height/2)-5)
         else:
-            if stateManager.currentState == stateManager.CUTTINGVERTICALLY or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY:
+            if stateManager.currentState == stateManager.CHECKCUTS:
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/2, (HEIGHT/2)+(testRectangle.height/2)+25)
+                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/4 + 65, (HEIGHT/2)+25)
 
 
         if stateManager.getCurrentState() != "Finished":

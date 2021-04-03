@@ -27,6 +27,7 @@ class StateManagerTest:
         self.SHADINGVERTICALLY = 1
         self.CUTTINGHORIZONTALLY = 2
         self.SHADINGHORIZONTALLY = 3
+        self.CHECKCUTS = 12
 
         self.DONE = 4
         self.MOVING = 5 # for debuging

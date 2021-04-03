@@ -111,8 +111,9 @@ class CutterFraction:
                                 self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
                                 self.myRect.cutSquareVertical()
                                 self.state = self.WAITING 
-                                if self.horizontalDone == 1:
-                                    self.state = self.FINALCUT
+                                if self.myRect.stateManager.operation_type != self.myRect.stateManager.MULT:
+                                    if self.horizontalDone == 1:
+                                        self.state = self.FINALCUT
                                 self.verticalDone = 1
                                 return
             # 2ND STATE: HORIZONTAL CUTTING
@@ -132,8 +133,9 @@ class CutterFraction:
                                 self.myRect.cutSquareHorizontal()
 
                                 self.state = self.WAITING
-                                if self.verticalDone == 1:
-                                    self.state = self.FINALCUT
+                                if self.myRect.stateManager.operation_type != self.myRect.stateManager.MULT:
+                                    if self.verticalDone == 1:
+                                        self.state = self.FINALCUT
                                 self.horizontalDone = 1
                                 return
 
