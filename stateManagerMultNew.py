@@ -31,6 +31,7 @@ class StateManagerMultNew:
         self.SHADINGHORIZONTALLY = 3
         self.FINALIZECUTS = 8
         self.WAITING = 9
+        self.CHECKCUTS = 12
 
         self.DONE = 4
         self.MOVING = 5 # for debuging
@@ -44,6 +45,9 @@ class StateManagerMultNew:
 
         self.borderLeft = 0
         self.borderTop = 0
+
+        self.lastCuts = -1
+        self.rectsHolder = list()
 
         self.screen = screen
         self.WIDTH = 1200
@@ -74,10 +78,23 @@ class StateManagerMultNew:
             else:
                 self.statesTab.selectionBoxGroupListIndex = 3
                 # print("done cutting vertically")
-                self.currentState = self.WAITING
+                #self.currentState = self.WAITING
                 self.statesTab.clearSelected()
                 self.hasCutHorizontally = True
+                # Hold the rects here for undoing second set of cuts
+                if self.hasCutVertically is True:
+                    for rect in self.drawablesController.rectangles:
+                        if rect.ownerID == 1:
+                            self.rectsHolder.append(rect)
+                self.lastCuts = 1   # 1 to indicate the last cut made was horizontal
+                self.currentState = self.CHECKCUTS
                 return
+
+        elif self.currentState == self.CHECKCUTS:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                if self.hasCutVertically is True and self.hasCutHorizontally is True:
+                    cutter.state = cutter.FINALCUT
+                self.currentState = self.WAITING
 
         if self.currentState == self.CUTTINGVERTICALLY:
             if cutter.verticalDone != 1:
@@ -87,9 +104,16 @@ class StateManagerMultNew:
                     self.hasCutVerticallyFirst = True
                 self.statesTab.selectionBoxGroupListIndex = 1
                 # print("done cutting vertically")
-                self.currentState = self.WAITING
+                #self.currentState = self.WAITING
                 self.statesTab.clearSelected()
                 self.hasCutVertically = True
+                # Hold the rects here for undoing second set of cuts
+                if self.hasCutHorizontally is True:
+                    for rect in self.drawablesController.rectangles:
+                        if rect.ownerID == 1:
+                            self.rectsHolder.append(rect)
+                self.lastCuts = 0   # 0 to indicate the last cut made was vertical
+                self.currentState = self.CHECKCUTS
                 return
 
         if self.currentState == self.SHADINGHORIZONTALLY:
@@ -149,6 +173,9 @@ class StateManagerMultNew:
 
 
     def draw(self):
+        if self.currentState == self.CHECKCUTS:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            draw_text('Proceed', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         if self.currentState == self.SHADINGVERTICALLY and self.hasCutHorizontally == False:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
@@ -165,6 +192,8 @@ class StateManagerMultNew:
             return "Cutting Vertically"
         elif self.currentState == self.SHADINGVERTICALLY:
             return "Shading Vertically"
+        elif self.currentState == self.CHECKCUTS:
+            return "Checking Cuts"
         elif self.currentState == self.CUTTINGHORIZONTALLY:
             return "Cutting Horizontally"
         elif self.currentState == self.SHADINGHORIZONTALLY:
@@ -318,6 +347,50 @@ class StateManagerMultNew:
                 numerator += 1
         return numerator
 
+    def undoCutsVert(self, cutter):
+        if self.hasCutHorizontally is True:
+            for rect in self.rectsHolder:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+            self.rectsHolder.clear()
+        else:
+            for rect in self.drawablesController.rectangles:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.verticalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        cutter.verticalCuts.clear()
+        # cutter.isShowingVerticalGuidelines = True
+        cutter.setStateCutVertical()
+        self.hasCutVertically = False
+        cutter.verticalDone = 0
+        self.currentState = self.CUTTINGVERTICALLY
+
+    def undoCutsHoriz(self, cutter):
+        if self.hasCutVertically is True:
+            for rect in self.rectsHolder:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+            self.rectsHolder.clear()
+        else:
+            for rect in self.drawablesController.rectangles:
+                if rect.isOriginalSquare is False:
+                        self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.horizontalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        cutter.horizontalCuts.clear()
+        cutter.setStateCutHorizontal()
+        cutter.horizontalDone = 0
+        self.hasCutHorizontally = False
+        # cutter.isShowingHorizontalGuidelines = True
+        self.currentState = self.CUTTINGHORIZONTALLY
+
+
+
     def setBorderPos(self):
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 1:
@@ -325,7 +398,6 @@ class StateManagerMultNew:
                 self.borderTop = rect.yPosition - (rect.height/2)
                 return
     
-
 
 
 
