@@ -606,11 +606,18 @@ class Rectangle:
                 copyList.append(r)
         #remove self from copy list b/c we dont want to use it for collision checking for shaded value
         copyList.remove(self)
-
-        xLength = self.width / self.numberHorizontalRects
-        yLength = self.height / self.numberVerticalRects
-        xOffset = xLength / 2
-        yOffset = yLength / 2
+        #This "Works", but we lose our point colliders along the way
+        if (self.myCutter.verticalDoneFirst == 1 and self.myCutter.horizontalDoneSecond == 1) or (self.myCutter.verticalDoneSecond == 1 and self.myCutter.horizontalDoneFirst == 1):
+            xLength = self.width / self.numberHorizontalRects
+            yLength = self.height / self.numberVerticalRects
+            xOffset = xLength / 2
+            yOffset = yLength / 2
+        #This literally removes every rectangle from existence
+        if (self.myCutter.verticalDoneFirst == 1 and self.myCutter.verticalDoneSecond == 1):
+            xLength = self.width / self.numberHorizontalRects
+            yLength = self.height / self.numberHorizontalRects
+            xOffset = xLength / 2
+            yOffset = yLength / 2
 
         rectsData = list() # used by state manager for horizontal shading, list of lists->each row of rects is list
         for i in range(0,self.numberHorizontalRects):

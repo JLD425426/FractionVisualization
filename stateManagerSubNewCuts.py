@@ -261,7 +261,10 @@ class StateManagerSubNewCuts:
 
             if cutter.getState() == "Done" and cutter2.getState() == "Done":
                 #self.currentState = self.SHADINGHORIZONTALLY
-                
+                if cutter.cutsMade == 2:
+                    cutter.setStateFinal()
+                if cutter2.cutsMade == 2:                    
+                    cutter2.setStateFinal()
                 self.currentState = self.MARKING
 
         # manager now shading horizontally
@@ -483,10 +486,10 @@ class StateManagerSubNewCuts:
                                     rhd = rect.height - _r.height
                                     rowd = rect.width - _r.height
                                     rohd = rect.height - _r.width
-                                    if ((rwd >= -1 and rwd <= 1) and (rhd >= -1 and rhd <= 1)) or ((rowd >= -1 and rowd <= 1) and (rohd >= -1 and rohd <= 1)):
-                                        _r.setMark(True)
-                                        rect.setMark(True)
-                                        break
+                                    #if ((rwd >= -1 and rwd <= 1) and (rhd >= -1 and rhd <= 1)) or ((rowd >= -1 and rowd <= 1) and (rohd >= -1 and rohd <= 1)):
+                                    _r.setMark(True)
+                                    rect.setMark(True)
+                                    break
 
 
 
@@ -583,7 +586,7 @@ class StateManagerSubNewCuts:
         for rect in self.drawablesController.rectangles:
             ##if rect.isTrash == False and (rect.isShadedV == True or rect.isShadedB == True):
             ##    numerator += 1
-            if rect.ownerID == 1 and rect.isMarked == False and rect.isShaded == True:
+            if rect.ownerID == 1 and rect.isMarked == False and rect.isShaded == True and rect.isOriginalSquare == False:
                 numerator += 1
         return numerator
 

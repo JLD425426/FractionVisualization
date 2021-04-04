@@ -22,7 +22,7 @@ class CutterFraction:
 
 
         # CutterFraction will set myRect's numberHorizontalRects and numberVerticalRects based on 
-        # verticalGuidelinesCount and horizontalGuidelninesCunt
+        # verticalGuidelinesCount and horizontalGuidelninesCount
         self.isShowingVerticalGuidelines = False
         self.verticalGuidelinesCount = 0
         self.isShowingHorizontalGuidelines = False
@@ -35,6 +35,11 @@ class CutterFraction:
         # For state manager that can jump between states
         self.verticalDone = 0
         self.horizontalDone = 0
+
+        self.verticalDoneFirst = 0
+        self.horizontalDoneFirst = 0
+        self.verticalDoneSecond = 0
+        self.horizontalDoneSecond = 0
 
         # For subtraction to guarantee a cutter does not cut more than twice
         self.cutsMade = 0
@@ -87,6 +92,9 @@ class CutterFraction:
     def setStateCutHorizontal(self):
         self.initHorizontalCuts()
         self.state = self.CUTTINGHORIZONTAL
+
+    def setStateFinal(self):
+        self.state = self.FINALCUT
 
     def setupCutting(self, numberDivisionsX, numberDivisionsY):
         # dont need anything here for this cutting behavior
@@ -166,11 +174,17 @@ class CutterFraction:
                                 # self.state = self.CUTTINGHORIZONTAL
                                 self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
                                 self.myRect.cutSquareVertical()
+                                self.cutsMade += 1
+                                if self.myRect.stateManager.getCurrentState() == "Cutting Round 1":
+                                    self.verticalDoneFirst = 1
+                                if self.myRect.stateManager.getCurrentState() == "Cutting Round 2":
+                                    self.verticalDoneSecond = 1
                                 self.state = self.DONE
-                                if self.cutsMade == 2:
-                                    self.state = self.FINALCUT
-                                else:
-                                    self.cutsMade += 1        
+                                #if self.myRect.stateManager.getCurrentState() == "Cutting Round 2":
+                                #    #self.state = self.FINALCUT
+                                    
+                                #else:
+                                #    self.cutsMade += 1        
                                 return
             # 2ND STATE: HORIZONTAL CUTTING
             elif self.state == self.CUTTINGHORIZONTAL:
@@ -187,21 +201,31 @@ class CutterFraction:
 
                                 self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
                                 self.myRect.cutSquareHorizontal()
-
+                                self.cutsMade += 1
+                                if self.myRect.stateManager.getCurrentState() == "Cutting Round 1":
+                                    self.horizontalDoneFirst = 1
+                                if self.myRect.stateManager.getCurrentState() == "Cutting Round 2":
+                                    self.horizontalDoneSecond = 1
                                 self.state = self.DONE
-                                if self.cutsMade == 2:
-                                    self.state = self.FINALCUT
-                                else:
-                                    self.cutsMade += 1 
+                                #if self.myRect.stateManager.getCurrentState() == "Cutting Round 2":
+                                    #self.state = self.FINALCUT
+                                #else:
+                                #    self.cutsMade += 1 
                                 return
 
             # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
             elif self.state == self.FINALCUT:
                 #not sure why these next 2 lines have to be flipped but they do need to be to work properly
-                self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
-                self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+                
+                if self.verticalDoneFirst == 1 and self.horizontalDoneFirst == 0:
+                    self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
+                    self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+                elif self.horizontalDoneFirst == 1 and self.verticalDoneFirst == 0:
+                    self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
+                    self.myRect.numberVerticalRects = self.horizontalGuidelinesCount
+                
                 self.isReadyForSubdivide = True
-                self.state = self.WAITING
+                #self.state = self.WAITING
             elif self.state == self.WAITING:
                 #do nothing waiting for next instruction
                 pass
