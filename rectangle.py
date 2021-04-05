@@ -577,25 +577,8 @@ class Rectangle:
                 r.myPointCollider = pc
 
     def cutSquareHorizontal(self):
-        xLength = self.width 
-        yLength = self.height / self.numberVerticalRects
-        xOffset = xLength / 2
-        yOffset = yLength / 2
-        for i in range(0,self.numberVerticalRects):
-            r = None
-            if self.willBeDivided == True:
-                if self.ownerID == 1:
-                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 1)
-                if self.ownerID == 2:
-                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 2)
-                if self.ownerID == 3:
-                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 3)
-                if self.ownerID == 4:
-                    r = Rectangle(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),int(xLength),int(yLength),self.screen,self.drawablesController,False,self.mouse,self.stateManager, 4)
-            pc = PointCollider(int(0 * xLength + self.topLeftX + xOffset),int(i * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, False)
-            # self.drawablesController.pointColliders.append(pc)
-            if r != None:
-                r.myPointCollider = pc
+        pass
+        
     #----------WARNING----------------
     #----anticipated pointcollider bugs here----
     def finalCut(self):
@@ -606,18 +589,11 @@ class Rectangle:
                 copyList.append(r)
         #remove self from copy list b/c we dont want to use it for collision checking for shaded value
         copyList.remove(self)
-        #This "Works", but we lose our point colliders along the way
-        if (self.myCutter.verticalDoneFirst == 1 and self.myCutter.horizontalDoneSecond == 1) or (self.myCutter.verticalDoneSecond == 1 and self.myCutter.horizontalDoneFirst == 1):
-            xLength = self.width / self.numberHorizontalRects
-            yLength = self.height / self.numberVerticalRects
-            xOffset = xLength / 2
-            yOffset = yLength / 2
-        #This literally removes every rectangle from existence
-        if (self.myCutter.verticalDoneFirst == 1 and self.myCutter.verticalDoneSecond == 1):
-            xLength = self.width / self.numberHorizontalRects
-            yLength = self.height / self.numberHorizontalRects
-            xOffset = xLength / 2
-            yOffset = yLength / 2
+
+        xLength = self.width / self.numberHorizontalRects
+        yLength = self.height / self.numberVerticalRects
+        xOffset = xLength / 2
+        yOffset = yLength / 2
 
         rectsData = list() # used by state manager for horizontal shading, list of lists->each row of rects is list
         for i in range(0,self.numberHorizontalRects):
@@ -643,27 +619,12 @@ class Rectangle:
                         rC = self.getRectCollider(copyList, int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset))
                         if self.drawablesController.pointColliders.count(rC.myPointCollider) > 0:
                             self.drawablesController.pointColliders.remove(rC.myPointCollider)
-                        if self.stateManager.operation_type != self.stateManager.MULT and self.stateManager.operation_type != self.stateManager.SUB: #for shading everything but multx
-                            if rC.isShaded == True or rC.isShadedV == True:
-                                r.isShaded = True
-                                r.isShadedV = True
-                                r.changeColorHatch(rC.colorHatch)
-                                r.changeColor(rC.color)
-                                r.vColor = rC.vColor
-                        elif self.stateManager.operation_type == self.stateManager.MULT: # FOR multiplication
-                            if rC.isShadedV == True:
-                                r.isShadedV = True
-                                r.changeColorHatch(rC.colorHatch)
-                            elif rC.isShadedH == True:
-                                r.isShadedH = True
-                                r.changeColorHatch(rC.colorHatch)
-                        elif self.stateManager.operation_type == self.stateManager.SUB:
-                            if rC.isShadedV == True or rC.isShaded == True:
-                                r.isShadedV = True
-                                r.changeColor(rC.color)
-                            elif rC.isShadedH == True:
-                                r.isShadedH = True
-                                r.changeColor(rC.color)
+                        if rC.isShaded == True or rC.isShadedV == True:
+                            r.isShaded = True
+                            r.isShadedV = True
+                            r.changeColorHatch(rC.colorHatch)
+                            r.changeColor(rC.color)
+                            r.vColor = rC.vColor
                 pc = PointCollider(int(i * xLength + self.topLeftX + xOffset),int(j * yLength + self.topLeftY + yOffset),self.willBeDivided,xLength,yLength, True)
                 self.drawablesController.pointColliders.append(pc)
                 if r != None:

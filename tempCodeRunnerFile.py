@@ -1,1 +1,1 @@
-0
+message_font_s = pygame.font.SysFont('Arial', 30)

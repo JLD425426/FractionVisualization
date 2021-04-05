@@ -16,7 +16,6 @@ class StateManagerAdd:
         self.DIV = 2
         self.SUB = 3
         self.ADD = 4
-        self.TEST = 5
         self.operation_type = self.ADD
         #define cutting types
         self.FRACTIONCUTTING = 0
@@ -41,7 +40,6 @@ class StateManagerAdd:
         self.MOVING2 = 9
         self.ANSWERSUBMISSION = 10
         self.DONE = 11
-        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY1
 
@@ -85,8 +83,6 @@ class StateManagerAdd:
         self.twoWholes = False
 
         self.userAnswerSystemReadyForSubmission = False
-
-        self.statesTab = None
 
     def getOperationType(self):
         return self.operation_type

@@ -40,69 +40,28 @@ class ColorPicker:
 
     def update(self):
         if self.enabled == True: #only execute if color picker is enabled
-            # shading vertically1
-            if self.stateManager.operation_type != self.stateManager.MULT and self.stateManager.operation_type != self.stateManager.SUB:
-                if self.stateManager.getCurrentState() == "Shading Vertically":
-                    self.checkForColorChange()
-                    self.betweenShadingAlarm = True
-                
-                # alarm between shading types so that this will if will execute exactly once
-                if self.stateManager.getCurrentState() != "Shading Vertically" and self.betweenShadingAlarm == True:
-                    self.verticalColor = self.myColor
-                    self.primeHorizontalColors()
-                    self.changeColor(self.myColor,self.colorBlots[0].color,True)
-                    self.betweenShadingAlarm = False
+            # shading vertically
+            if self.stateManager.getCurrentState() == "Shading Vertically":
+                self.checkForColorChange()
+                self.betweenShadingAlarm = True
+            
+            # alarm between shading types so that this will if will execute exactly once
+            if self.stateManager.getCurrentState() != "Shading Vertically" and self.betweenShadingAlarm == True:
+                self.verticalColor = self.myColor
+                self.primeHorizontalColors()
+                self.changeColor(self.myColor,self.colorBlots[0].color,True)
+                self.betweenShadingAlarm = False
 
-                # shading horizontally
-                if self.stateManager.getCurrentState() == "Shading Horizontally":
-                    self.checkForColorChange()
-
-            elif self.stateManager.operation_type == self.stateManager.SUB:
-                if self.stateManager.getCurrentState() == "Shading":
-                    self.checkForColorChange()
-                    self.betweenShadingAlarm = True
-                    
-            else: # For multx
-                if self.stateManager.operation_type == self.stateManager.MULT or self.stateManager.operation_type == self.stateManager.TEST:
-                    if self.stateManager.hasCutVerticallyFirst == True:
-                        if self.stateManager.getCurrentState() == "Shading Vertically":
-                            self.checkForColorChange()
-                            self.betweenShadingAlarm = True
-                    
-                        # alarm between shading types so that this will if will execute exactly once
-                        if self.stateManager.getCurrentState() != "Shading Vertically" and self.betweenShadingAlarm == True:
-                            self.verticalColor = self.myColor
-                            self.primeHorizontalColors()
-                            self.changeColor(self.myColor,self.colorBlots[0].color,True)
-                            self.betweenShadingAlarm = False
-
-                        # shading horizontally
-                        if self.stateManager.getCurrentState() == "Shading Horizontally":
-                            self.checkForColorChange()
-
-                    else:
-                        if self.stateManager.getCurrentState() == "Shading Horizontally":
-                            self.checkForColorChange()
-                            self.betweenShadingAlarm = True
-                        
-                        # alarm between shading types so that this will if will execute exactly once
-                        if self.stateManager.getCurrentState() != "Shading Horizontally" and self.betweenShadingAlarm == True:
-                            self.verticalColor = self.myColor
-                            self.primeHorizontalColors()
-                            self.changeColor(self.myColor,self.colorBlots[0].color,True)
-                            self.betweenShadingAlarm = False
-
-                        # shading horizontally
-                        if self.stateManager.getCurrentState() == "Shading Vertically":
-                            self.checkForColorChange()
-
+            # shading horizontally
+            if self.stateManager.getCurrentState() == "Shading Horizontally":
+                self.checkForColorChange()
         
 
 
     def draw(self):
 
         if self.enabled == True: # only draw if enabled
-            if self.stateManager.getCurrentState() == "Shading Horizontally" or self.stateManager.getCurrentState() == "Shading Vertically" or self.stateManager.getCurrentState() == "Shading":
+            if self.stateManager.getCurrentState() == "Shading Horizontally" or self.stateManager.getCurrentState() == "Shading Vertically":
                 self.screen.blit(self.brushTip,(10,self.SCREENHEIGHT-225)) # draw brushtip
 
                 self.screen.blit(self.palette,(10,self.SCREENHEIGHT-225)) # draw palette base

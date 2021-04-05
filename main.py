@@ -9,10 +9,8 @@ from drawablesController import DrawablesController
 from mouseHolder import MouseHandler
 from stateManager import manager
 from stateManagerMult import StateManagerMult
-from stateManagerTest import StateManagerTest
 from stateManagerDiv import StateManagerDiv
 from stateManagerSub import StateManagerSub
-from stateManagerSubNewCuts import StateManagerSubNewCuts
 from stateManagerAdd import StateManagerAdd
 from fractionHandler import Fraction
 from colorpicker import ColorPicker
@@ -21,9 +19,6 @@ from problemGenerator import ProblemGenerator
 from trashCan import TrashCan
 from problemValidation import isValidProblem
 from userAnswerSystem import UserAnswerSystem
-from statesTab import StatesTab
-from stateManagerMultNew import StateManagerMultNew
-from statesTabMult import StatesTabMult
 
 pygame.init()
 
@@ -66,7 +61,6 @@ MULTIPLICATION = 0
 ADDITION = 1
 SUBTRACTION = 2
 DIVISION = 3
-TEST = 4
 program_OperationType = DIVISION
 # problemGenerator declared globally so user can either:
 # 1)restart session but keep same problem
@@ -92,7 +86,7 @@ def main_menu():
     isProgramRunning = True
 
     #for button states
-    isDivHover = isDivClicked = isMultHover = isMultClicked = isSubHover = isSubClicked = isTestHover = isTestClicked = False
+    isDivHover = isDivClicked = isMultHover = isMultClicked = isSubHover = isSubClicked = False
     isAddHover = isAddClicked = False
     if program_OperationType == MULTIPLICATION:
         isMultClicked = True
@@ -102,8 +96,6 @@ def main_menu():
         isSubClicked = True
     elif program_OperationType == ADDITION:
         isAddClicked = True
-    elif program_OperationType == TEST:
-         isTestClicked = True
 
     isRandomHover = isRandomClicked = isUserHover = isUserClicked = False
     if program_problemCreationType == RANDOMPROBLEM:
@@ -150,8 +142,7 @@ def main_menu():
         subtractionButton = pygame.Rect(subtractionButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
         additionButtonX = int(WIDTH/2 + operationButtonXBuffer) + operationButtonWidth + operationButtonXBuffer * 2
         additionButton = pygame.Rect(additionButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
-        testButtonX = int(WIDTH/2 + operationButtonXBuffer) + operationButtonWidth * 2 + operationButtonXBuffer * 2
-        testButton = pygame.Rect(testButtonX,operationButtonsY,operationButtonWidth,operationButtonHeight)
+
 
         problemTypeY = operationButtonsY + 100
         problemButtonsY = problemTypeY + 40
@@ -179,7 +170,6 @@ def main_menu():
                 isDivClicked = False
                 isSubClicked = False
                 isAddClicked = False
-                isTestClicked = False
                 program_OperationType = MULTIPLICATION
         else:
             isMultHover = False
@@ -190,7 +180,6 @@ def main_menu():
                 isMultClicked = False
                 isSubClicked = False
                 isAddClicked = False
-                isTestClicked = False
                 program_OperationType = DIVISION
         else:
             isDivHover = False
@@ -201,7 +190,6 @@ def main_menu():
                 isMultClicked = False
                 isDivClicked = False
                 isAddClicked = False
-                isTestClicked = False
                 program_OperationType = SUBTRACTION
         else:
             isSubHover = False
@@ -212,7 +200,6 @@ def main_menu():
                 isMultClicked = False
                 isSubClicked = False
                 isDivClicked = False
-                isTestClicked = False
                 program_OperationType = ADDITION
         else:
             isAddHover = False
@@ -225,18 +212,6 @@ def main_menu():
                 program_problemCreationType = RANDOMPROBLEM
         else:
             isRandomHover = False
-
-        if (testButton.collidepoint((m1x,m1y))):
-            isTestHover = True
-            if click:
-                isAddClicked = False
-                isMultClicked = False
-                isSubClicked = False
-                isDivClicked = False
-                isTestClicked = True
-                program_OperationType = TEST
-        else:
-            isTestHover = False
 
         if (userProblemButton.collidepoint((m1x,m1y))):
             isUserHover = True
@@ -305,14 +280,6 @@ def main_menu():
         draw_text("Addition",button_font,(0,0,0),screen, additionButtonX + int(operationButtonWidth/2), operationButtonsY+int(operationButtonHeight/2))
 
         draw_text('Problem Type', pygame.font.SysFont('Arial', 48), (0,0,0), screen, WIDTH/2, problemTypeY) 
-
-        if(isTestClicked == False and isTestHover == False):
-            pygame.draw.rect(screen, colors.BUTTONSTANDARD, testButton)
-        elif (isTestClicked == True):
-            pygame.draw.rect(screen, colors.BUTTONCLICKED, testButton)
-        elif (isAddHover == True):
-            pygame.draw.rect(screen, colors.BUTTONHOVER, testButton)
-        draw_text("Test",button_font,(0,0,0),screen, testButtonX + int(operationButtonWidth/2), operationButtonsY+int(operationButtonHeight/2))
 
         if (isRandomClicked == False and isRandomHover == False):
             pygame.draw.rect(screen, colors.BUTTONSTANDARD, randomProblemButton)
@@ -402,12 +369,10 @@ def main_prog():
     drawablesController = DrawablesController()
     colorPicker = None
     trashCan = None
-    statesTab = None
 
     # create state manager depending on operation type selected in menu:
     if program_OperationType == MULTIPLICATION:
-        statesTab = StatesTabMult(screen,WIDTH,HEIGHT,MULTIPLICATION)
-        stateManager = StateManagerMultNew(program_CuttingType,screen,statesTab)
+        stateManager = StateManagerMult(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
         testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
@@ -434,15 +399,7 @@ def main_prog():
         stateManager.setColorPicker(colorPicker)
 
     elif program_OperationType == SUBTRACTION:
-        ##Old:
-        #stateManager = StateManagerSub(program_CuttingType,screen)
-        
-        
-        ##statesTab = StatesTabMult(screen,WIDTH,HEIGHT,SUBTRACTION)
-        statesTab = None
-        stateManager = StateManagerSubNewCuts(program_CuttingType,screen,statesTab)
-        
-        
+        stateManager = StateManagerSub(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
 
@@ -468,16 +425,6 @@ def main_prog():
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
         positionSet = 0
-
-    elif program_OperationType == TEST:
-        statesTab = StatesTab(screen,WIDTH,HEIGHT,program_OperationType)
-        stateManager = StateManagerTest(program_CuttingType, screen, statesTab)
-        stateManager.setMouse(mouse) # link state manager and mouse
-        stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
-        testRectangle = Rectangle(WIDTH/2,HEIGHT/2,350,350,screen,drawablesController,True,mouse,stateManager, 1)
-        cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
-        stateManager.setColorPicker(colorPicker)
 
     # init problemDisplay here, every operation will have
     problemDisplay = ProblemDisplay(screen,WIDTH,HEIGHT,stateManager,program_OperationType)
@@ -582,10 +529,6 @@ def main_prog():
                 trashCan.update()
         elif program_OperationType == ADDITION:
             stateManager.update(testRectangle.myCutter, testRectangle2.myCutter, testRectangle3.myCutter, testRectangle4.myCutter)
-        elif program_OperationType == TEST:
-            stateManager.update(testRectangle.myCutter)
-            statesTab.update(mouse.mx,mouse.my,mouse.leftMouseReleasedThisFrame)
-            statesTab.draw()
         
         for rect in drawablesController.rectangles:
             rect.update(mouse)
@@ -594,8 +537,7 @@ def main_prog():
         if colorPicker != None:
             colorPicker.update()
 
-        if program_OperationType != TEST:
-            userAnswerSystem.update(mouse.leftMouseReleasedThisFrame,keyDown)
+        userAnswerSystem.update(mouse.leftMouseReleasedThisFrame,keyDown)
 
         if program_OperationType == DIVISION:
             if stateManager.hasThreeSquares is True:
@@ -621,8 +563,6 @@ def main_prog():
         elif program_OperationType == SUBTRACTION:
             borderTop, borderLeft = stateManager.borderTop, stateManager.borderLeft
             borderHeight, borderWidth = testRectangle.height, testRectangle.width
-        if stateManager.statesTab != None:
-            statesTab.update(mouse.mx,mouse.my,mouse.leftMouseReleasedThisFrame)
 
         # ---------UPDATE END----------------------------------
         # ---------DRAW BEGIN--------------------------------
@@ -652,60 +592,6 @@ def main_prog():
                 isProgramRunning = False
                 break
         
-        if program_OperationType == ADDITION:
-            undoCut_button = pygame.Rect(WIDTH/3-testRectangle.width+5, HEIGHT/3, 130, 50)
-            undoCut_button2 = pygame.Rect(WIDTH/3-testRectangle.width+5, HEIGHT/3*2+100, 130, 50)
-            undoCut_button3 = pygame.Rect(WIDTH/3*2-75, HEIGHT/3*2+100, 130, 50)
-            undoCut_button4 = pygame.Rect(WIDTH/3*2-75, HEIGHT/3, 130, 50)
-            if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-            if undoCut_button2.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-            if undoCut_button3.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-            if undoCut_button4.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-
-        elif program_OperationType == DIVISION:
-            if stateManager.hasThreeSquares:
-                undoCut_button = pygame.Rect(WIDTH/5 - 55, HEIGHT/2 + testRectangle.height/2 - 30 , 130, 50)
-                undoCut_button2 = pygame.Rect(WIDTH/2-65, HEIGHT/2 + testRectangle.height/2 - 30 , 130, 50)
-            else:
-                undoCut_button = pygame.Rect(WIDTH/3 - 60, HEIGHT/2 + testRectangle.height/2 - 30 , 130, 50)
-                undoCut_button2 = pygame.Rect(WIDTH/3*2 - 65, (HEIGHT/2 + testRectangle.height/2)-30, 130, 50)
-            if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                        if stateManager.lastCuts == 0:
-                            stateManager.undoCutsVert(1, cutter)
-                        else:
-                            stateManager.undoCutsHoriz(1, cutter)
-            if undoCut_button2.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                        if stateManager.lastCuts == 0:
-                            stateManager.undoCutsVert(2, cutter2)
-                        else:
-                            stateManager.undoCutsHoriz(2, cutter2)
-    
-        elif program_OperationType == SUBTRACTION:
-            undoCut_button = pygame.Rect(WIDTH/3 - 65, (HEIGHT/2 + testRectangle.height/2)-30 , 130, 50)
-            undoCut_button2 = pygame.Rect(WIDTH/3*2 - 65, (HEIGHT/2 + testRectangle.height/2)-30, 130, 50)
-            if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-        elif program_OperationType == MULTIPLICATION:
-            undoCut_button = pygame.Rect(WIDTH/4, HEIGHT/2, 130, 50)
-            if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    if stateManager.lastCuts == 0:
-                        stateManager.undoCutsVert(cutter)
-                    else:
-                        stateManager.undoCutsHoriz(cutter)
-
-        
         # drawing here
         screen.fill(colors.BGCOLOR) #fill screen bg   
 
@@ -717,45 +603,6 @@ def main_prog():
         draw_text('Restart', button_font, (0,0,0), screen, WIDTH-170, 25)
         pygame.draw.rect(screen, (8, 41, 255), newProblem_button) # for new prob button
         draw_text('New Problem', button_font, (0,0,0), screen, WIDTH-305, 25) # for new prob button
-
-        # ALL LOGIC FOR DRAWING UNDO BUTTONS HERE
-        if program_OperationType == ADDITION:
-            if stateManager.currentState == stateManager.CUTTINGVERTICALLY1 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY1:
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3 - testRectangle.width/1.5-20, (HEIGHT/3)+25)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3 - testRectangle.width/1.5-20, (HEIGHT/3)*2+125)
-            elif stateManager.currentState == stateManager.CUTTINGVERTICALLY2 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY2:
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button4)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)+25)
-            elif stateManager.currentState == stateManager.CUTTINGVERTICALLY3 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3:
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button3)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)*2+125)
-
-        elif program_OperationType == DIVISION:
-            if stateManager.currentState == stateManager.CHECKCUTS:
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
-
-                if stateManager.hasThreeSquares is True:
-                    draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/4-55, (HEIGHT/2)+(testRectangle.height/2))
-                    draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/4*2, (HEIGHT/2)+(testRectangle.height/2))
-                else:
-                    draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3, (HEIGHT/2)+(testRectangle.height/2))
-                    draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2, (HEIGHT/2)+(testRectangle.height/2))
-        elif program_OperationType == SUBTRACTION:
-            
-            if stateManager.currentState == stateManager.CUTTINGFIRST or stateManager.currentState == stateManager.CUTTINGSECOND:
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3, (HEIGHT/2)+(testRectangle.height/2)-5)
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2, (HEIGHT/2)+(testRectangle.height/2)-5)
-        else:
-            if stateManager.currentState == stateManager.CHECKCUTS:
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/4 + 65, (HEIGHT/2)+25)
-
-
         if stateManager.getCurrentState() != "Finished":
             state_message = "Current state: " + stateManager.getCurrentState()
         else:
@@ -773,9 +620,6 @@ def main_prog():
                 rect.draw()
                 if rect.isMarked == True:
                     rect.drawMark()
-        if program_OperationType == TEST:
-            for rect in drawablesController.rectangles:
-                rect.draw()
         if program_OperationType != MULTIPLICATION and program_OperationType != SUBTRACTION:
             for rect in drawablesController.rectangles:
                 #
@@ -817,9 +661,8 @@ def main_prog():
             colorPicker.draw()
         #if trashCan != None:
         #    trashCan.draw()
-        if program_OperationType != TEST:
-            problemDisplay.draw()
-            userAnswerSystem.draw()
+        problemDisplay.draw()
+        userAnswerSystem.draw()
         # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION
         if program_OperationType == DIVISION:
             if stateManager.hasThreeSquares is True:
@@ -845,10 +688,6 @@ def main_prog():
             if stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
                 pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)
             
-        if stateManager.statesTab != None:
-            statesTab.draw()
-
-
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()
 

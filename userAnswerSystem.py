@@ -19,7 +19,6 @@ class UserAnswerSystem:
     self.SUB = 3
     self.ADD = 4
     self.operation_type = None
-
     if stateManager.operation_type == self.MULT:
       self.operation_type = self.MULT
     elif stateManager.operation_type == self.DIV:

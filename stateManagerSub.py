@@ -10,8 +10,6 @@ class StateManagerSub:
         self.MULT = 1
         self.DIV = 2
         self.SUB = 3
-        self.ADD = 4
-        self.TEST = 5
         self.operation_type = self.SUB
 
         #define cutting types
@@ -31,7 +29,6 @@ class StateManagerSub:
         self.MOVING = 5 # for debuging
         self.ANSWERSUBMISSION = 7
         ##self.THROWINGAWAY = 6
-        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -66,8 +63,6 @@ class StateManagerSub:
         self.hColor = colors.WHITE
 
         self.userAnswerSystemReadyForSubmission = False
-
-        self.statesTab = None
 
     def getOperationType(self):
         return self.operation_type
