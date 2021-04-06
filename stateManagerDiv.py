@@ -33,6 +33,7 @@ class StateManagerDiv:
         self.MOVING = 5
         self.GETTINGDENOMINATOR = 6
         self.ANSWERSUBMISSION = 7
+        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -77,6 +78,11 @@ class StateManagerDiv:
         self.boundaryFilled = False
         self.numBoundaries = 0
 
+        # For UNDO
+        self.lastCuts = -1      # 0 if vertical last, 1 if horizontal last
+        self.rectsHolder1 = list()
+        self.rectsHolder2 = list()
+
         # for if answer is between 1 and 2
         self.between = False
         # Checks if double shading has been done in the same rect
@@ -98,7 +104,17 @@ class StateManagerDiv:
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
                 if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                    self.lastCuts = 0
+                    self.currentState = self.CHECKCUTS
+
+        elif self.currentState == self.CHECKCUTS:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                if self.lastCuts == 0:
                     self.currentState = self.SHADINGVERTICALLY
+                elif self.lastCuts == 1:
+                    cutter.state = cutter.FINALCUT
+                    cutter2.state = cutter2.FINALCUT
+                    self.currentState = self.GETTINGDENOMINATOR
 
         # manager is now shading vertically, now can shade current rects
         elif self.currentState == self.SHADINGVERTICALLY:
@@ -114,6 +130,11 @@ class StateManagerDiv:
                         sCount += 1
                 if sCount != 0:
                     ##self.error_detect = False
+                    for rect in self.drawablesController.rectangles:
+                        if rect.ownerID == 1:
+                            self.rectsHolder1.append(rect)
+                        elif rect.ownerID == 2:
+                            self.rectsHolder2.append(rect)
                     self.currentState = self.CUTTINGHORIZONTALLY
                     cutter.setStateCutHorizontal()
                     cutter2.setStateCutHorizontal()
@@ -123,11 +144,14 @@ class StateManagerDiv:
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
             if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                    self.currentState = self.GETTINGDENOMINATOR
+                    self.lastCuts = 1
+                    self.currentState = self.CHECKCUTS
 
         elif self.currentState == self.GETTINGDENOMINATOR:
-            self.getDenominator()
-            self.currentState = self.MOVING
+            # The FINAL CUTTING must be done before the denominator is calculated!
+            if cutter.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                self.getDenominator()
+                self.currentState = self.MOVING
 
         elif self.currentState == self.MOVING:
             if self.borderSet == 0:
@@ -187,6 +211,12 @@ class StateManagerDiv:
 
 
     def draw(self):
+        if self.currentState == self.CHECKCUTS:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            if self.lastCuts == 0:
+                draw_text('Proceed to shading vertically', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            elif self.lastCuts == 1:
+                draw_text('Proceed to Moving', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
@@ -209,6 +239,8 @@ class StateManagerDiv:
             return "Shading Horizontally"
         elif self.currentState == self.GETTINGDENOMINATOR:
             return "Calculating/Loading"
+        elif self.currentState == self.CHECKCUTS:
+            return "Checking Cuts"
         elif self.currentState == self.DONE:
             return "Finished"
         elif self.currentState == self.MOVING:
@@ -383,6 +415,42 @@ class StateManagerDiv:
                     if rect.isShadedB is False:
                         return False
         return True
+
+    def undoCutsVert(self, rectID, cutter):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == rectID:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.verticalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        cutter.verticalCuts.clear()
+        # cutter.isShowingVerticalGuidelines = True
+        cutter.setStateCutVertical()
+        self.currentState = self.CUTTINGVERTICALLY
+
+    def undoCutsHoriz(self, rectID, cutter):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == rectID:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.horizontalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        if rectID == 1:
+            for rect in self.rectsHolder1:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+        else:
+            for rect in self.rectsHolder2:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+        cutter.horizontalCuts.clear()
+        cutter.setStateCutHorizontal()
+        # cutter.isShowingHorizontalGuidelines = True
+        self.currentState = self.CUTTINGHORIZONTALLY
 
     def setBorderPos(self):
         for rect in self.drawablesController.rectangles:

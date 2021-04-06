@@ -27,6 +27,7 @@ class StateManagerMult:
         self.DONE = 4
         self.MOVING = 5 # for debuging
         self.ANSWERSUBMISSION = 6
+        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -36,6 +37,10 @@ class StateManagerMult:
 
         self.borderLeft = 0
         self.borderTop = 0
+
+        # For UNDO cuts
+        self.lastCuts = -1
+        self.rectsHolder = list()
 
         self.screen = screen
         self.WIDTH = 1200
@@ -58,8 +63,17 @@ class StateManagerMult:
         # manager is cuttingvertically, wait for cutter class to be waiting so it can proceed
         if self.currentState == self.CUTTINGVERTICALLY:
             if cutter.getState() == "Waiting":
+                self.lastCuts = 0
                 self.setBorderPos()
-                self.currentState = self.SHADINGVERTICALLY
+                self.currentState = self.CHECKCUTS
+
+        elif self.currentState == self.CHECKCUTS:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                if self.lastCuts == 0:
+                    self.currentState = self.SHADINGVERTICALLY
+                elif self.lastCuts == 1:
+                    cutter.state = cutter.FINALCUT
+                    self.currentState = self.SHADINGHORIZONTALLY
 
         # manager is now shading vertically, now can shade current rects
         elif self.currentState == self.SHADINGVERTICALLY:
@@ -81,32 +95,40 @@ class StateManagerMult:
         # manager now cutting horizontally, let cutter do work
         elif self.currentState == self.CUTTINGHORIZONTALLY:
             if cutter.getState() == "Waiting":
-                self.currentState = self.SHADINGHORIZONTALLY
+                self.lastCuts = 1
+                self.currentState = self.CHECKCUTS
 
         # manager now shading horizontally
         elif self.currentState == self.SHADINGHORIZONTALLY:
-            if self.hasInvertedRectData == False:
-                self.invertRectData()   #use tab for this
-                self.hasInvertedRectData = True #use tab for this
-            self.shadeHorizontal()
-            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                sCount = 0
-                for rect in self.drawablesController.rectangles:
-                    if rect.isShadedH == True:
-                        sCount += 1
-                if sCount != 0:
-                    ##self.error_detect = False
-                    self.currentState = self.ANSWERSUBMISSION
-                # self.currentState = self.DONE
+            if cutter.getState() == "Waiting":
+                if self.hasInvertedRectData == False:
+                    self.invertRectData()   #use tab for this
+                    self.hasInvertedRectData = True #use tab for this
+                self.shadeHorizontal()
+                if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                    sCount = 0
+                    for rect in self.drawablesController.rectangles:
+                        if rect.isShadedH == True:
+                            sCount += 1
+                    if sCount != 0:
+                        ##self.error_detect = False
+                        self.currentState = self.ANSWERSUBMISSION
+                    # self.currentState = self.DONE
 
         # manager is in answer submission state, wait for user to press submit answer button to proceed
         elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
             if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 # self.currentState = self.DONE
                 self.currentState = self.DONE
-
+        self.setBorderPos()
 
     def draw(self):
+        if self.currentState == self.CHECKCUTS:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            if self.lastCuts == 0:
+                draw_text('Proceed to shading vertically', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
+            elif self.lastCuts == 1:
+                draw_text('Proceed to shading horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         if self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
@@ -123,6 +145,8 @@ class StateManagerMult:
             return "Cutting Vertically"
         elif self.currentState == self.SHADINGVERTICALLY:
             return "Shading Vertically"
+        elif self.currentState == self.CHECKCUTS:
+            return "Checking Cuts"
         elif self.currentState == self.CUTTINGHORIZONTALLY:
             return "Cutting Horizontally"
         elif self.currentState == self.SHADINGHORIZONTALLY:
@@ -210,6 +234,36 @@ class StateManagerMult:
             if rect.isShadedB == True:
                 numerator += 1
         return numerator
+
+    def undoCutsVert(self, cutter):
+        for rect in self.drawablesController.rectangles:
+            if rect.isOriginalSquare is False:
+                self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.verticalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        cutter.verticalCuts.clear()
+        # cutter.isShowingVerticalGuidelines = True
+        cutter.setStateCutVertical()
+        self.currentState = self.CUTTINGVERTICALLY
+
+    def undoCutsHoriz(self, cutter):
+        for rect in self.drawablesController.rectangles:
+            if rect.isOriginalSquare is False:
+                self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.horizontalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        for rect in self.rectsHolder:
+            if rect.isOriginalSquare is False:
+                self.drawablesController.rectangles.append(rect)
+        cutter.horizontalCuts.clear()
+        cutter.setStateCutHorizontal()
+        # cutter.isShowingHorizontalGuidelines = True
+        self.currentState = self.CUTTINGHORIZONTALLY
+
 
     def setBorderPos(self):
         for rect in self.drawablesController.rectangles:

@@ -30,16 +30,14 @@ class CutterFraction:
         self.maxDivisions = 6 # This is how many possible divisions rect can be cut by
         self.dstForCutInit = 5 # how far away mouse can be to pick up cut, requires fine tuning
 
+        # For undoing cuts
+        self.verticalCutList = list()
+        self.horizontalCutList = list()
+
         #init vertical cuts
         self.verticalCuts = list()
-        for x in range(2,self.maxDivisions+1):
-            xPos = int((self.myRect.width * (1/x)) + self.myRect.topLeftX)
-            numberCuts = x
-            self.verticalCuts.append(FractionCut(xPos,self.myRect.topLeftY,numberCuts,str(numberCuts),self.myRect))
-        #init horizontal cuts
-        # most of horizontal cut init done in function initHorizontalCuts called when leaving
-        # CUTTINGVERTICAL state b/c we dont want to show till then
         self.horizontalCuts = list()
+        self.setStateCutVertical()
 
         #For drawing font
         self.message_font = pg.font.SysFont('Arial', 32)
@@ -60,6 +58,7 @@ class CutterFraction:
         self.state = self.WAITING
 
     def setStateCutVertical(self):
+        self.initVerticalCuts()
         self.state = self.CUTTINGVERTICAL
 
     def setStateCutHorizontal(self):
@@ -87,7 +86,7 @@ class CutterFraction:
                             # self.state = self.CUTTINGHORIZONTAL
                             self.myRect.numberHorizontalRects = self.verticalGuidelinesCount
                             self.myRect.cutSquareVertical()
-                            self.state = self.WAITING         
+                            self.state = self.WAITING    
             else:
                 self.isShowingVerticalGuidelines = False
         # 2ND STATE: HORIZONTAL CUTTING
@@ -102,7 +101,10 @@ class CutterFraction:
                             self.divideHorizontal()
                             self.isShowingHorizontalGuidelines = False
                             self.cleanupCuts(self.horizontalCuts)
-                            self.state = self.FINALCUT
+                            if self.myRect.stateManager.operation_type == self.myRect.stateManager.DIV or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
+                                self.state = self.WAITING
+                            else:
+                                self.state = self.FINALCUT
             else:
                 self.isShowingHorizontalGuidelines = False
         # FINAL STATE: SET UP MY RECT FOR SUBDIVIDE
@@ -178,6 +180,7 @@ class CutterFraction:
         for i in range(1,self.verticalGuidelinesCount):
             xPosition = int(xSpacing * i + self.myRect.topLeftX)
             gl = GuideLine(xPosition,self.myRect.topLeftY,"vertical",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
+            self.verticalCutList.append(gl)
 
     # divide OG rectangle with permenant black horizontal guidelines
     def divideHorizontal(self):
@@ -186,7 +189,7 @@ class CutterFraction:
         for i in range(1,self.horizontalGuidelinesCount):
             yPosition = int(ySpacing * i + self.myRect.topLeftY)
             gl = GuideLine(self.myRect.topLeftX,yPosition,"horizontal",self.myRect,self.myRect.screen,self.myRect.drawablesController,True)
-
+            self.horizontalCutList.append(gl)
     #loop through either self.horizontalCuts or self.verticalCuts and remove them from drawablesController list
     def cleanupCuts(self, li):
         for cut in li:
@@ -195,11 +198,16 @@ class CutterFraction:
                     self.myRect.drawablesController.cutmarkers.remove(cut)
 
     def initHorizontalCuts(self):
-        #init horizontal cuts
         for x in range(2, self.maxDivisions+1):
             yPos = int((self.myRect.height * (1/x)) + self.myRect.topLeftY)
             numberCuts = x
             self.horizontalCuts.append(FractionCut(self.myRect.topLeftX,yPos,numberCuts,str(numberCuts),self.myRect))
+
+    def initVerticalCuts(self):
+        for x in range(2,self.maxDivisions+1):
+            xPos = int((self.myRect.width * (1/x)) + self.myRect.topLeftX)
+            numberCuts = x
+            self.verticalCuts.append(FractionCut(xPos,self.myRect.topLeftY,numberCuts,str(numberCuts),self.myRect))
 
 
 class BoundingBox:

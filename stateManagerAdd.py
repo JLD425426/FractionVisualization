@@ -40,6 +40,7 @@ class StateManagerAdd:
         self.MOVING2 = 9
         self.ANSWERSUBMISSION = 10
         self.DONE = 11
+        self.CHECKCUTS = 12
 
         self.currentState = self.CUTTINGVERTICALLY1
 
