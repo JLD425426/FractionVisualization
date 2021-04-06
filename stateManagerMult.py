@@ -87,6 +87,9 @@ class StateManagerMult:
                     if rect.isShadedV == True:
                         sCount += 1
                 if sCount != 0:
+                    for rect in self.drawablesController.rectangles:
+                        if rect.ownerID == 1:
+                            self.rectsHolder.append(rect)
                     ##self.error_detect = False
                     self.currentState = self.CUTTINGHORIZONTALLY 
                     cutter.setStateCutHorizontal()
