@@ -101,7 +101,7 @@ class CutterFraction:
                             self.divideHorizontal()
                             self.isShowingHorizontalGuidelines = False
                             self.cleanupCuts(self.horizontalCuts)
-                            if self.myRect.stateManager.operation_type == self.myRect.stateManager.DIV or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT:
+                            if self.myRect.stateManager.operation_type == self.myRect.stateManager.DIV or self.myRect.stateManager.operation_type == self.myRect.stateManager.MULT or self.myRect.stateManager.operation_type == self.myRect.stateManager.SUB:
                                 self.state = self.WAITING
                             else:
                                 self.state = self.FINALCUT
