@@ -594,22 +594,35 @@ def main_prog():
         
 
         if program_OperationType == ADDITION:
-            undoCut_button = pygame.Rect(WIDTH/3-testRectangle.width+5, HEIGHT/3, 130, 50)
-            undoCut_button2 = pygame.Rect(WIDTH/3-testRectangle.width+5, HEIGHT/3*2+100, 130, 50)
-            undoCut_button3 = pygame.Rect(WIDTH/3*2-75, HEIGHT/3*2+100, 130, 50)
-            undoCut_button4 = pygame.Rect(WIDTH/3*2-75, HEIGHT/3, 130, 50)
-            if undoCut_button.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-            if undoCut_button2.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-            if undoCut_button3.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
-            if undoCut_button4.collidepoint((mouse.mx, mouse.my)):
-                if click:
-                    print("BUTTON WORKS")
+            if stateManager.currentState == stateManager.CHECKCUTS or stateManager.currentState == stateManager.CHECKCUTS2 or stateManager.currentState == stateManager.CHECKCUTS3:
+                undoCut_button = pygame.Rect(WIDTH/3-testRectangle.width+5, HEIGHT/3, 130, 50)
+                undoCut_button2 = pygame.Rect(WIDTH/3-testRectangle.width+5, HEIGHT/3*2+100, 130, 50)
+                undoCut_button3 = pygame.Rect(WIDTH/3*2-75, HEIGHT/3, 130, 50)
+                undoCut_button4 = pygame.Rect(WIDTH/3*2-75, HEIGHT/3*2+175, 130, 50)
+                if undoCut_button.collidepoint((mouse.mx, mouse.my)):
+                    if click:
+                        if stateManager.lastCuts == 0:
+                            stateManager.undoCutsVert(1, cutter)
+                        elif stateManager.lastCuts == 1:
+                            stateManager.undoCutsHoriz(1, cutter)
+                if undoCut_button2.collidepoint((mouse.mx, mouse.my)):
+                    if click:
+                        if stateManager.lastCuts == 0:
+                            stateManager.undoCutsVert(2, cutter2)
+                        elif stateManager.lastCuts == 1:
+                            stateManager.undoCutsHoriz(2, cutter2)
+                if undoCut_button3.collidepoint((mouse.mx, mouse.my)):
+                    if click:
+                        if stateManager.lastCuts == 2:
+                            stateManager.undoCutsVert(3, cutter3)
+                        elif stateManager.lastCuts == 3:
+                            stateManager.undoCutsHoriz(3, cutter3)
+                if undoCut_button4.collidepoint((mouse.mx, mouse.my)):
+                    if click:
+                        if stateManager.lastCuts == 4:
+                            stateManager.undoCutsVert(4, cutter4)
+                        elif stateManager.lastCuts == 5:
+                            stateManager.undoCutsHoriz(4, cutter4)
 
         elif program_OperationType == DIVISION:
             if stateManager.hasThreeSquares:
@@ -670,17 +683,17 @@ def main_prog():
 
         # ALL LOGIC FOR DRAWING UNDO BUTTONS HERE
         if program_OperationType == ADDITION:
-            if stateManager.currentState == stateManager.CUTTINGVERTICALLY1 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY1:
+            if stateManager.currentState == stateManager.CHECKCUTS:
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button)
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button2)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3 - testRectangle.width/1.5-20, (HEIGHT/3)+25)
                 draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3 - testRectangle.width/1.5-20, (HEIGHT/3)*2+125)
-            elif stateManager.currentState == stateManager.CUTTINGVERTICALLY2 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY2:
-                pygame.draw.rect(screen, (8, 41, 255), undoCut_button4)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)+25)
-            elif stateManager.currentState == stateManager.CUTTINGVERTICALLY3 or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3:
+            elif stateManager.currentState == stateManager.CHECKCUTS2:
                 pygame.draw.rect(screen, (8, 41, 255), undoCut_button3)
-                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)*2+125)
+                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)+25)
+            elif stateManager.currentState == stateManager.CHECKCUTS3:
+                pygame.draw.rect(screen, (8, 41, 255), undoCut_button4)
+                draw_text('Undo Cut', button_font, (0,0,0), screen, WIDTH/3*2-10, (HEIGHT/3)*2+200)
 
         elif program_OperationType == DIVISION:
             if stateManager.currentState == stateManager.CHECKCUTS:
@@ -779,7 +792,7 @@ def main_prog():
                         if i < stateManager.answerCeiling:
                             pygame.draw.rect(screen, colors.YELLOW, (borderLeft-((i)*borderWidth), borderTop, borderWidth, borderHeight), 4)  # width = 4
         elif program_OperationType == ADDITION:
-            if stateManager.currentState == stateManager.MOVING or stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3 or stateManager.currentState == stateManager.CUTTINGVERTICALLY3:
+            if stateManager.currentState == stateManager.MOVING or stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3 or stateManager.currentState == stateManager.CUTTINGVERTICALLY3 or stateManager.currentState == stateManager.CHECKCUTS3:
                 pygame.draw.rect(screen, colors.YELLOW, (border1Left, border1Top, borderWidth, borderHeight), 4)
                 if stateManager.twoWholes is True:
                     pygame.draw.rect(screen, colors.YELLOW, (border2Left, border2Top, borderWidth, borderHeight), 4)

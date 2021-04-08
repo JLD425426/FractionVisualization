@@ -41,6 +41,8 @@ class StateManagerAdd:
         self.ANSWERSUBMISSION = 10
         self.DONE = 11
         self.CHECKCUTS = 12
+        self.CHECKCUTS2 = 13
+        self.CHECKCUTS3 = 14
 
         self.currentState = self.CUTTINGVERTICALLY1
 
@@ -57,6 +59,14 @@ class StateManagerAdd:
         self.submitAnswerButtonX = int(self.WIDTH/2 - 100) + 100
         self.submitAnswerButtonY = int(self.HEIGHT - 220)
         self.submitAnswerButton = pygame.Rect(self.submitAnswerButtonX, self.submitAnswerButtonY, 200, 50)
+
+        # For UNDO
+        self.lastCuts = -1      # 0 if vertical round one last, 1 if horizontal round one last
+        # 2 if vertical round 2 is last, 3 if horizontal round 2 is last, 4 if vertical 3 is last, 5 if horiz 3 is last
+        self.rectsHolder1 = list()
+        self.rectsHolder2 = list()
+        self.rectsHolder3 = list()
+        self.rectsHolder4 = list()
 
         # Need actual CPU answer to check if > 1
         self.cpuDenomAns = 0
@@ -94,7 +104,33 @@ class StateManagerAdd:
             cutter3.setStateWaiting()
             cutter4.setStateWaiting()
             if cutter1.getState() == "Waiting" and cutter2.getState() == "Waiting":
+                self.lastCuts = 0
+                self.currentState = self.CHECKCUTS
+        elif self.currentState == self.CHECKCUTS:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                if self.lastCuts == 0:
                     self.currentState = self.SHADINGVERTICALLY
+                elif self.lastCuts == 1:
+                    cutter1.state = cutter1.FINALCUT
+                    cutter2.state = cutter2.FINALCUT
+                    cutter3.setStateCutVertical()
+                    self.currentState = self.CUTTINGVERTICALLY2
+        elif self.currentState == self.CHECKCUTS2:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                if self.lastCuts == 2:
+                    cutter3.setStateCutHorizontal()
+                    self.currentState = self.CUTTINGHORIZONTALLY2
+                elif self.lastCuts == 3:
+                    cutter3.state = cutter3.FINALCUT
+                    self.currentState = self.GETTINGDENOMINATOR
+        elif self.currentState == self.CHECKCUTS3:
+            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
+                if self.lastCuts == 4:
+                    cutter4.setStateCutHorizontal()
+                    self.currentState = self.CUTTINGHORIZONTALLY3
+                elif self.lastCuts == 5:
+                    cutter4.state = cutter4.FINALCUT
+                    self.currentState = self.MOVING
         # manager is now shading vertically, now can shade current rects
         elif self.currentState == self.SHADINGVERTICALLY:
             self.shadeVertical()
@@ -114,6 +150,12 @@ class StateManagerAdd:
                     
                 if sCountR1 != 0 and sCountR2 != 0:
                     ##self.error_detect = False
+                    if self.lastCuts == 0:
+                        for rect in self.drawablesController.rectangles:
+                            if rect.ownerID == 1:
+                                self.rectsHolder1.append(rect)
+                            elif rect.ownerID == 2:
+                                self.rectsHolder2.append(rect)
                     self.currentState = self.CUTTINGHORIZONTALLY1
                     cutter1.setStateCutHorizontal()
                     cutter2.setStateCutHorizontal()
@@ -121,25 +163,36 @@ class StateManagerAdd:
                 # manager now cutting horizontally, let cutter do work        
         elif self.currentState == self.CUTTINGHORIZONTALLY1:
             if cutter1.getState() == "Waiting" and cutter2.getState() == "Waiting":
-                    cutter3.setStateCutVertical()
+                    #cutter3.setStateCutVertical()
                     ####cutter4.setStateCutVertical()
-                    self.currentState = self.CUTTINGVERTICALLY2
+                    self.lastCuts = 1
+                    self.currentState = self.CHECKCUTS
         elif self.currentState == self.CUTTINGVERTICALLY2 and self.movedBefore == True:
             if cutter4.getState() == "Waiting":
                     cutter4.setStateCutHorizontal()
-                    self.currentState = self.CUTTINGHORIZONTALLY2
+                    for rect in self.drawablesController.rectangles:
+                        if rect.ownerID == 3:
+                            self.rectsHolder3.append(rect)
+                    self.lastCuts = 2
+                    self.currentState = self.CHECKCUTS2
                     ####cutter4.setStateCutHorizontal()
         elif self.currentState == self.CUTTINGHORIZONTALLY2 and self.movedBefore == True:
             if cutter4.getState() == "Waiting": ####and cutter4.getState() == "Waiting":
-                self.currentState = self.GETTINGDENOMINATOR        
+                self.lastCuts = 3
+                self.currentState = self.CHECKCUTS2       
         elif self.currentState == self.CUTTINGVERTICALLY2 and self.movedBefore == False:
             if cutter3.getState() == "Waiting":
-                    cutter3.setStateCutHorizontal()
-                    self.currentState = self.CUTTINGHORIZONTALLY2
+                    #cutter3.setStateCutHorizontal()
+                    for rect in self.drawablesController.rectangles:
+                        if rect.ownerID == 3:
+                            self.rectsHolder3.append(rect)
+                    self.lastCuts = 2
+                    self.currentState = self.CHECKCUTS2
                     ####cutter4.setStateCutHorizontal()
         elif self.currentState == self.CUTTINGHORIZONTALLY2 and self.movedBefore == False:
             if cutter3.getState() == "Waiting": ####and cutter4.getState() == "Waiting":
-                self.currentState = self.GETTINGDENOMINATOR
+                self.lastCuts = 3
+                self.currentState = self.CHECKCUTS2
         elif self.currentState == self.GETTINGDENOMINATOR:
             self.getDenominator()
             self.setBorder1Pos()
@@ -158,11 +211,16 @@ class StateManagerAdd:
         elif self.currentState == self.CUTTINGVERTICALLY3:
             self.movedBefore = True
             if cutter4.getState() == "Waiting":
-                cutter4.setStateCutHorizontal()
-                self.currentState = self.CUTTINGHORIZONTALLY3
+                for rect in self.drawablesController.rectangles:
+                    if rect.ownerID == 4:
+                        self.rectsHolder4.append(rect)
+                self.lastCuts = 4
+                #cutter4.setStateCutHorizontal()
+                self.currentState = self.CHECKCUTS3
         elif self.currentState == self.CUTTINGHORIZONTALLY3:
             if cutter4.getState() == "Waiting":
-                self.currentState = self.MOVING
+                self.lastCuts = 5
+                self.currentState = self.CHECKCUTS3
         elif self.currentState == self.MOVING and self.movedBefore == True:
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 self.currentState = self.ANSWERSUBMISSION
@@ -174,7 +232,25 @@ class StateManagerAdd:
 
 
     def draw(self):
-        if self.currentState == self.SHADINGVERTICALLY:
+        if self.currentState == self.CHECKCUTS:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            if self.lastCuts == 0:
+                draw_text('Proceed to shading vertically', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
+            elif self.lastCuts == 1:
+                draw_text('Proceed to cutting vertically', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.CHECKCUTS2:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            if self.lastCuts == 2:
+                draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
+            elif self.lastCuts == 3:
+                draw_text('Proceed to moving', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.CHECKCUTS3:
+            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
+            if self.lastCuts == 4:
+                draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
+            elif self.lastCuts == 5:
+                draw_text('Proceed to moving', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
+        elif self.currentState == self.SHADINGVERTICALLY:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to cutting horizontally', self.button_font, (0,0,0), self.screen, self.WIDTH/1.72, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.MOVING or self.currentState == self.MOVING2:
@@ -200,6 +276,12 @@ class StateManagerAdd:
             return "Calculating/Loading"
         elif self.currentState == self.DONE:
             return "Finished"
+        elif self.currentState == self.CHECKCUTS:
+            return "Checking Cuts"
+        elif self.currentState == self.CHECKCUTS2:
+            return "Checking Cuts"
+        elif self.currentState == self.CHECKCUTS3:
+            return "Checking Cuts"
         elif self.currentState == self.MOVING:
             return "Moving"
         elif self.currentState == self.CUTTINGVERTICALLY3:
@@ -316,6 +398,61 @@ class StateManagerAdd:
             return True
         return False
         
+    def undoCutsVert(self, rectID, cutter):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == rectID:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.verticalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        cutter.verticalCuts.clear()
+        # cutter.isShowingVerticalGuidelines = True
+        cutter.setStateCutVertical()
+        if rectID == 1 or rectID == 2:
+            self.currentState = self.CUTTINGVERTICALLY1
+        elif rectID == 3:
+            self.currentState = self.CUTTINGVERTICALLY2
+        elif rectID == 4:
+            self.currentState = self.CUTTINGVERTICALLY3
+
+    def undoCutsHoriz(self, rectID, cutter):
+        for rect in self.drawablesController.rectangles:
+            if rect.ownerID == rectID:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.remove(rect)
+        for gl in self.drawablesController.guidelines:
+            for gl2 in cutter.horizontalCutList:
+                if gl is gl2:
+                    self.drawablesController.guidelines.remove(gl)
+        if rectID == 1:
+            for rect in self.rectsHolder1:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+        elif rectID == 2:
+            for rect in self.rectsHolder2:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+        elif rectID == 3:
+            for rect in self.rectsHolder3:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+        elif rectID == 4:
+            for rect in self.rectsHolder4:
+                if rect.isOriginalSquare is False:
+                    self.drawablesController.rectangles.append(rect)
+        cutter.horizontalCuts.clear()
+        cutter.setStateCutHorizontal()
+        # cutter.isShowingHorizontalGuidelines = True
+        if rectID == 1 or rectID == 2:
+            self.currentState = self.CUTTINGHORIZONTALLY1
+        elif rectID == 3:
+            self.currentState = self.CUTTINGHORIZONTALLY2
+        elif rectID == 4:
+            self.currentState = self.CUTTINGHORIZONTALLY3
+
+
     def setBorder1Pos(self):
         for rect in self.drawablesController.rectangles:
             if rect.ownerID == 3:
