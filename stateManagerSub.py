@@ -121,22 +121,6 @@ class StateManagerSub:
                 self.lastCuts = 1
                 self.currentState = self.CHECKCUTS
 
-        # manager now shading horizontally
-        elif self.currentState == self.SHADINGHORIZONTALLY:
-            if self.hasInvertedRectData == False:
-                self.invertRectData()   #use tab for this
-                self.hasInvertedRectData = True #use tab for this
-            self.shadeHorizontal()
-            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                sCount = 0
-                for rect in self.drawablesController.rectangles:
-                    if rect.isShadedH == True:
-                        sCount += 1
-                if sCount != 0:
-                    ##self.error_detect = False
-                    self.currentState = self.MOVING
-                ##self.error_detect = True
-
         elif self.currentState == self.MARKING:
             self.markRects()
             if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
@@ -154,22 +138,6 @@ class StateManagerSub:
                     self.get_answerDenom()
                     self.currentState = self.ANSWERSUBMISSION
                         
-
-
-
-        elif self.currentState == self.MOVING:
-            if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-                tCount = 0
-                for rect in self.drawablesController.rectangles:
-                    if rect.isTrash == True:
-                        tCount += 1
-                if tCount != 0:        
-                    self.currentState = self.ANSWERSUBMISSION
-                ##self.currentState = self.THROWINGAWAY
-        ##elif self.currentState == self.THROWINGAWAY:
-        ##        if self.proceed_button.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
-        ##            self.currentState = self.DONE
-                # manager is in answer submission state, wait for user to press submit answer button to proceed
         elif self.currentState == self.ANSWERSUBMISSION and self.userAnswerSystemReadyForSubmission == True:
             if self.submitAnswerButton.collidepoint((self.mouse.mx, self.mouse.my)) and self.mouse.leftMouseReleasedThisFrame:
                 # self.currentState = self.DONE
@@ -191,22 +159,12 @@ class StateManagerSub:
             ##    while (self.timer <= 300):
             ##        pygame.draw.rect(self.screen, (255, 255, 255), self.pop_up)
             ##        draw_text('Shading Vert', self.message_font_s, (0,0,0), self.screen, (int)(self.WIDTH/2), (self.HEIGHT-560))
-
-        elif self.currentState == self.SHADINGHORIZONTALLY:
-            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Proceed to marking', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
-        elif self.currentState == self.MOVING:
-            pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-            draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.MARKING:
             pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
             draw_text('Proceed to answer submission', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
         elif self.currentState == self.ANSWERSUBMISSION:
             pygame.draw.rect(self.screen, (8, 41, 255), self.submitAnswerButton)
             draw_text('Submit Answer', self.button_font, (0,0,0), self.screen, self.submitAnswerButtonX + 100, self.submitAnswerButtonY + 25)
-        ##elif self.currentState == self.THROWINGAWAY:
-        ##    pygame.draw.rect(self.screen, (8, 41, 255), self.proceed_button)
-        ##    draw_text('Finish', self.button_font, (0,0,0), self.screen, self.WIDTH/2, int((self.HEIGHT/2+180)+25))
 
     ###THis does nothing!TO be fixed
     def drawError(self):
@@ -229,20 +187,15 @@ class StateManagerSub:
             return "Shading Vertically"
         elif self.currentState == self.CUTTINGHORIZONTALLY:
             return "Cutting Horizontally"
-        elif self.currentState == self.SHADINGHORIZONTALLY:
-            return "Shading Horizontally"
         elif self.currentState == self.MARKING:
             return "Marking"
         elif self.currentState == self.CHECKCUTS:
             return "Checking Cuts"
-        elif self.currentState == self.MOVING:
-            return "Moving"
         elif self.currentState == self.DONE:
             return "Finished"
         elif self.currentState == self.ANSWERSUBMISSION:
             return "Submitting Answer"
-        ##elif self.currentState == self.THROWINGAWAY:
-        ##    return "Throwing Away"
+
 
     def markRects(self):
         if self.mouse.leftMouseReleasedThisFrame == True:

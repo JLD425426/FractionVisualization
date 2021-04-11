@@ -116,31 +116,6 @@ class Rectangle:
                         if mouse.whoisHeld == self:
                             self.updatePosition(mouse.mx,mouse.my)
 
-            if self.stateManager.operation_type == 3:       #Subtraction
-                    #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
-                    ##if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
-                if self.isOriginalSquare == False:
-                        #   #if self.isShadedH is False:
-                        #   #    return
-                        #if self.isShadedB is True or self.isShadedV is True:
-                        #    return
-                        #   #if self.isShadedV is True:
-                        #   #    return
-                           
-                        # mouse is holding no one and clicking, set self as being held
-                        if self.isShadedB is True or self.isShadedH is True:
-                            if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
-                                mouse.whoisHeld = self
-                                if self.myPointCollider != None:
-                                    self.myPointCollider.isOccupied = False
-                            # mouse release so remove self as being held
-                            if mouse.isClick == False and mouse.whoisHeld == self:
-                                self.putDownSub(mouse)
-                            # self is being dragged so move it around
-                            if mouse.whoisHeld == self:
-                                self.updatePosition(mouse.mx,mouse.my)
-
-
             if self.stateManager.operation_type == 2:       #Division
                     #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
                     ##if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
@@ -382,78 +357,6 @@ class Rectangle:
                     pass
         self.updatePosition(self.xOrigin, self.yOrigin)
         
-    def putDownSub(self,mouse):
-        mouse.whoisHeld = None
-        replaced = None
-        ogColor = colors.WHITE
-        # First check collision with trash, if colliding and isShaded B then its trrash, if not -snap ack to origin, return
-        if self.isCollidingWithTrash() or self.isCollidingWithPoint(114, 577):
-                if self.isShadedB is True:
-                    self.xOrigin = 2000
-                    self.yOrigin = 2000
-                    self.isTrash = True
-                    self.updatePosition(self.xOrigin,self.yOrigin)
-                    return
-                else:
-                    self.updatePosition(self.xOrigin, self.yOrigin)
-                    return 
-        for pc in self.drawablesController.pointColliders:
-            if self.isCollidingWithPoint(pc.x,pc.y):
-                if pc.isOccupied and pc.valid:
-                    for rect in self.drawablesController.rectangles:
-                        if rect.myPointCollider.x == pc.x and rect.myPointCollider.y == pc.y:
-                            # if your tryng to snap a horizontally shaded rect onto anythin but a vertically shaded rect or
-                            # ur trying to snap a both-shaded rect onto anything, snap back to origin and return
-                            if (self.isShadedH == True and rect.isShadedV != True and rect != self):
-                                self.updatePosition(self.xOrigin, self.yOrigin)
-                                return
-                            elif (self.isShadedB == True):
-                                self.updatePosition(self.xOrigin, self.yOrigin)
-                                return
-                            elif (rect.isShadedH == True):
-                                self.updatePosition(self.xOrigin, self.yOrigin)
-                                return
-                            else:
-                                #if rect.color != colors.WHITE:
-                                #    ogColor = rect.color
-                                replaced = rect
-                                if (self.width - pc.width <= 1 and self.width - pc.width >= -1 and self.height - pc.height <= 1 and self.height - pc.height >= -1):
-                                    #deal with rounding errors
-                                    ##if 
-                                    self.updatePosition(pc.x,pc.y)
-                                    self.xOrigin = pc.x
-                                    self.yOrigin = pc.y
-                                    pc.isOccupied = True
-                                    self.myPointCollider = pc
-                                    #self.changeColorHatch(colors.BLACK)
-                                    #if self.color != colors.WHITE or self.color != ogColor:
-                                    #    self.color = ogColor
-                                    #self.stateManager.invertRectData()
-                                    #   #self.isShadedH = True
-                                    self.isShadedH = False
-                                    self.isShadedV = False
-                                    self.isShadedB = True
-                                    self.hColor = self.stateManager.hColor
-                                    self.vColor = self.stateManager.vColor
-                                        #   #self.ownerID = 2
-                                    if replaced:
-                                        self.drawablesController.pointColliders.remove(replaced.myPointCollider)
-                                        self.drawablesController.rectangles.remove(replaced)
-                                    return
-                                else:
-                                    pass
-                    
-                                
-                else:
-                    # snap back to og position
-                    if self.xOrigin == pc.x and self.yOrigin == pc.y:
-                        self.updatePosition(self.xOrigin, self.yOrigin)
-                        return
-                # check to see if the spot occupied has matching height and width 
-                # or check to see if the height of rect1 matches the width of rect2 and the width of rect1 matches the height of rect2
-                # if neither statement is true, call snapback to the origin
-                
-        self.updatePosition(self.xOrigin,self.yOrigin)
 
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
