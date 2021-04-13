@@ -1,1 +1,4 @@
-# FractionVisualization
+# Fraction Visualization
+
+## About The Program
+Fraction Visualization is a learning tool written in Python that serves to help students (or anyone who struggles with fractions) to understand what is really happening when we perform operations on fractions. Many of us were taught in school to follow a series of steps to solve fraction problems without really understanding what these steps mean. For example, for the division problem 1/2 / 1/3 we are told to flip 1/3 and then multiply both numerators and denominators. In this case it is likely that we know how to arrive at the correct answer but we don't really know why we are doing these steps other than that's the way we were taught to do them. Fraction Visualization clears the air by answering the "why?" in these steps through an interactive experience using various visual representations for the four main operations: addition, subtraction, multiplication, and division.
