@@ -27,6 +27,8 @@ ORANGE = (247, 147, 35)
 GREEN = (20, 166, 81)
 PURPLE = (102, 48, 144)
 
+GOLD = (212, 188, 11)
+
 #Lighter tints of main colors
 LIGHTRED = (235, 103, 96)
 LIGHTBLUE = (143, 151, 242)

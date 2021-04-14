@@ -782,26 +782,26 @@ def main_prog():
         if program_OperationType == DIVISION:
             if stateManager.hasThreeSquares is True:
                 if stateManager.currentState == stateManager.MOVING or stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
-                    pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)  # width = 4
-                    pygame.draw.rect(screen, colors.YELLOW, (secondLeft, secondTop, borderWidth, borderHeight), 4)  # width = 4
+                    pygame.draw.rect(screen, colors.GOLD, (borderLeft, borderTop, borderWidth, borderHeight), 4)  # width = 4
+                    pygame.draw.rect(screen, colors.GOLD, (secondLeft, secondTop, borderWidth, borderHeight), 4)  # width = 4
 
             else:
                 if stateManager.currentState == stateManager.MOVING or stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
                     numBoundaries += 1
                     for i in range(numBoundaries):
                         if i < stateManager.answerCeiling:
-                            pygame.draw.rect(screen, colors.YELLOW, (borderLeft-((i)*borderWidth), borderTop, borderWidth, borderHeight), 4)  # width = 4
+                            pygame.draw.rect(screen, colors.GOLD, (borderLeft-((i)*borderWidth), borderTop, borderWidth, borderHeight), 4)  # width = 4
         elif program_OperationType == ADDITION:
             if stateManager.currentState == stateManager.MOVING or stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE or stateManager.currentState == stateManager.CUTTINGHORIZONTALLY3 or stateManager.currentState == stateManager.CUTTINGVERTICALLY3 or stateManager.currentState == stateManager.CHECKCUTS3:
-                pygame.draw.rect(screen, colors.YELLOW, (border1Left, border1Top, borderWidth, borderHeight), 4)
+                pygame.draw.rect(screen, colors.GOLD, (border1Left, border1Top, borderWidth, borderHeight), 4)
                 if stateManager.twoWholes is True:
-                    pygame.draw.rect(screen, colors.YELLOW, (border2Left, border2Top, borderWidth, borderHeight), 4)
+                    pygame.draw.rect(screen, colors.GOLD, (border2Left, border2Top, borderWidth, borderHeight), 4)
         elif program_OperationType == MULTIPLICATION:
             if stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
-                pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)
+                pygame.draw.rect(screen, colors.GOLD, (borderLeft, borderTop, borderWidth, borderHeight), 4)
         elif program_OperationType == SUBTRACTION:
             if stateManager.currentState == stateManager.ANSWERSUBMISSION or stateManager.currentState == stateManager.DONE:
-                pygame.draw.rect(screen, colors.YELLOW, (borderLeft, borderTop, borderWidth, borderHeight), 4)
+                pygame.draw.rect(screen, colors.GOLD, (borderLeft, borderTop, borderWidth, borderHeight), 4)
             
         if mouse.whoisHeld != None:
             mouse.whoisHeld.draw()
