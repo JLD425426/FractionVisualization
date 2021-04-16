@@ -214,6 +214,19 @@ class StateManagerSub:
                                         _r.setMark(True)
                                         rect.setMark(True)
                                         break
+                    if rect.ownerID == 2:
+                        if rect.getMark() == False:
+                            for _r in self.drawablesController.rectangles:
+                                if _r.ownerID == 1 and _r.isShaded == True and _r.getMark() == False:
+                                    rwd = rect.width - _r.width
+                                    rhd = rect.height - _r.height
+                                    rowd = rect.width - _r.height
+                                    rohd = rect.height - _r.width
+                                    if ((rwd >= -1 and rwd <= 1) and (rhd >= -1 and rhd <= 1)) or ((rowd >= -1 and rowd <= 1) and (rohd >= -1 and rohd <= 1)):
+                                        _r.setMark(True)
+                                        rect.setMark(True)
+                                        break
+
 
 
 
