@@ -3,6 +3,7 @@ from fractionHandler import Fraction
 import pygame
 import colors
 import pygame as pg
+from resourcePath import resource_path
 
 class ProblemDisplay:
     def __init__(self, screen, WIDTH, HEIGHT, stateManager,operationType):
@@ -50,8 +51,8 @@ class ProblemDisplay:
         self.userdenominator = -1
 
         #sprites
-        self.checkmark = pg.image.load('assets/checkmark.png')
-        self.x = pg.image.load('assets/x.png')
+        self.checkmark = pg.image.load(resource_path('assets/checkmark.png'))
+        self.x = pg.image.load(resource_path('assets/x.png'))
 
         self.yOffset = 0
         if self.operation == "Addition":

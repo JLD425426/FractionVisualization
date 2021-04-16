@@ -1,6 +1,7 @@
 import pygame as pg
 import colors
 import math
+from resourcePath import resource_path
 
 class ColorPicker:
     def __init__(self, screen, screenW, screenH, mouse,statemanager,drawablesController):
@@ -13,9 +14,9 @@ class ColorPicker:
 
         self.clickRadius = 20 #number of pixels away from colorBlot for change color to happen
 
-        self.palette = pg.image.load('assets/palette.png')
+        self.palette = pg.image.load(resource_path('assets/palette.png'))
 
-        self.brushTip = pg.image.load('assets/brushTip.png')
+        self.brushTip = pg.image.load(resource_path('assets/brushTip.png'))
         self.brushTip.set_colorkey((0,0,0))
 
         # create list of colorblots user will select to change color
@@ -159,7 +160,7 @@ class ColorPicker:
 
 class ColorBlot:
     def __init__(self,name,col,x,y):
-        self.spr = pg.image.load('assets/colorBlot.png')
+        self.spr = pg.image.load(resource_path('assets/colorBlot.png'))
         self.spr.set_colorkey((0,0,0)) # makes it so black pixels arent drawn
         self.color = col
         self.x = x

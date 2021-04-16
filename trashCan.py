@@ -2,6 +2,7 @@ import pygame as pg
 from rectangle import Rectangle
 import math
 import colors
+from resourcePath import resource_path
 
 class TrashCan:
     def __init__(self, screen, screenW, screenH, mouse, statemanager, drawablesController):
@@ -12,7 +13,7 @@ class TrashCan:
         self.stateManager = statemanager
         self.drawablesController = drawablesController
         
-        self.trash = pg.image.load('assets/trashbin.png')
+        self.trash = pg.image.load(resource_path('assets/trashbin.png'))
         self.trash.set_colorkey((255,255,255))
         #self.hide = pg.image.load('assets/stealth.png')
         #self.hide.set_colorkey((255,255,255))

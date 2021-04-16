@@ -3,6 +3,7 @@ import colors
 import pygame as pg
 from drawText import draw_text
 from fractionHandler import Fraction
+from resourcePath import resource_path
 
 class UserAnswerSystem:
 
@@ -51,6 +52,7 @@ class UserAnswerSystem:
     if self.operation_type == self.MULT:
       # for "Enter Answer Here Text"
       self.enterAnswerHere_font = pg.font.SysFont('Arial', 36)
+      self.enterAnswerHereSimp_font = pg.font.SysFont('Arial', 36)
       self.startY = int(self.HEIGHT / 2) - 150
       self.startX = self.WIDTH - 210
       self.feedbackTextX = self.startX
@@ -88,6 +90,7 @@ class UserAnswerSystem:
     elif self.operation_type == self.SUB:
       # for "Enter Answer Here Text"
       self.enterAnswerHere_font = pg.font.SysFont('Arial', 30)
+      self.enterAnswerHereSimp_font = pg.font.SysFont('Arial', 30)
       self.startY = self.HEIGHT - 150
       self.startX = int(self.WIDTH/2) - 175
       self.feedbackTextX = int(self.WIDTH/2)
@@ -125,6 +128,7 @@ class UserAnswerSystem:
     elif self.operation_type == self.DIV:
       # for "Enter Answer Here Text"
       self.enterAnswerHere_font = pg.font.SysFont('Arial', 30)
+      self.enterAnswerHereSimp_font = pg.font.SysFont('Arial', 30)
       self.startY = self.HEIGHT - 150
       self.startX = int(self.WIDTH/2) - 260
       self.feedbackTextX = int(self.WIDTH/2)
@@ -167,6 +171,7 @@ class UserAnswerSystem:
     elif self.operation_type == self.ADD:
       # for "Enter Answer Here Text"
       self.enterAnswerHere_font = pg.font.SysFont('Arial', 30)
+      self.enterAnswerHereSimp_font = pg.font.SysFont('Arial', 24)
       self.startY = self.HEIGHT - 410
       self.startX = int(self.WIDTH/2) + 100
       self.feedbackTextX = int(self.WIDTH/2) + 95 
@@ -206,8 +211,8 @@ class UserAnswerSystem:
     self.hasCheckedAnswer = False # for making sure answer checked exactly one time
     self.hasCorrectAnswer = False
     self.hasReducedAnswer = False
-    self.checkmark = pg.image.load('assets/checkmark.png')
-    self.x = pg.image.load('assets/x.png')
+    self.checkmark = pg.image.load(resource_path('assets/checkmark.png'))
+    self.x = pg.image.load(resource_path('assets/x.png'))
 
 
 
@@ -310,7 +315,7 @@ class UserAnswerSystem:
         draw_text('Great Job!', self.enterAnswerHere_font, (0,0,0), self.screen, self.feedbackTextX, self.feedbackTextY)
         self.screen.blit(self.checkmark,(self.numeratorRectX + self.spriteXOffset,self.numeratorRectY + self.spriteYOffset))
       elif self.hasCorrectAnswer == True:
-        draw_text('Correct, but can be simplified.', self.enterAnswerHere_font, (0,0,0), self.screen, self.feedbackTextX, self.feedbackTextY)
+        draw_text('Correct, but can be simplified.', self.enterAnswerHereSimp_font, (0,0,0), self.screen, self.feedbackTextX, self.feedbackTextY)
         self.screen.blit(self.checkmark,(self.numeratorRectX + self.spriteXOffset,self.numeratorRectY + self.spriteYOffset))
       else:
         draw_text('Press Restart to try again', self.enterAnswerHere_font, (0,0,0), self.screen, self.feedbackTextX, self.feedbackTextY)

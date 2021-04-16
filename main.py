@@ -2,6 +2,7 @@ import pygame
 import colors
 import math
 from drawText import draw_text
+from drawText import draw_textLeftToRight
 from rectangle import Rectangle
 from pygame.locals import *
 from cutmarker import CutMarker
@@ -19,6 +20,7 @@ from problemGenerator import ProblemGenerator
 from trashCan import TrashCan
 from problemValidation import isValidProblem
 from userAnswerSystem import UserAnswerSystem
+from resourcePath import resource_path
 
 pygame.init()
 
@@ -28,7 +30,7 @@ WIDTH, HEIGHT = 1200, 700
 # define window
 screenDimensions = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(screenDimensions)
-pygame.display.set_caption("425 Project")
+pygame.display.set_caption("Fraction Visualization")
 
 # Create fonts for interface
 title_font = pygame.font.SysFont('Arial', 60)
@@ -46,7 +48,7 @@ fps = 60
 
 # Load image in for background
 # background_img = pygame.image.load("assets/yellow_background.jpg")
-background_img = pygame.image.load("assets/testBG1.png")
+background_img = pygame.image.load(resource_path("assets/testBG1.png"))
 
 # create bool to decide when mouse is clicked
 check = False
@@ -243,7 +245,7 @@ def main_menu():
         # Drawing the buttons and text for menu
         pygame.draw.rect(screen, colors.TITLEBAR, title_bar)
         pygame.draw.rect(screen, (0, 0, 0), title_bar, 7)
-        draw_text('Main Menu', title_font, (0,0,0), screen, int(WIDTH/2), int(HEIGHT/12))
+        draw_text('Fraction Visualization', title_font, (0,0,0), screen, int(WIDTH/2), int(HEIGHT/12))
 
         draw_text('Operation', pygame.font.SysFont('Arial', 48), (0,0,0), screen, WIDTH/2, startY) 
         #draw operation buttons and their tet
@@ -722,7 +724,7 @@ def main_prog():
             state_message = "Current state: " + stateManager.getCurrentState()
         else:
             state_message = ""
-        draw_text(state_message, button_font, (0,0,0), screen, 160, 25)
+        draw_textLeftToRight(state_message, button_font, (0,0,0), screen, 15, 15)
 
         tempRectList = list()
         for bgS in drawablesController.bgSquares:
@@ -971,7 +973,7 @@ def createUserProblem():
 
         #----------- BEGIN DRAW, END LOGIC-------------------#
         # draw back and start buttons and corresponding text
-        background_img = pygame.image.load("assets/testBG1.png")
+        background_img = pygame.image.load(resource_path("assets/testBG1.png"))
         screen.blit(background_img, (0, 0))
 
         draw_text('Create Your Problem', title_font, (0,0,0), screen, int(WIDTH/2), int(HEIGHT/12))
