@@ -27,6 +27,6 @@ In the subtraction example below, the user is in the process of cutting the seco
 ## For Programmers
 The program is written entirely in Python 3.8.5.
 Dependencies:
-pygame v:1.9.6 (other versions may work)
-numpy v:1.19.2 (other versions may work)
+*pygame v:1.9.6 (other versions may work)
+*numpy v:1.19.2 (other versions may work)
 
