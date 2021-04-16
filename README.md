@@ -22,5 +22,11 @@ In the subtraction example below, the user is in the process of cutting the seco
 
 3) Since you are downloading an exe from the internet, Windows Defender may flag the program the first time you attempt to run it. To override this, select "More info" on the pop-up window that appears and from there, select "Run Anyways".
 
-![instaInstructions3](https://user-images.githubusercontent.com/46041406/114758722-4c0ce480-9d2b-11eb-9ae2-96a0dd08a8fa.png)
+![instaInstructions3](https://user-images.githubusercontent.com/46041406/115061008-8fe02500-9eb6-11eb-8566-2e916bfd6076.png)
+
+## For Programmers
+The program is written entirely in Python 3.8.5.
+Dependencies:
+pygame v:1.9.6 (other versions may work)
+numpy v:1.19.2 (other versions may work)
 
