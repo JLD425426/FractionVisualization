@@ -139,14 +139,6 @@ class ProblemGenerator:
             d1 = random.randint(1,6)
             n2 = random.randint(1,6)
             d2 = random.randint(1,6)
-            ##f1 = Fraction(n1, d1)
-            #fraction1 = n1/d1
-            #fraction2 = n2/d2
-            ##if n1 >= d1: # on to next loop b/c mixed fraction, ie 3/2 
-            ##    continue
-            ##nA, dA = f1.fSub(n2,d2)
-            ##if nA <= 0:
-            ##    continue
             if n1 >= d1:
                 continue
             if n2 >= d2: # same thing, mixed fraction
@@ -156,19 +148,11 @@ class ProblemGenerator:
             nA,dA = f1.fSub(n2,d2)
             if nA >= 0:
                 break
-            ##if fraction1 > fraction2: # only allow positive answers
-            ##    break
-        # now reduce problem answer
-        #answer = Fraction(nAns,dAns)
-        ##fraction1 = Fraction(n1,d1)
-        ##fraction2 = Fraction(n2,d2)
         
         answer = Fraction(nA,dA)
         answer.isImproper()
         if answer.getMix() == True:
             answer.makeMixed()
-        #if answer.canReduce():
-         #   answer.finalReduce()
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
 
@@ -194,12 +178,6 @@ class ProblemGenerator:
                 continue
             else:
                 break
-        # now reduce problem answer
-        # answer = Fraction(nAns,dAns)
-        # if answer.getNum() < answer.getDenom() and answer.canReduce():
-        #    answer.finalReduce()
-        # self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
-        # self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         answer = Fraction(nAns,dAns)
         self.currentProblem = FractionProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)
         self.problemDisplay.setProblem(n1,d1,n2,d2,answer.numerator,answer.denominator)

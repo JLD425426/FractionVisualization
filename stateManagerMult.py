@@ -166,15 +166,10 @@ class StateManagerMult:
             for rect in self.drawablesController.rectangles:
                 if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
                     if rect.isShaded == False:
-                        #rect.drawLines(self.colorPicker.myColor, 0)
-                        #0 = Vertical, set an internal rect variable to 1
-                        #   #rect.changeColor(self.colorPicker.myColor)
                         rect.changeColorHatch(self.colorPicker.myColor)
                         rect.isShadedV = True
                         rect.isShaded = True
                     elif rect.isShaded == True:
-                        #   #rect.changeColor(colors.WHITE)
-                        #rect.changeColorHatch(self.colorPicker.myColor)
                         rect.changeColorHatch(colors.WHITE)
                         rect.isShadedV = False
                         rect.isShaded = False
@@ -202,17 +197,11 @@ class StateManagerMult:
                                         r1.changeColorHatch(colors.WHITE)
 
                                 elif r1.colorHatch == self.colorPicker.verticalColor:
-                                    #r1.isShadedH = True
                                     r1.isShadedB = True
                                     r1.changeColorHatch(self.colorPicker.getBlendedColor())
-                                    #rect.drawVLines(self.colorPicker.myColor)
-                                    #1 = Horizontal, set an internal rect variable to 2
-                                    #if two then (?)
-                                    ##r1.changeColor(self.colorPicker.getBlendedColor())
                                 elif r1.colorHatch == colors.WHITE:
                                     r1.isShadedH = True
                                     r1.changeColorHatch(self.colorPicker.myColor)
-                                    ##r1.changeColor(self.colorPicker.myColor)
 
     def get_answer(self):
         numerator = 0
@@ -221,8 +210,6 @@ class StateManagerMult:
             denominator += 1
             if rect.isShadedB == True:
                 numerator += 1
-            #   #if rect.color == self.colorPicker.getBlendedColor():
-                #   #numerator += 1
         return (numerator, denominator)
 
     def get_answerDenom(self):
@@ -247,7 +234,6 @@ class StateManagerMult:
                 if gl is gl2:
                     self.drawablesController.guidelines.remove(gl)
         cutter.verticalCuts.clear()
-        # cutter.isShowingVerticalGuidelines = True
         cutter.setStateCutVertical()
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -264,7 +250,6 @@ class StateManagerMult:
                 self.drawablesController.rectangles.append(rect)
         cutter.horizontalCuts.clear()
         cutter.setStateCutHorizontal()
-        # cutter.isShowingHorizontalGuidelines = True
         self.currentState = self.CUTTINGHORIZONTALLY
 
 

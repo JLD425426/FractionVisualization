@@ -10,15 +10,6 @@ TEXTBOX = (203, 165, 230)
 TITLEBAR = (203, 165, 230)
 
 #primary colors
-#RED = (255, 0, 0)
-#BLUE = (0, 0, 255)
-#YELLOW = (235, 247, 5)
-#second colors
-#ORANGE = (250, 135, 5)
-#GREEN = (0, 255, 0)
-#PURPLE = (227, 39, 211)
-
-#primary colors
 RED = (236, 32, 41)
 BLUE = (45, 54, 145)
 YELLOW = (247, 239, 34)
@@ -27,15 +18,8 @@ ORANGE = (247, 147, 35)
 GREEN = (20, 166, 81)
 PURPLE = (102, 48, 144)
 
+# For border
 GOLD = (212, 188, 11)
-
-#Lighter tints of main colors
-LIGHTRED = (235, 103, 96)
-LIGHTBLUE = (143, 151, 242)
-LIGHTYELLOW = (245, 241, 135)
-LIGHTORANGE = (255, 193, 122)
-LIGHTGREEN = (91, 176, 127)
-LIGHTPURPLE = (149, 114, 176)
 
 BUTTONSTANDARD = (8, 41, 255)
 BUTTONHOVER = (115, 133, 255)

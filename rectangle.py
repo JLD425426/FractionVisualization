@@ -120,13 +120,6 @@ class Rectangle:
                     #collision checking with mouse, also check if square belongs to right side original rectangle (don't want these moved)
                     ##if self.isOriginalSquare == False and self.ownerID != 2 and (self.colorHatch != colors.WHITE or self.color != colors.WHITE):
                 if self.isOriginalSquare == False and self.colorHatch != colors.WHITE and (self.ownerID != 2 and self.ownerID != 3):
-                        #   #if self.isShadedH is False:
-                        #   #    return
-                        #if self.isShadedB is True or self.isShadedV is True:
-                        #    return
-                        #   #if self.isShadedV is True:
-                        #   #    return
-                           
                         # mouse is holding no one and clicking, set self as being held
                         if self.isShadedB is True or self.isShadedH is True:
                             if mouse.isClick == True and self.isCollidingWithPoint(mouse.mx,mouse.my) == True and mouse.whoisHeld == None and self.stateManager.getCurrentState() == "Moving":
@@ -237,14 +230,6 @@ class Rectangle:
                     pc.isOccupied = True
                     self.myPointCollider = pc
 
-                    ##Changing color here does not display as the WHite rectangle is drawing over top
-
-                    # self.changeColorHatch(colors.BLACK)
-                    # if self.color != colors.WHITE or self.color != ogColor:
-                    #     self.color = ogColor
-                    #self.stateManager.invertRectData()
-                    #self.isShadedH = True
-                    #self.isShadedB = True
                     if self.stateManager.movedBefore == False:
                         self.ownerID = 3
                     else:
@@ -261,16 +246,7 @@ class Rectangle:
                     self.rotatePosition(pc.x,pc.y)
                     pc.isOccupied = True
                     self.myPointCollider = pc
-                    #self.changeColor(colors.GREEN)
 
-                    ##Changing color here does not display as the WHite rectangle is drawing over top
-                    
-                    # self.changeColorHatch(colors.BLACK)
-                    # if self.color != colors.WHITE or self.color != ogColor:
-                    #     self.color = ogColor
-                    #self.stateManager.invertRectData()
-                    #self.isShadedH = True
-                    #self.isShadedB = True
                     if self.stateManager.movedBefore == False:
                         self.ownerID = 3
                     else:
@@ -360,15 +336,6 @@ class Rectangle:
 
     def draw(self):
         pg.draw.rect(self.screen, self.color, [self.topLeftX,self.topLeftY,self.width,self.height],0)
-        
-        #if self.stateManager.operation_type == 3: # for subtraction
-            #if self.isShadedH == True:
-                #self.drawHLinesSub(self.hColor)
-            #elif self.isShadedV == True:
-                #self.drawVLinesSub(self.vColor)
-            #elif self.isShadedB == True:
-                #self.drawHLinesSub(self.hColor)
-                #self.drawVLinesSub(self.vColor)
 
         if self.stateManager.operation_type == 2: # subtraction
             if self.isMarked == True:
@@ -641,6 +608,4 @@ class Rectangle:
             drawerbotXend = self.bottomRightX 
             drawerbotYend = drawertopYstart
             pg.draw.line(self.screen, color, [drawertopXstart,drawertopYstart], [drawerbotXend, drawerbotYend], 1) 
-
-
 

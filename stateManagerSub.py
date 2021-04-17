@@ -43,8 +43,6 @@ class StateManagerSub:
         self.HEIGHT = 700
         self.proceed_button = pygame.Rect(int((self.WIDTH/2)-150), int(self.HEIGHT/2+180), 300, 50)
         self.button_font = pygame.font.SysFont('Arial', 25)
-        ##self.pop_up = pygame.Rect(int(self.WIDTH/3), 120, 500, 500)
-        ##self.message_font_s = pygame.font.SysFont('Arial', 30)
         ##self.timer = 0
         ##self.error_detect = False
 
@@ -236,9 +234,6 @@ class StateManagerSub:
                 if rect.ownerID == 1:
                     if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
                         if rect.isShaded == False:
-                            #rect.drawLines(self.colorPicker.myColor, 0)
-                            #0 = Vertical, set an internal rect variable to 1
-                            #   #rect.changeColor(self.colorPicker.myColor)
                             rect.changeColor(self.colorPicker.myColor)
                             rect.isShadedV = True
                             rect.isShaded = True
@@ -258,9 +253,6 @@ class StateManagerSub:
                 if rect.ownerID == 2:
                     if rect.isCollidingWithPoint(self.mouse.mx, self.mouse.my) == True:
                         if rect.isShaded == False:
-                            #rect.drawLines(self.colorPicker.myColor, 0)
-                            #0 = Vertical, set an internal rect variable to 1
-                            #   #rect.changeColor(self.colorPicker.myColor)
                             rect.changeColor(self.colorPicker.myColor)
                             rect.isShadedV = True
                             rect.isShaded = True
@@ -321,8 +313,6 @@ class StateManagerSub:
     def get_answerNumer(self):
         numerator = 0
         for rect in self.drawablesController.rectangles:
-            ##if rect.isTrash == False and (rect.isShadedV == True or rect.isShadedB == True):
-            ##    numerator += 1
             if rect.ownerID == 1 and rect.isMarked == False and rect.isShaded == True:
                 numerator += 1
         return numerator
@@ -361,7 +351,6 @@ class StateManagerSub:
                     self.drawablesController.rectangles.append(rect)
         cutter.horizontalCuts.clear()
         cutter.setStateCutHorizontal()
-        # cutter.isShowingHorizontalGuidelines = True
         self.currentState = self.CUTTINGHORIZONTALLY
 
     def setBorderPos(self):

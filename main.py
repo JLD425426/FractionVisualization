@@ -416,23 +416,22 @@ def main_prog():
         stateManager.setTrashCan(trashCan)
 
     elif program_OperationType == DIVISION:
+        # For division, rectangles are created later because the number of rectangles depends on the fractions
         stateManager = StateManagerDiv(program_CuttingType,screen)
         stateManager.setMouse(mouse) # link state manager and mouse
         stateManager.setDrawablesController(drawablesController) # link state manager and drawables controller
-        #testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
-        #cutter = testRectangle.getCutter() # need to get cutter here for draw call
-        #testRectangle2 = Rectangle((int)((WIDTH/3)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
-        #cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
-        ##For 3 Squares, Use (int)(WIDTH/4), (int)((WIDTH/4)*2), etc.
         colorPicker = ColorPicker(screen,WIDTH,HEIGHT,mouse,stateManager,drawablesController)
         stateManager.setColorPicker(colorPicker)
         positionSet = 0
 
     # init problemDisplay here, every operation will have
     problemDisplay = ProblemDisplay(screen,WIDTH,HEIGHT,stateManager,program_OperationType)
+
     # set up problemGenerator here because it needs to know problemDisplay
     problemGenerator.setProblemDisplay(problemDisplay)
     problemGenerator.setOperationType(program_OperationType)
+
+    # Checks whether a new problem needs to be created or just reset the current problem
     if problemGenerator.needsNewProblem == True:
         problemGenerator.getProblem()
         problemGenerator.needsNewProblem = False
@@ -454,8 +453,7 @@ def main_prog():
                 testRectangle2 = Rectangle((int)((WIDTH/4)*2),HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 2)
                 cutter2 = testRectangle2.getCutter() # need to get cutter here for draw call
                 stateManager.hasThreeSquares = True
-                #testRectangle3 = Rectangle((int)((WIDTH/4)*3)+50,HEIGHT/2-30,280,280,screen,drawablesController,True,mouse,stateManager, 3)
-                #cutter3 = testRectangle3.getCutter() # need to get cutter here for draw call
+                # The third rectangle is created in stateManagerDiv when in moving state
         else:
                 testRectangle = Rectangle((int)((WIDTH/3)),HEIGHT/2-30,280, 280,screen,drawablesController,True,mouse,stateManager, 1)
                 cutter = testRectangle.getCutter() # need to get cutter here for draw call
@@ -739,14 +737,9 @@ def main_prog():
                     rect.drawMark()
         if program_OperationType != MULTIPLICATION and program_OperationType != SUBTRACTION:
             for rect in drawablesController.rectangles:
-                #
                 #move to rectangle class
                 if rect.ownerID == 2:
                     rect.draw()
-                    #if rect.isShadedV == True and rect.isShadedH != True:
-                        #rect.drawVLines(rect.colorHatch)
-                    #if rect.isShadedH == True and rect.isShadedV != True:
-                        #rect.drawHLines(rect.colorHatch)
                     if rect.isShadedB:
                         rect.drawBLines(rect.colorHatch)
                 else:
@@ -776,8 +769,6 @@ def main_prog():
         stateManager.draw()
         if colorPicker != None:
             colorPicker.draw()
-        #if trashCan != None:
-        #    trashCan.draw()
         problemDisplay.draw()
         userAnswerSystem.draw()
         # DRAW BORDER HERE TO HIGHLIGHT CURRENT SECTION
