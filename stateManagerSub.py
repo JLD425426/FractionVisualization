@@ -323,12 +323,10 @@ class StateManagerSub:
             if rect.ownerID == rectID:
                 if rect.isOriginalSquare is False:
                     self.drawablesController.rectangles.remove(rect)
-        for gl in self.drawablesController.guidelines:
-            for gl2 in cutter.verticalCutList:
-                if gl is gl2:
-                    self.drawablesController.guidelines.remove(gl)
+        for gl2 in cutter.verticalCutList:
+            self.drawablesController.guidelines.remove(gl2)
+        cutter.verticalCutList.clear()
         cutter.verticalCuts.clear()
-        # cutter.isShowingVerticalGuidelines = True
         cutter.setStateCutVertical()
         self.currentState = self.CUTTINGVERTICALLY
 
@@ -337,10 +335,8 @@ class StateManagerSub:
             if rect.ownerID == rectID:
                 if rect.isOriginalSquare is False:
                     self.drawablesController.rectangles.remove(rect)
-        for gl in self.drawablesController.guidelines:
-            for gl2 in cutter.horizontalCutList:
-                if gl is gl2:
-                    self.drawablesController.guidelines.remove(gl)
+        for gl2 in cutter.horizontalCutList:
+            self.drawablesController.guidelines.remove(gl2)
         if rectID == 1:
             for rect in self.rectsHolder1:
                 if rect.isOriginalSquare is False:
@@ -349,6 +345,7 @@ class StateManagerSub:
             for rect in self.rectsHolder2:
                 if rect.isOriginalSquare is False:
                     self.drawablesController.rectangles.append(rect)
+        cutter.horizontalCutList.clear()
         cutter.horizontalCuts.clear()
         cutter.setStateCutHorizontal()
         self.currentState = self.CUTTINGHORIZONTALLY
